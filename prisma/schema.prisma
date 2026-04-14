@@ -1,0 +1,46 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Organizer {
+  id           String   @id @default(uuid())
+  name         String
+  whatsapp     String?  
+  accessCode   String   @unique // Format: NAVI-XXXX-XXXX
+  tokenBalance Int      @default(0) 
+  events       Event[]
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Event {
+  id          String   @id @default(uuid())
+  organizerId String
+  organizer   Organizer @relation(fields: [organizerId], references: [id])
+  name        String
+  date        DateTime
+  tokenCost   Int      
+  guests      Guest[]
+  createdAt   DateTime @default(now())
+}
+
+model Guest {
+  id           String   @id @default(uuid())
+  eventId      String
+  event        Event    @relation(fields: [eventId], references: [id])
+  name         String
+  qrTicket     String   @unique 
+  hasCheckedIn Boolean  @default(false)
+  isPlusOne    Boolean  @default(false)
+  checkInTime  DateTime?
+}
+
