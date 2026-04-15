@@ -20,17 +20,19 @@ export function Navbar() {
       }`}
     >
       <div className="max-w-[1280px] mx-auto px-6 lg:px-10 h-14 flex items-center justify-between">
-        <span
-          style={{
-            fontFamily: "var(--font-body)",
-            fontWeight: 600,
-            fontSize: "17px",
+        <Link href="/">
+          <span
+            style={{
+              fontFamily: "var(--font-body)",
+              fontWeight: 600,
+              fontSize: "17px",
             color: "#0c123b",
             letterSpacing: "-0.02em",
           }}
         >
           Navi
         </span>
+        </Link>
         <div className="hidden md:flex items-center gap-10 ">
           {["Features", "Pricing", "Docs"].map((item) => (
             <a

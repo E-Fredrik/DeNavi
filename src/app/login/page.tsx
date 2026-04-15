@@ -98,7 +98,7 @@ export default function LoginPage() {
       {/* Right panel — decorative */}
       <div className="hidden lg:flex flex-1 items-center justify-center" style={{ background: "#f8edd6", borderLeft: "1px solid #f1e5ed" }}>
         <div className="text-center">
-          <p style={{ fontFamily: "var(--font-body)", fontWeight: 700, fontSize: "48px", letterSpacing: "-0.04em", color: "#f1e5ed", lineHeight: 1.1 }}>
+          <p style={{ fontFamily: "var(--font-body)", fontWeight: 700, fontSize: "48px", letterSpacing: "-0.04em", color: "#2d3895", lineHeight: 1.1 }}>
             Pro check-ins,
             <br />
             effortless

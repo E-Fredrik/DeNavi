@@ -1,6 +1,7 @@
 "use client";
 import { useState, useMemo } from "react";
 import { motion } from "motion/react";
+import Link from "next/link";
 
 const PRICE_PER_TOKEN = 50000; //Change this to update the price displayed taken from postgre
 
@@ -309,7 +310,8 @@ export function PricingSection() {
                       {tokens} token{tokens > 1 ? "s" : ""} × {formatIDR(PRICE_PER_TOKEN)} = {formatIDR(total)}
                     </p>
                   </div>
-                  <button
+                  <Link
+                  href="/login"
                     style={{
                       fontFamily: "var(--font-body)",
                       fontWeight: 500,
@@ -323,7 +325,7 @@ export function PricingSection() {
                     className="hover:bg-[#3c58a7] transition-colors duration-200"
                   >
                     Buy Tokens for this Event
-                  </button>
+                  </Link>
                 </div>
               </div>
             </div>
