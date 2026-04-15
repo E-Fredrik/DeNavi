@@ -8,11 +8,12 @@ import { Footer } from "./components/Footer";
 
 export default function Home() {
   return (
-    <div className="min-h-screen w-full" style={{ background: "#f8edd6", fontFamily: "var(--font-body)" }}>
+    <div className="min-h-screen w-full" style={{ fontFamily: "var(--font-body)" }}>
       <HeroSection />
-      <TrustBanner />
+      {/* <TrustBanner /> */}
       <DualModeSection />
       <PricingSection />
+      
     </div>
   );
 }

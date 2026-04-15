@@ -1,16 +1,43 @@
 "use client";
 import { motion } from "motion/react";
+import DotGrid from "@/components/DotGrid";
+import ShapeGrid from "@/components/ShapeGrid";
 
 export function HeroSection() {
   return (
     <section
       className="relative min-h-screen flex items-end lg:items-center overflow-hidden"
-      style={{ background: "#f8edd6" }}
     >
-      <div className="w-full max-w-[1280px] mx-auto px-6 lg:px-10 pt-28 pb-20 lg:py-0">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-0 items-end lg:items-center">
+      {/* Background DotGrid */}
+      <div className="absolute inset-0 z-0">
+        {/* <DotGrid
+          dotSize={10}
+          gap={15}
+          baseColor="#fbeed4"
+          activeColor="#3C58a7"
+          proximity={120}
+          shockRadius={250}
+          shockStrength={5}
+          resistance={750}
+          returnDuration={1.5}
+        /> */}
+
+  
+          <ShapeGrid 
+          speed={0.5}
+          squareSize={40}
+          direction='diagonal' // up, down, left, right, diagonal
+          borderColor='#fbeed4'
+          hoverFillColor='#3C58a7'
+          shape='square' // square, hexagon, circle, triangle
+          hoverTrailAmount={0} // number of trailing hovered shapes (0 = no trail)
+          />
+      </div>
+
+      <div className="w-full max-w-[1280px] mx-auto px-6 lg:px-10 pt-28 pb-20 lg:py-0 relative z-10 pointer-events-none">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-0 items-end lg:items-center pointer-events-auto">
           {/* Left — Copy */}
-          <div className="lg:col-span-6 xl:col-span-5">
+          <div className="lg:col-span-6 xl:col-span-5 relative z-10">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -100,7 +127,7 @@ export function HeroSection() {
             initial={{ opacity: 0, x: 40 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, delay: 0.15, ease: [0.25, 0.1, 0.25, 1] }}
-            className="lg:col-span-6 xl:col-span-7 relative lg:translate-x-10 xl:translate-x-16"
+            className="lg:col-span-6 xl:col-span-7 relative lg:translate-x-10 xl:translate-x-16 z-10"
           >
             <div className="relative lg:mr-[-80px] xl:mr-[-120px]">
               {/* iPad frame */}
@@ -113,18 +140,18 @@ export function HeroSection() {
                 }}
               >
                 <div
+                  className="relative"
                   style={{
-                    background: "#fbeed4",
+                    backgroundColor: "#fbeed4",
                     borderRadius: "12px",
                     overflow: "hidden",
                   }}
                 >
                   {/* Browser chrome */}
                   <div
-                    className="flex items-center px-4 gap-2"
+                    className="flex items-center px-4 gap-2 relative z-10"
                     style={{
                       height: "36px",
-                      background: "#fbeed4",
                       borderBottom: "1px solid #867bba",
                     }}
                   >
@@ -149,7 +176,7 @@ export function HeroSection() {
                   </div>
 
                   {/* Dashboard content */}
-                  <div className="p-5 flex gap-4" style={{ aspectRatio: "16/10" }}>
+                  <div className="p-5 flex gap-4 relative z-10" style={{ aspectRatio: "16/10" }}>
                     {/* Sidebar */}
                     <div className="w-40 flex-shrink-0 flex flex-col gap-1">
                       <div className="flex items-center gap-2 mb-5">

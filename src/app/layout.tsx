@@ -3,8 +3,11 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Navbar } from "./components/Navbar";
 import { Footer } from "./components/Footer";
-import CustomCursor from "./components/Cursor";
+import TargetCursor from "../components/TargetCursor";
+import AnimatedBackground from "./components/AnimatedBackground";
 import Providers from "./providers";
+import ClickSpark from "../components/ClickSpark";
+import Ribbons from "../components/Ribbons";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -32,12 +35,30 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
-        <CustomCursor />
-        <Providers>
+        <ClickSpark
+          sparkColor='#2d3895'
+          sparkSize={10}
+          sparkRadius={15}
+          sparkCount={8}
+          duration={400}
+        >
+        <Ribbons
+          baseThickness={30}
+          colors={["#5227FF"]}
+          speedMultiplier={0.5}
+          maxAge={500}
+          enableFade={false}
+          enableShaderEffect={false}
+        />
+        <AnimatedBackground />
+        <TargetCursor />
+          <Providers>
           <Navbar />
           {children}
           <Footer />
+          
         </Providers>
+        </ClickSpark>
       </body>
     </html>
   );

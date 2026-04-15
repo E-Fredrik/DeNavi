@@ -1,6 +1,8 @@
 "use client";
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import TargetCursor from "@/components/TargetCursor";
+import { Target } from "lucide-react";
 
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -14,7 +16,7 @@ export function Navbar() {
   return (
     <nav
       className={`fixed top-0 left-0 right-0 z-50 transition-colors duration-300 ${
-        scrolled ? "bg-[#f8edd6] border-b border-[#867bba]" : "bg-transparent"
+        scrolled ? "bg-[#f8edd6] border-b border-[#867bba]" : "bg-transparent "
       }`}
     >
       <div className="max-w-[1280px] mx-auto px-6 lg:px-10 h-14 flex items-center justify-between">
@@ -29,7 +31,7 @@ export function Navbar() {
         >
           Navi
         </span>
-        <div className="hidden md:flex items-center gap-10">
+        <div className="hidden md:flex items-center gap-10 ">
           {["Features", "Pricing", "Docs"].map((item) => (
             <a
               key={item}
@@ -41,7 +43,7 @@ export function Navbar() {
                 color: "#3c58a7",
                 letterSpacing: "0",
               }}
-              className="hover:text-[#2d3895] transition-colors duration-200"
+              className="hover:text-[#2d3895] transition-colors duration-200 cursor-target"
             >
               {item}
             </a>
@@ -63,7 +65,7 @@ export function Navbar() {
         >
           Get Started
         </Link> */}
-        <Link href = "/login" className="text-sm font-medium text-[#fbeed4] bg-[#2d3895] px-4 py-2 rounded-md hover:bg-[#3c58a7] transition-colors duration-200">
+        <Link href = "/login" className="text-sm font-medium text-[#fbeed4] bg-[#2d3895] px-4 py-2 rounded-md cursor-target hover:bg-[#3c58a7] transition-colors duration-200">
           Get Started
         </Link>
       </div>
