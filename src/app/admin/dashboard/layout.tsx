@@ -45,7 +45,7 @@ export default function DashboardLayout({
   }
 
   return (
-    <div className="flex min-h-screen" style={{ background: "#f8edd6", fontFamily: "var(--font-body)" }}>
+    <div className="flex min-h-screen pt-15" style={{ background: "#f8edd6", fontFamily: "var(--font-body)" }}>
       {/* Basic Sidebar for Desktop */}
       <aside className="hidden lg:flex flex-col w-64 min-h-screen p-4 border-r" style={{ borderColor: "#867bba", background: "#f8edd6" }}>
         <div className="flex items-center gap-2 mb-8 px-2">

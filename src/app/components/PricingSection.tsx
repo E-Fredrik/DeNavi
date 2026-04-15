@@ -5,7 +5,8 @@ import { motion } from "motion/react";
 const PRICE_PER_TOKEN = 50000; //Change this to update the price displayed taken from postgre
 
 function formatIDR(val: number): string {
-  return new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(val);
+  const formattedNumber = new Intl.NumberFormat("id-ID", { minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(val);
+  return `Rp${formattedNumber}`;
 }
 
 export function PricingSection() {
