@@ -2,6 +2,7 @@
 import { motion } from "motion/react";
 import DotGrid from "@/components/DotGrid";
 import ShapeGrid from "@/components/ShapeGrid";
+import DecryptedText from "@/components/DecryptedText";
 
 export function HeroSection() {
   return (
@@ -72,7 +73,16 @@ export function HeroSection() {
                 <br />
                 for EOs.
               </h1>
-              <p
+              <DecryptedText
+                text="The all-in-one check-in system that gives event organizers complete control — with token-based pricing that scales to your event. No subscriptions."
+                animateOn="view"
+                revealDirection="start"
+                sequential
+                useOriginalCharsOnly={false}
+                className="whitespace-pre-wrap"
+                speed={15}
+              />
+              {/* <p
                 style={{
                   fontFamily: "var(--font-body)",
                   fontWeight: 400,
@@ -86,7 +96,7 @@ export function HeroSection() {
                 The all-in-one check-in system that gives event organizers
                 complete control — with token-based pricing that scales to
                 your event. No subscriptions.
-              </p>
+              </p> */}
               <div className="flex items-center gap-4 mt-10">
                 <a
                   href="#pricing"

@@ -8,6 +8,7 @@ import AnimatedBackground from "./components/AnimatedBackground";
 import Providers from "./providers";
 import ClickSpark from "../components/ClickSpark";
 import Ribbons from "../components/Ribbons";
+import SplashCursor from "../components/SplashCursor";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -42,16 +43,22 @@ export default function RootLayout({
           sparkCount={8}
           duration={400}
         >
-        <Ribbons
-          baseThickness={30}
-          colors={["#5227FF"]}
-          speedMultiplier={0.5}
-          maxAge={500}
-          enableFade={false}
-          enableShaderEffect={false}
-        />
         <AnimatedBackground />
-        <TargetCursor />
+        {/* <TargetCursor /> */}
+
+
+        <SplashCursor
+          DENSITY_DISSIPATION={10}
+          VELOCITY_DISSIPATION={10}
+          PRESSURE={0.15}
+          CURL={3}
+          SPLAT_RADIUS={0.1}
+          SPLAT_FORCE={3000}
+          COLOR_UPDATE_SPEED={10}
+          SHADING
+          RAINBOW_MODE={false}
+          COLOR="#2d3895"
+        />
           <Providers>
           <Navbar />
           {children}
