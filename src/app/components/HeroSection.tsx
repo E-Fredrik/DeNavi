@@ -1,6 +1,5 @@
 "use client";
 import { motion } from "motion/react";
-import DotGrid from "@/components/DotGrid";
 import ShapeGrid from "@/components/ShapeGrid";
 import DecryptedText from "@/components/DecryptedText";
 
@@ -35,8 +34,8 @@ export function HeroSection() {
           />
       </div>
 
-      <div className="w-full max-w-[1280px] mx-auto px-6 lg:px-10 pt-28 pb-20 lg:py-0 relative z-10 pointer-events-none">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-0 items-end lg:items-center pointer-events-auto">
+      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 pt-24 sm:pt-28 pb-16 sm:pb-20 lg:py-0 relative z-10 pointer-events-none">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-0 items-end lg:items-center pointer-events-auto">
           {/* Left — Copy */}
           <div className="lg:col-span-6 xl:col-span-5 relative z-10">
             <motion.div
@@ -61,7 +60,7 @@ export function HeroSection() {
                 style={{
                   fontFamily: "var(--font-body)",
                   fontWeight: 700,
-                  fontSize: "clamp(38px, 5.5vw, 64px)",
+                  fontSize: "clamp(32px, 8vw, 64px)",
                   lineHeight: 1.05,
                   letterSpacing: "-0.035em",
                   color: "#0c123b",
@@ -97,7 +96,7 @@ export function HeroSection() {
                 complete control — with token-based pricing that scales to
                 your event. No subscriptions.
               </p> */}
-              <div className="flex items-center gap-4 mt-10">
+              <div className="flex flex-wrap items-center gap-3 sm:gap-4 mt-8 sm:mt-10">
                 <a
                   href="#pricing"
                   style={{
@@ -106,7 +105,7 @@ export function HeroSection() {
                     fontSize: "14px",
                     color: "#fbeed4",
                     background: "#2d3895",
-                    padding: "12px 28px",
+                    padding: "12px 20px",
                     borderRadius: "6px",
                     display: "inline-block",
                     textDecoration: "none",
@@ -137,9 +136,9 @@ export function HeroSection() {
             initial={{ opacity: 0, x: 40 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, delay: 0.15, ease: [0.25, 0.1, 0.25, 1] }}
-            className="lg:col-span-6 xl:col-span-7 relative lg:translate-x-10 xl:translate-x-16 z-10"
+            className="lg:col-span-6 xl:col-span-7 relative lg:translate-x-10 xl:translate-x-16 z-10 w-full"
           >
-            <div className="relative lg:mr-[-80px] xl:mr-[-120px]">
+            <div className="relative max-w-230 mx-auto lg:mx-0 lg:-mr-20 xl:-mr-30">
               {/* iPad frame */}
               <div
                 style={{
@@ -186,9 +185,9 @@ export function HeroSection() {
                   </div>
 
                   {/* Dashboard content */}
-                  <div className="p-5 flex gap-4 relative z-10" style={{ aspectRatio: "16/10" }}>
+                  <div className="p-3 sm:p-4 lg:p-5 flex flex-col sm:flex-row gap-3 sm:gap-4 relative z-10" style={{ aspectRatio: "16/10" }}>
                     {/* Sidebar */}
-                    <div className="w-40 flex-shrink-0 flex flex-col gap-1">
+                    <div className="w-full sm:w-28 lg:w-40 shrink-0 flex flex-col gap-1">
                       <div className="flex items-center gap-2 mb-5">
                         <div
                           className="w-5 h-5 rounded flex items-center justify-center"
@@ -231,7 +230,7 @@ export function HeroSection() {
 
                     {/* Main area */}
                     <div className="flex-1 flex flex-col gap-3 min-w-0">
-                      <div className="flex items-center justify-between">
+                      <div className="flex flex-wrap items-center justify-between gap-2">
                         <span style={{ fontFamily: "var(--font-body)", fontWeight: 600, fontSize: "13px", color: "#0c123b" }}>
                           Grand Ballroom A
                         </span>
@@ -247,7 +246,7 @@ export function HeroSection() {
                       </div>
 
                       {/* Stat cards */}
-                      <div className="grid grid-cols-3 gap-2">
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                         {[
                           { label: "Checked In", value: "342", sub: "/ 500 guests" },
                           { label: "Plus Ones", value: "47", sub: "walk-ins added" },
@@ -297,7 +296,7 @@ export function HeroSection() {
                           ].map((row, idx) => (
                             <div
                               key={row.name}
-                              className="flex items-center justify-between py-2"
+                              className="flex flex-wrap items-center justify-between gap-1 py-2"
                               style={{ borderBottom: idx < 3 ? "1px solid #867bba" : "none" }}
                             >
                               <span style={{ fontFamily: "var(--font-body)", fontWeight: 400, fontSize: "10px", color: "#2d3895" }}>
