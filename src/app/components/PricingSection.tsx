@@ -23,7 +23,7 @@ export function PricingSection() {
   const total = tokens * PRICE_PER_TOKEN;
 
   return (
-    <section id="pricing" style={{ background: "#f8edd6" }} className="py-28 lg:py-36">
+    <section id="pricing" className="py-28 lg:py-36 bg-[#f8edd6] dark:bg-[#0b1022]">
       <div className="max-w-[1280px] mx-auto px-6 lg:px-10">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-8">
           {/* Left — Header + context */}
@@ -124,8 +124,8 @@ export function PricingSection() {
             className="lg:col-span-8"
           >
             <div
+              className="bg-[#fbeed4] dark:bg-[#111a34]"
               style={{
-                background: "#fbeed4",
                 border: "1px solid #867bba",
                 borderRadius: "16px",
               }}
@@ -255,11 +255,11 @@ export function PricingSection() {
                   <div>
                     <div className="flex items-baseline gap-3 mb-1">
                       <span
+                        className="text-[#3c58a7] dark:text-[#b3c2ff]"
                         style={{
                           fontFamily: "var(--font-body)",
                           fontWeight: 400,
                           fontSize: "13px",
-                          color: "#3c58a7",
                         }}
                       >
                         Tokens required
@@ -269,11 +269,11 @@ export function PricingSection() {
                         initial={{ opacity: 0.4, y: -4 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.2 }}
+                        className="text-[#0c123b] dark:text-[#e8eeff]"
                         style={{
                           fontFamily: "var(--font-body)",
                           fontWeight: 700,
                           fontSize: "16px",
-                          color: "#0c123b",
                         }}
                       >
                         {tokens}
@@ -286,12 +286,12 @@ export function PricingSection() {
                       transition={{ duration: 0.25 }}
                     >
                       <span
+                        className="text-[#0c123b] dark:text-[#e8eeff]"
                         style={{
                           fontFamily: "var(--font-body)",
                           fontWeight: 700,
                           fontSize: "clamp(36px, 5vw, 52px)",
                           letterSpacing: "-0.04em",
-                          color: "#0c123b",
                           lineHeight: 1,
                         }}
                       >
@@ -299,11 +299,11 @@ export function PricingSection() {
                       </span>
                     </motion.div>
                     <p
+                      className="text-[#3c58a7] dark:text-[#b3c2ff]"
                       style={{
                         fontFamily: "var(--font-body)",
                         fontWeight: 400,
                         fontSize: "12px",
-                        color: "#3c58a7",
                         marginTop: "8px",
                       }}
                     >

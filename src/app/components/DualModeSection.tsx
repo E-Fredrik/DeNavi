@@ -4,7 +4,7 @@ import { QrCode, Search, ArrowRight } from "lucide-react";
 
 export function DualModeSection() {
   return (
-    <section id="features" style={{ background: "#f8edd6" }} className="py-28 lg:py-36">
+    <section id="features" className="py-28 lg:py-36 bg-[#f8edd6] dark:bg-[#0b1022]">
       <div className="max-w-[1280px] mx-auto px-6 lg:px-10">
         {/* Section header — left aligned */}
         <motion.div
@@ -64,9 +64,8 @@ export function DualModeSection() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="lg:col-span-7 lg:row-span-2"
+            className="lg:col-span-7 lg:row-span-2 bg-[#fbeed4] dark:bg-[#111a34]"
             style={{
-              background: "#fbeed4",
               border: "1px solid #867bba",
               borderRadius: "16px",
               padding: "40px",
@@ -123,9 +122,9 @@ export function DualModeSection() {
             {/* Mockup phone */}
             <div className="mt-10 flex justify-center lg:justify-start">
               <div
+                className="bg-[#f1e5ed] dark:bg-[#18203c]"
                 style={{
                   width: "220px",
-                  background: "#f1e5ed",
                   border: "1px solid #867bba",
                   borderRadius: "20px",
                   padding: "16px",
@@ -142,18 +141,19 @@ export function DualModeSection() {
                 </div>
                 {/* QR placeholder */}
                 <div
-                  className="aspect-square rounded-lg flex items-center justify-center mb-4"
-                  style={{ background: "#fbeed4", border: "1px solid #867bba" }}
+                  className="aspect-square rounded-lg flex items-center justify-center mb-4 bg-[#fbeed4] dark:bg-[#111a34]"
+            style={{ border: "1px solid #867bba" }}
                 >
                   <div className="w-20 h-20 grid grid-cols-5 grid-rows-5 gap-[2px]">
                     {Array.from({ length: 25 }, (_, cellIndex) => cellIndex).map((cellIndex) => (
                       <div
                         key={`qr-cell-${cellIndex}`}
+                        className={
+                          [0, 1, 2, 3, 4, 5, 9, 10, 14, 15, 19, 20, 21, 22, 23, 24, 6, 12, 18].includes(cellIndex)
+                            ? "bg-[#867bba] dark:bg-[#9fa8d8]"
+                            : "bg-[#f1e5ed] dark:bg-[#18203c]"
+                        }
                         style={{
-                          background:
-                            [0, 1, 2, 3, 4, 5, 9, 10, 14, 15, 19, 20, 21, 22, 23, 24, 6, 12, 18].includes(cellIndex)
-                              ? "#867bba"
-                              : "#f1e5ed",
                           borderRadius: "1px",
                         }}
                       />
@@ -162,8 +162,8 @@ export function DualModeSection() {
                 </div>
                 {/* Success state */}
                 <div
-                  className="py-2.5 rounded-lg text-center"
-                  style={{ background: "#fbeed4", border: "1px solid #867bba" }}
+                  className="py-2.5 rounded-lg text-center bg-[#fbeed4] dark:bg-[#111a34]"
+            style={{ border: "1px solid #867bba" }}
                 >
                   <span style={{ fontFamily: "var(--font-body)", fontWeight: 600, fontSize: "11px", color: "#3c58a7" }}>
                     ✓ Verified — Table 12
@@ -179,9 +179,8 @@ export function DualModeSection() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.1 }}
-            className="lg:col-span-5"
+            className="lg:col-span-5 bg-[#fbeed4] dark:bg-[#111a34]"
             style={{
-              background: "#fbeed4",
               border: "1px solid #867bba",
               borderRadius: "16px",
               padding: "32px",
@@ -230,8 +229,7 @@ export function DualModeSection() {
             </p>
             {/* Mini search UI */}
             <div
-              className="flex items-center gap-2 px-3 py-2.5 rounded-lg"
-              style={{ background: "#f1e5ed", border: "1px solid #867bba" }}
+              className="flex items-center gap-2 px-3 py-2.5 rounded-lg bg-[#f1e5ed] dark:bg-[#18203c] border border-[#867bba] dark:border-[#9fa8d8]"
             >
               <Search className="w-3.5 h-3.5" style={{ color: "#3c58a7" }} strokeWidth={1.5} />
               <span style={{ fontFamily: "var(--font-body)", fontWeight: 400, fontSize: "12px", color: "#3c58a7" }}>
@@ -246,9 +244,8 @@ export function DualModeSection() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="lg:col-span-5"
+            className="lg:col-span-5 bg-[#fbeed4] dark:bg-[#111a34]"
             style={{
-              background: "#fbeed4",
               border: "1px solid #867bba",
               borderRadius: "16px",
               padding: "32px",

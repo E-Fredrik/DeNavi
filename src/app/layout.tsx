@@ -7,6 +7,7 @@ import AnimatedBackground from "./components/AnimatedBackground";
 import ClickSpark from "../components/ClickSpark";
 import SplashCursor from "../components/SplashCursor";
 import { ClerkProvider } from "@clerk/nextjs";
+import { ThemeProvider } from "@/components/theme-provider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -32,9 +33,11 @@ export default function RootLayout({
     <ClerkProvider>
       <html
         lang="en"
+        suppressHydrationWarning
         className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
       >
         <body className="min-h-full flex flex-col">
+          <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
           <ClickSpark
             sparkColor="#2d3895"
             sparkSize={10}
@@ -61,6 +64,7 @@ export default function RootLayout({
             {children}
             <Footer />
           </ClickSpark>
+          </ThemeProvider>
         </body>
       </html>
     </ClerkProvider>

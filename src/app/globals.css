@@ -59,25 +59,35 @@
 }
 
 .dark {
+  --palette-ink: #e8eeff;
+  --palette-primary: #8ea2ff;
+  --palette-secondary: #b3c2ff;
+  --palette-lavender: #9ca8d9;
+  --palette-blush: #2a314f;
+  --palette-mist: #202744;
+  --palette-sand: #5f547d;
+  --palette-ivory: #dce6ff;
+  --palette-bg: #0b1022;
+
   --background: oklch(0.145 0 0);
   --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
+  --card: oklch(0.2 0 0);
   --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
+  --popover: oklch(0.22 0 0);
   --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
+  --primary: oklch(0.78 0.11 270);
+  --primary-foreground: oklch(0.18 0.02 270);
+  --secondary: oklch(0.32 0.03 270);
   --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
+  --muted: oklch(0.28 0.02 270);
+  --muted-foreground: oklch(0.8 0.02 270);
+  --accent: oklch(0.34 0.03 270);
   --accent-foreground: oklch(0.985 0 0);
   --destructive: oklch(0.704 0.191 22.216);
   --destructive-foreground: var(--palette-ivory);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
+  --border: oklch(0.72 0.02 270 / 28%);
+  --input: oklch(0.72 0.02 270 / 35%);
+  --ring: oklch(0.74 0.09 270);
   --font-weight-medium: 500;
   --font-weight-normal: 400;
   --chart-1: oklch(0.87 0 0);
@@ -153,8 +163,12 @@
 
   body {
     @apply bg-background text-foreground;
-    color-scheme: light;
+    color-scheme: light dark;
     font-family: var(--font-body);
+  }
+
+  .dark body {
+    color-scheme: dark;
   }
 
   h1 {
@@ -199,5 +213,54 @@
     font-size: var(--text-base);
     font-weight: var(--font-weight-normal);
     line-height: 1.5;
+  }
+
+  .dark p {
+    color: var(--foreground);
+  }
+
+  /* Override legacy inline light theme colors so dark mode remains readable. */
+  .dark [style*="background: #f8edd6"],
+  .dark [style*="background:#f8edd6"],
+  .dark [style*="background-color: #f8edd6"],
+  .dark [style*="background-color:#f8edd6"] {
+    background: var(--palette-bg) !important;
+    background-color: var(--palette-bg) !important;
+  }
+
+  .dark [style*="background: #fbeed4"],
+  .dark [style*="background:#fbeed4"],
+  .dark [style*="background-color: #fbeed4"],
+  .dark [style*="background-color:#fbeed4"] {
+    background: #111a34 !important;
+    background-color: #111a34 !important;
+  }
+
+  .dark [style*="background: #f1e5ed"],
+  .dark [style*="background:#f1e5ed"],
+  .dark [style*="background-color: #f1e5ed"],
+  .dark [style*="background-color:#f1e5ed"] {
+    background: #18203c !important;
+    background-color: #18203c !important;
+  }
+
+  .dark [style*="color: #0c123b"],
+  .dark [style*="color:#0c123b"] {
+    color: #e8eeff !important;
+  }
+
+  .dark [style*="color: #2d3895"],
+  .dark [style*="color:#2d3895"] {
+    color: #9eb0ff !important;
+  }
+
+  .dark [style*="color: #3c58a7"],
+  .dark [style*="color:#3c58a7"] {
+    color: #b3c2ff !important;
+  }
+
+  .dark [style*="color: #867bba"],
+  .dark [style*="color:#867bba"] {
+    color: #9fa8d8 !important;
   }
 }

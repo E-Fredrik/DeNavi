@@ -6,12 +6,13 @@ import { motion, useMotionValueEvent, useScroll } from "motion/react";
 import { Menu, Navigation } from "lucide-react";
 import { SignInButton, SignOutButton, SignUpButton, UserButton, useAuth } from "@clerk/nextjs";
 import { cn } from "@/lib/utils";
+import { ModeToggle } from "@/components/mode-toggle";
 
 const navItems = [
-  { name: "Home", href: "#" },
-  { name: "About", href: "#" },
-  { name: "Services", href: "#" },
-  { name: "Contact", href: "#" },
+  { name: "Home", href: "/" },
+  { name: "About", href: "/" },
+  { name: "Services", href: "/" },
+  { name: "Contact", href: "/" },
 ];
 
 const EXPAND_SCROLL_THRESHOLD = 80;
@@ -122,7 +123,8 @@ export function Navbar() {
         whileTap={isExpanded ? {} : { scale: 0.95 }}
         onClick={handleNavClick}
         className={cn(
-          "flex items-center overflow-hidden rounded-full border bg-background/80 shadow-lg backdrop-blur-sm h-12",
+          "flex items-center rounded-full border bg-background/80 shadow-lg backdrop-blur-sm h-12",
+          isExpanded ? "overflow-visible" : "overflow-hidden",
           !isExpanded && "cursor-pointer justify-center"
         )}
       >
@@ -153,10 +155,11 @@ export function Navbar() {
 
           {isSignedIn ? (
             <>
+              <ModeToggle />
               <Link
                 href="/admin/dashboard"
                 onClick={(e) => e.stopPropagation()}
-                className="text-sm font-medium text-[#fbeed4] bg-[#2d3895] px-3 py-1.5 rounded-md hover:bg-[#3c58a7] transition-colors duration-200"
+                className="text-sm font-medium text-primary-foreground bg-primary px-3 py-1.5 rounded-md hover:bg-primary/90 transition-colors duration-200"
               >
                 Dashboard
               </Link>
@@ -164,7 +167,7 @@ export function Navbar() {
                 <button
                   type="button"
                   onClick={(e) => e.stopPropagation()}
-                  className="text-sm font-medium text-[#2d3895] border border-[#2d3895] bg-transparent px-3 py-1.5 rounded-md hover:bg-[#f1e5ed] transition-colors duration-200"
+                  className="text-sm font-medium text-foreground border border-border bg-transparent px-3 py-1.5 rounded-md hover:bg-muted transition-colors duration-200"
                 >
                   Sign Out
                 </button>
@@ -173,11 +176,12 @@ export function Navbar() {
             </>
           ) : (
             <>
+              <ModeToggle />
               <SignInButton mode="modal">
                 <button
                   type="button"
                   onClick={(e) => e.stopPropagation()}
-                  className="text-sm font-medium text-[#fbeed4] bg-[#2d3895] px-3 py-1.5 rounded-md hover:bg-[#3c58a7] transition-colors duration-200"
+                  className="text-sm font-medium text-primary-foreground bg-primary px-3 py-1.5 rounded-md hover:bg-primary/90 transition-colors duration-200"
                 >
                   Sign In
                 </button>
@@ -186,7 +190,7 @@ export function Navbar() {
                 <button
                   type="button"
                   onClick={(e) => e.stopPropagation()}
-                  className="text-sm font-medium text-[#2d3895] border border-[#2d3895] bg-transparent px-3 py-1.5 rounded-md hover:bg-[#f1e5ed] transition-colors duration-200"
+                  className="text-sm font-medium text-foreground border border-border bg-transparent px-3 py-1.5 rounded-md hover:bg-muted transition-colors duration-200"
                 >
                   Sign Up
                 </button>

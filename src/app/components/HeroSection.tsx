@@ -24,9 +24,9 @@ export function HeroSection() {
 
   
           <ShapeGrid 
-          speed={0.5}
-          squareSize={40}
-          direction='diagonal' // up, down, left, right, diagonal
+          speed={0.1}
+          squareSize={70}
+          direction='right' // up, down, left, right, diagonal
           borderColor='#fbeed4'
           hoverFillColor='#3C58a7'
           shape='square' // square, hexagon, circle, triangle
@@ -48,7 +48,7 @@ export function HeroSection() {
                   fontFamily: "var(--font-body)",
                   fontWeight: 400,
                   fontSize: "13px",
-                  color: "#2d3895",
+                  color: "var(--palette-secondary)",
                   letterSpacing: "0.08em",
                   textTransform: "uppercase",
                   marginBottom: "24px",
@@ -63,7 +63,7 @@ export function HeroSection() {
                   fontSize: "clamp(32px, 8vw, 64px)",
                   lineHeight: 1.05,
                   letterSpacing: "-0.035em",
-                  color: "#0c123b",
+                  color: "var(--palette-ink)",
                 }}
               >
                 Pro check-ins,
