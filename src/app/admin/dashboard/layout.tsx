@@ -36,20 +36,19 @@ export default function DashboardLayout({
   }, [organizer, hydrated, isLoaded, router]);
 
   if (!hydrated || !isLoaded) {
-    return <div className="min-h-screen" style={{ background: "#f8edd6" }} />;
+    return <div className="min-h-screen bg-[#f8edd6] dark:bg-[#0b1022]" />;
   }
 
   if (!organizer) {
-    // During client-side redirect, render an empty shell.
-    return <div className="min-h-screen" style={{ background: "#f8edd6" }} />;
+    return <div className="min-h-screen bg-[#f8edd6] dark:bg-[#0b1022]" />;
   }
 
   return (
-    <div className="flex min-h-screen pt-15" style={{ background: "#f8edd6", fontFamily: "var(--font-body)" }}>
+    <div className="flex min-h-screen pt-15 bg-[#f8edd6] dark:bg-[#0b1022]" style={{ fontFamily: "var(--font-body)" }}>
       {/* Basic Sidebar for Desktop */}
-      <aside className="hidden lg:flex flex-col w-64 min-h-screen p-4 border-r" style={{ borderColor: "#867bba", background: "#f8edd6" }}>
+      <aside className="hidden lg:flex flex-col w-64 min-h-screen p-4 border-r border-[#867bba] dark:border-[#2a2660] bg-[#f8edd6] dark:bg-[#0b1022]">
         <div className="flex items-center gap-2 mb-8 px-2">
-          <span style={{ fontFamily: "var(--font-body)", fontWeight: 700, fontSize: "18px", color: "#0c123b" }}>
+          <span className="text-[#0c123b] dark:text-[#e8eeff]" style={{ fontFamily: "var(--font-body)", fontWeight: 700, fontSize: "18px" }}>
             Dashboard
           </span>
         </div>
@@ -63,14 +62,17 @@ export default function DashboardLayout({
               <Link
                 href={item.href}
                 key={item.href}
-                className="flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-colors"
-                style={{
-                  background: isActive ? "#f1e5ed" : "transparent",
-                  border: isActive ? "1px solid #867bba" : "1px solid transparent",
-                }}
+                className={`flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-colors ${
+                  isActive
+                    ? "bg-[#f1e5ed] dark:bg-[#18203c] border border-[#867bba] dark:border-[#2a2660]"
+                    : "border border-transparent"
+                }`}
               >
-                <Icon className="w-5 h-5" strokeWidth={1.5} style={{ color: isActive ? "#0c123b" : "#3c58a7" }} />
-                <span style={{ fontFamily: "var(--font-body)", fontWeight: isActive ? 500 : 400, fontSize: "14px", color: isActive ? "#0c123b" : "#3c58a7" }}>
+                <Icon className={`w-5 h-5 ${isActive ? "text-[#0c123b] dark:text-[#e8eeff]" : "text-[#3c58a7] dark:text-[#b3c2ff]"}`} strokeWidth={1.5} />
+                <span
+                  className={isActive ? "text-[#0c123b] dark:text-[#e8eeff]" : "text-[#3c58a7] dark:text-[#b3c2ff]"}
+                  style={{ fontFamily: "var(--font-body)", fontWeight: isActive ? 500 : 400, fontSize: "14px" }}
+                >
                   {item.label}
                 </span>
               </Link>
@@ -80,16 +82,16 @@ export default function DashboardLayout({
       </aside>
 
       {/* Mobile header */}
-      <div className="lg:hidden fixed top-0 left-0 right-0 z-50 h-14 flex items-center justify-between px-4" style={{ background: "#f8edd6", borderBottom: "1px solid #867bba" }}>
-        <span style={{ fontFamily: "var(--font-body)", fontWeight: 600, fontSize: "15px", color: "#0c123b" }}>Dashboard</span>
+      <div className="lg:hidden fixed top-0 left-0 right-0 z-50 h-14 flex items-center justify-between px-4 bg-[#f8edd6] dark:bg-[#0b1022] border-b border-[#867bba] dark:border-[#2a2660]">
+        <span className="text-[#0c123b] dark:text-[#e8eeff]" style={{ fontFamily: "var(--font-body)", fontWeight: 600, fontSize: "15px" }}>Dashboard</span>
         <button onClick={() => setMobileOpen(!mobileOpen)} className="p-2">
-          {mobileOpen ? <X className="w-5 h-5 text-[#0c123b]" /> : <Menu className="w-5 h-5 text-[#0c123b]" />}
+          {mobileOpen ? <X className="w-5 h-5 text-[#0c123b] dark:text-[#e8eeff]" /> : <Menu className="w-5 h-5 text-[#0c123b] dark:text-[#e8eeff]" />}
         </button>
       </div>
 
       {/* Mobile nav overlay */}
       {mobileOpen && (
-        <div className="lg:hidden fixed inset-0 z-40 pt-14" style={{ background: "#f8edd6" }}>
+        <div className="lg:hidden fixed inset-0 z-40 pt-14 bg-[#f8edd6] dark:bg-[#0b1022]">
           <nav className="p-4 flex flex-col gap-1">
             {MOBILE_NAV.map((item) => {
               const Icon = item.icon;
@@ -101,14 +103,17 @@ export default function DashboardLayout({
                   key={item.href}
                   href={item.href}
                   onClick={() => setMobileOpen(false)}
-                  className="flex items-center gap-3 px-4 py-3 rounded-lg text-left"
-                  style={{
-                    background: isActive ? "#f1e5ed" : "transparent",
-                    border: isActive ? "1px solid #867bba" : "1px solid transparent",
-                  }}
+                  className={`flex items-center gap-3 px-4 py-3 rounded-lg text-left ${
+                    isActive
+                      ? "bg-[#f1e5ed] dark:bg-[#18203c] border border-[#867bba] dark:border-[#2a2660]"
+                      : "border border-transparent"
+                  }`}
                 >
-                  <Icon className="w-4 h-4" strokeWidth={1.5} style={{ color: isActive ? "#0c123b" : "#3c58a7" }} />
-                  <span style={{ fontFamily: "var(--font-body)", fontWeight: isActive ? 500 : 400, fontSize: "14px", color: isActive ? "#0c123b" : "#3c58a7" }}>
+                  <Icon className={`w-4 h-4 ${isActive ? "text-[#0c123b] dark:text-[#e8eeff]" : "text-[#3c58a7] dark:text-[#b3c2ff]"}`} strokeWidth={1.5} />
+                  <span
+                    className={isActive ? "text-[#0c123b] dark:text-[#e8eeff]" : "text-[#3c58a7] dark:text-[#b3c2ff]"}
+                    style={{ fontFamily: "var(--font-body)", fontWeight: isActive ? 500 : 400, fontSize: "14px" }}
+                  >
                     {item.label}
                   </span>
                 </Link>

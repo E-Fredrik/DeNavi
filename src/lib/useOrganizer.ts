@@ -1,13 +1,17 @@
 "use client";
 
-import { useCallback, useMemo, useState } from "react";
-import { useUser } from "@clerk/nextjs";
-import { db } from "./db";
-import type { Organizer } from "./types";
+import { useCallback, useEffect, useState } from "react";
+import { useSession } from "@/lib/auth-client";
 
-function getOrganizerForSignedInUser(): Organizer | null {
-  // Demo app mapping: one signed-in account controls the seeded organizer.
-  return db.getOrganizer("org-001");
+interface Organizer {
+  id: string;
+  name: string;
+  whatsapp: string | null;
+  accessCode: string | null;
+  email: string | null;
+  tokenBalance: number;
+  createdAt: string;
+  updatedAt: string;
 }
 
 interface OrganizerState {
@@ -18,22 +22,42 @@ interface OrganizerState {
 }
 
 export function useOrganizer(): OrganizerState {
-  const { isLoaded, isSignedIn } = useUser();
-  const [version, setVersion] = useState(0);
+  const { data: session, isPending } = useSession();
+  const isSignedIn = !!session?.user;
+  const [organizer, setOrganizer] = useState<Organizer | null>(null);
+  const [fetched, setFetched] = useState(false);
 
-  const organizer = useMemo(() => {
-    if (!isLoaded || !isSignedIn) return null;
-    return getOrganizerForSignedInUser();
-  }, [isLoaded, isSignedIn, version]);
+  const fetchOrganizer = useCallback(async () => {
+    try {
+      const res = await fetch("/api/organizer");
+      if (res.ok) {
+        const data = await res.json();
+        setOrganizer(data);
+      }
+    } catch {
+      // silently fail
+    } finally {
+      setFetched(true);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!isPending && isSignedIn) {
+      fetchOrganizer();
+    } else if (!isPending && !isSignedIn) {
+      setOrganizer(null);
+      setFetched(true);
+    }
+  }, [isPending, isSignedIn, fetchOrganizer]);
 
   const refresh = useCallback(() => {
-    setVersion((v) => v + 1);
-  }, []);
+    fetchOrganizer();
+  }, [fetchOrganizer]);
 
   return {
     organizer,
     refresh,
-    isLoaded,
-    isSignedIn: Boolean(isSignedIn),
+    isLoaded: !isPending && fetched,
+    isSignedIn,
   };
 }

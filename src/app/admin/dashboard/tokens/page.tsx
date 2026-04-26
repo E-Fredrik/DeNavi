@@ -1,7 +1,6 @@
 "use client";
 import { useState } from "react";
 import { useOrganizer } from "@/lib/useOrganizer";
-import { db } from "@/lib/db";
 import { Coins, Plus, Minus } from "lucide-react";
 import { motion } from "motion/react";
 
@@ -15,15 +14,29 @@ export default function TokensPage() {
   const { organizer, refresh } = useOrganizer();
   const [buyAmount, setBuyAmount] = useState(5);
   const [purchased, setPurchased] = useState(false);
+  const [buying, setBuying] = useState(false);
 
   const total = buyAmount * PRICE_PER_TOKEN;
 
-  const handleBuy = () => {
-    if (!organizer) return;
-    db.updateOrganizerTokens(organizer.id, buyAmount);
-    refresh();
-    setPurchased(true);
-    setTimeout(() => setPurchased(false), 3000);
+  const handleBuy = async () => {
+    if (!organizer || buying) return;
+    setBuying(true);
+
+    try {
+      const res = await fetch("/api/tokens", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ amount: buyAmount }),
+      });
+
+      if (res.ok) {
+        refresh();
+        setPurchased(true);
+        setTimeout(() => setPurchased(false), 3000);
+      }
+    } finally {
+      setBuying(false);
+    }
   };
 
   if (!organizer) return null;
@@ -134,10 +147,11 @@ export default function TokensPage() {
 
           <button
             onClick={handleBuy}
-            className="w-full mt-4 py-3.5 rounded-lg transition-colors duration-150 hover:bg-[#3c58a7]"
+            disabled={buying}
+            className="w-full mt-4 py-3.5 rounded-lg transition-colors duration-150 hover:bg-[#3c58a7] disabled:opacity-50"
             style={{ background: "#2d3895", fontFamily: "var(--font-body)", fontWeight: 500, fontSize: "14px", color: "#fbeed4" }}
           >
-            {purchased ? "✓ Tokens Added!" : "Purchase Tokens"}
+            {purchased ? "✓ Tokens Added!" : buying ? "Processing..." : "Purchase Tokens"}
           </button>
 
           <p className="mt-3 text-center" style={{ fontFamily: "var(--font-body)", fontWeight: 400, fontSize: "12px", color: "#867bba" }}>

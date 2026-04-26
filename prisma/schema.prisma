@@ -5,11 +5,67 @@
 
 generator client {
   provider = "prisma-client"
+  output   = "../src/generated/prisma"
 }
 
 datasource db {
   provider = "postgresql"
 }
+
+// ─── Better Auth Models ───────────────────────────────────────────────────────
+
+model User {
+  id            String    @id
+  name          String
+  email         String    @unique
+  emailVerified Boolean   @default(false)
+  image         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  sessions Session[]
+  accounts Account[]
+}
+
+model Account {
+  id                    String    @id
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accountId             String
+  providerId            String
+  accessToken           String?
+  refreshToken          String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  idToken               String?
+  password              String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+}
+
+model Session {
+  id        String   @id
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  token     String   @unique
+  expiresAt DateTime
+  ipAddress String?
+  userAgent String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Verification {
+  id         String   @id
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+// ─── App-Specific Models ──────────────────────────────────────────────────────
 
 model Organizer {
   id           String   @id @default(uuid())
@@ -17,8 +73,8 @@ model Organizer {
   whatsapp     String?
   // Access code remains available as an optional fallback login method.
   accessCode   String?  @unique // Format: NAVI-XXXX-XXXX
-  // Clerk user ID from Clerk session/user object (e.g. user_xxx)
-  clerkUserId  String?  @unique
+  // Better Auth user ID (links to User model above)
+  authUserId   String?  @unique
   email        String?  @unique
   authProvider AuthProvider @default(ACCESS_CODE)
   lastSignInAt DateTime?
@@ -47,6 +103,8 @@ model Guest {
   event        Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
   name         String
   qrTicket     String   @unique
+  partySize    Int      @default(1) // How many people this QR code is valid for (1 = just the guest)
+  tableNumber  String?  // Table or seat assignment (e.g. "Table 5" or "A-12")
   hasCheckedIn Boolean  @default(false)
   isPlusOne    Boolean  @default(false)
   checkInTime  DateTime?
@@ -57,23 +115,22 @@ model SignInEvent {
   organizerId String
   organizer   Organizer      @relation(fields: [organizerId], references: [id], onDelete: Cascade)
   provider    SignInProvider
-  clerkUserId String?
+  authUserId  String?
   ipAddress   String?
   userAgent   String?
   createdAt   DateTime       @default(now())
 
   @@index([organizerId, createdAt])
-  @@index([clerkUserId, createdAt])
+  @@index([authUserId, createdAt])
 }
 
 enum AuthProvider {
   ACCESS_CODE
-  CLERK
+  BETTER_AUTH
   BOTH
 }
 
 enum SignInProvider {
   ACCESS_CODE
-  CLERK
+  BETTER_AUTH
 }
-

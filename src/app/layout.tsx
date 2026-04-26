@@ -6,7 +6,6 @@ import { Footer } from "./components/Footer";
 import AnimatedBackground from "./components/AnimatedBackground";
 import ClickSpark from "../components/ClickSpark";
 import SplashCursor from "../components/SplashCursor";
-import { ClerkProvider } from "@clerk/nextjs";
 import { ThemeProvider } from "@/components/theme-provider";
 
 const geistSans = Geist({
@@ -30,43 +29,41 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <ClerkProvider>
-      <html
-        lang="en"
-        suppressHydrationWarning
-        className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
-      >
-        <body className="min-h-full flex flex-col">
-          <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
-          <ClickSpark
-            sparkColor="#2d3895"
-            sparkSize={10}
-            sparkRadius={15}
-            sparkCount={8}
-            duration={400}
-          >
-            <AnimatedBackground />
-            {/* <TargetCursor /> */}
+    <html
+      lang="en"
+      suppressHydrationWarning
+      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+    >
+      <body className="min-h-full flex flex-col">
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+        <ClickSpark
+          sparkColor="#2d3895"
+          sparkSize={10}
+          sparkRadius={15}
+          sparkCount={8}
+          duration={400}
+        >
+          <AnimatedBackground />
+          {/* <TargetCursor /> */}
 
-            <SplashCursor
-              DENSITY_DISSIPATION={10}
-              VELOCITY_DISSIPATION={10}
-              PRESSURE={0.15}
-              CURL={3}
-              SPLAT_RADIUS={0.1}
-              SPLAT_FORCE={3000}
-              COLOR_UPDATE_SPEED={10}
-              SHADING
-              RAINBOW_MODE={false}
-              COLOR="#2d3895"
-            />
-            <Navbar />
-            {children}
-            <Footer />
-          </ClickSpark>
-          </ThemeProvider>
-        </body>
-      </html>
-    </ClerkProvider>
+          <SplashCursor
+            DENSITY_DISSIPATION={10}
+            VELOCITY_DISSIPATION={10}
+            PRESSURE={0.15}
+            CURL={3}
+            SPLAT_RADIUS={0.1}
+            SPLAT_FORCE={3000}
+            COLOR_UPDATE_SPEED={10}
+            SHADING
+            RAINBOW_MODE={false}
+            COLOR="#2d3895"
+          />
+          <Navbar />
+          {children}
+          <Footer />
+        </ClickSpark>
+        </ThemeProvider>
+      </body>
+    </html>
   );
 }

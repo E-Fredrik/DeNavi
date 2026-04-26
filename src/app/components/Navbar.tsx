@@ -4,7 +4,7 @@ import * as React from "react";
 import Link from "next/link";
 import { motion, useMotionValueEvent, useScroll } from "motion/react";
 import { Menu, Navigation } from "lucide-react";
-import { SignInButton, SignOutButton, SignUpButton, UserButton, useAuth } from "@clerk/nextjs";
+import { useSession, signOut } from "@/lib/auth-client";
 import { cn } from "@/lib/utils";
 import { ModeToggle } from "@/components/mode-toggle";
 
@@ -83,7 +83,8 @@ const collapsedIconVariants = {
 
 export function Navbar() {
   const [isExpanded, setExpanded] = React.useState(true);
-  const { isSignedIn } = useAuth();
+  const { data: session } = useSession();
+  const isSignedIn = !!session?.user;
 
   const { scrollY } = useScroll();
   const lastScrollY = React.useRef(0);
@@ -111,6 +112,17 @@ export function Navbar() {
       e.preventDefault();
       setExpanded(true);
     }
+  };
+
+  const handleSignOut = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    await signOut({
+      fetchOptions: {
+        onSuccess: () => {
+          window.location.href = "/";
+        },
+      },
+    });
   };
 
   return (
@@ -163,38 +175,31 @@ export function Navbar() {
               >
                 Dashboard
               </Link>
-              <SignOutButton>
-                <button
-                  type="button"
-                  onClick={(e) => e.stopPropagation()}
-                  className="text-sm font-medium text-foreground border border-border bg-transparent px-3 py-1.5 rounded-md hover:bg-muted transition-colors duration-200"
-                >
-                  Sign Out
-                </button>
-              </SignOutButton>
-              <UserButton />
+              <button
+                type="button"
+                onClick={handleSignOut}
+                className="text-sm font-medium text-foreground border border-border bg-transparent px-3 py-1.5 rounded-md hover:bg-muted transition-colors duration-200"
+              >
+                Sign Out
+              </button>
             </>
           ) : (
             <>
               <ModeToggle />
-              <SignInButton mode="modal">
-                <button
-                  type="button"
-                  onClick={(e) => e.stopPropagation()}
-                  className="text-sm font-medium text-primary-foreground bg-primary px-3 py-1.5 rounded-md hover:bg-primary/90 transition-colors duration-200"
-                >
-                  Sign In
-                </button>
-              </SignInButton>
-              <SignUpButton mode="modal">
-                <button
-                  type="button"
-                  onClick={(e) => e.stopPropagation()}
-                  className="text-sm font-medium text-foreground border border-border bg-transparent px-3 py-1.5 rounded-md hover:bg-muted transition-colors duration-200"
-                >
-                  Sign Up
-                </button>
-              </SignUpButton>
+              <Link
+                href="/sign-in"
+                onClick={(e) => e.stopPropagation()}
+                className="text-sm font-medium text-primary-foreground bg-primary px-3 py-1.5 rounded-md hover:bg-primary/90 transition-colors duration-200"
+              >
+                Sign In
+              </Link>
+              <Link
+                href="/sign-up"
+                onClick={(e) => e.stopPropagation()}
+                className="text-sm font-medium text-foreground border border-border bg-transparent px-3 py-1.5 rounded-md hover:bg-muted transition-colors duration-200"
+              >
+                Sign Up
+              </Link>
             </>
           )}
         </motion.div>

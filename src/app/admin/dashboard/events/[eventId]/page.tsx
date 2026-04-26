@@ -1,84 +1,117 @@
 "use client";
 
-import { useMemo, useState, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, QrCode, UserPlus, Search, Check, X, Download } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
-import { db } from "../../../../../lib/db";
 
 type Mode = "scan" | "search";
 
+interface Guest {
+  id: string;
+  eventId: string;
+  name: string;
+  qrTicket: string;
+  hasCheckedIn: boolean;
+  isPlusOne: boolean;
+  checkInTime: string | null;
+}
+
+interface EventWithGuests {
+  id: string;
+  organizerId: string;
+  name: string;
+  date: string;
+  tokenCost: number;
+  guests: Guest[];
+}
+
 export default function EventDetailPage() {
   const { eventId } = useParams<{ eventId: string }>();
-  // We handle event ID safely in client side
+  const [event, setEvent] = useState<EventWithGuests | null>(null);
+  const [loading, setLoading] = useState(true);
   const [mode, setMode] = useState<Mode>("search");
   const [query, setQuery] = useState("");
   const [qrInput, setQrInput] = useState("");
   const [toast, setToast] = useState<{ msg: string; ok: boolean } | null>(null);
   const [showAddGuest, setShowAddGuest] = useState(false);
   const [newGuestName, setNewGuestName] = useState("");
-  const [tick, setTick] = useState(0); // force re-render
-  const [mounted, setMounted] = useState(false);
+
+  const fetchEvent = useCallback(async () => {
+    if (!eventId) return;
+    try {
+      const res = await fetch(`/api/events/${eventId}`);
+      if (res.ok) {
+        setEvent(await res.json());
+      }
+    } catch { /* ignore */ } finally {
+      setLoading(false);
+    }
+  }, [eventId]);
 
   useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  const event = useMemo(() => {
-    if (!mounted || !eventId) return null;
-    return db.getEvent(eventId);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [eventId, tick, mounted]);
-
-  const filtered = useMemo(() => {
-    if (!event) return [];
-    if (!query.trim()) return event.guests;
-    return event.guests.filter((g) =>
-      g.name.toLowerCase().includes(query.toLowerCase())
-    );
-  }, [event, query, tick]);
-
-  if (!mounted) return null;
+    fetchEvent();
+  }, [fetchEvent]);
 
   const showToast = (msg: string, ok: boolean) => {
     setToast({ msg, ok });
     setTimeout(() => setToast(null), 2500);
   };
 
-  const handleCheckIn = (guestId: string) => {
-    const result = db.checkInGuest(guestId);
-    if (result) {
-      showToast(`${result.name} checked in`, true);
-      setTick((t) => t + 1);
+  const handleCheckIn = async (guestId: string) => {
+    const res = await fetch(`/api/events/${eventId}/guests/${guestId}/check-in`, {
+      method: "POST",
+    });
+    if (res.ok) {
+      const guest = await res.json();
+      showToast(`${guest.name} checked in`, true);
+      await fetchEvent();
     } else {
-      showToast("Already checked in or not found", false);
+      const err = await res.json();
+      showToast(err.error || "Check-in failed", false);
     }
   };
 
-  const handleQrScan = () => {
-    if (!qrInput.trim()) return;
-    const guest = db.getGuestByQR(qrInput.trim().toUpperCase());
+  const handleQrScan = async () => {
+    if (!qrInput.trim() || !event) return;
+    const code = qrInput.trim().toUpperCase();
+    const guest = event.guests.find((g) => g.qrTicket === code);
+
     if (!guest) {
       showToast("QR code not found", false);
     } else if (guest.hasCheckedIn) {
       showToast(`${guest.name} already checked in`, false);
     } else {
-      const result = db.checkInGuest(guest.id);
-      if (result) showToast(`${result.name} checked in via QR`, true);
-      setTick((t) => t + 1);
+      await handleCheckIn(guest.id);
     }
     setQrInput("");
   };
 
-  const handleAddGuest = () => {
+  const handleAddGuest = async () => {
     if (!eventId || !newGuestName.trim()) return;
-    const guest = db.addGuest({ eventId: eventId as string, name: newGuestName.trim(), isPlusOne: true });
-    showToast(`${guest.name} added as plus-one`, true);
-    setNewGuestName("");
-    setShowAddGuest(false);
-    setTick((t) => t + 1);
+    const res = await fetch(`/api/events/${eventId}/guests`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name: newGuestName.trim(), isPlusOne: true }),
+    });
+
+    if (res.ok) {
+      const guest = await res.json();
+      showToast(`${guest.name} added as plus-one`, true);
+      setNewGuestName("");
+      setShowAddGuest(false);
+      await fetchEvent();
+    }
   };
+
+  if (loading) {
+    return (
+      <div className="max-w-5xl px-6 lg:px-10 py-12">
+        <p style={{ fontFamily: "var(--font-body)", fontSize: "14px", color: "#3c58a7" }}>Loading...</p>
+      </div>
+    );
+  }
 
   if (!event) {
     return (
@@ -91,6 +124,10 @@ export default function EventDetailPage() {
   const checkedIn = event.guests.filter((g) => g.hasCheckedIn).length;
   const total = event.guests.length;
   const plusOnes = event.guests.filter((g) => g.isPlusOne).length;
+
+  const filtered = query.trim()
+    ? event.guests.filter((g) => g.name.toLowerCase().includes(query.toLowerCase()))
+    : event.guests;
 
   return (
     <div className="max-w-5xl px-6 lg:px-10 py-8 lg:py-12 relative">
@@ -210,7 +247,7 @@ export default function EventDetailPage() {
                 value={qrInput}
                 onChange={(e) => setQrInput(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && handleQrScan()}
-                placeholder="Enter or scan QR ticket code (e.g. QR-BH001AAA)"
+                placeholder="Enter or scan QR ticket code"
                 className="flex-1 px-4 py-3 rounded-lg outline-none focus:border-[#2d3895] transition-colors"
                 style={{ background: "#fbeed4", border: "1px solid #867bba", fontFamily: "var(--font-body)", fontSize: "14px", color: "#0c123b", letterSpacing: "0.03em" }}
               />
@@ -316,7 +353,7 @@ export default function EventDetailPage() {
           {filtered.length === 0 && (
             <div className="px-5 py-8 text-center" style={{ background: "#fbeed4" }}>
               <span style={{ fontFamily: "var(--font-body)", fontWeight: 400, fontSize: "14px", color: "#3c58a7" }}>
-                No guests found.
+                {event.guests.length === 0 ? "No guests yet. Add your first guest!" : "No guests found."}
               </span>
             </div>
           )}
