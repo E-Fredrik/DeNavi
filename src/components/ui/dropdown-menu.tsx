@@ -62,8 +62,8 @@ function DropdownMenuTrigger({
   const { open, setOpen } = useDropdownMenuContext();
 
   if (asChild && React.isValidElement(children)) {
-    return React.cloneElement(children, {
-      ...(children.props as object),
+    return React.cloneElement(children as React.ReactElement<any>, {
+      ...(children.props as any),
       "aria-expanded": open,
       "aria-haspopup": "menu",
       onClick: (event: React.MouseEvent) => {
