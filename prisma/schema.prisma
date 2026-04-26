@@ -106,6 +106,7 @@ model Guest {
   partySize    Int      @default(1) // How many people this QR code is valid for (1 = just the guest)
   tableNumber  String?  // Table or seat assignment (e.g. "Table 5" or "A-12")
   hasCheckedIn Boolean  @default(false)
+  actualAttendees Int?  // How many people actually showed up
   isPlusOne    Boolean  @default(false)
   checkInTime  DateTime?
 }

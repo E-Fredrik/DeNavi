@@ -4,7 +4,7 @@ import { prisma } from "@/lib/prisma";
 
 // POST /api/events/[eventId]/guests/[guestId]/check-in
 export async function POST(
-  _request: NextRequest,
+  request: NextRequest,
   { params }: { params: Promise<{ eventId: string; guestId: string }> }
 ) {
   const session = await getSession();
@@ -43,11 +43,22 @@ export async function POST(
     return NextResponse.json({ error: "Already checked in" }, { status: 400 });
   }
 
+  let actualAttendees = guest.partySize;
+  try {
+    const body = await request.json();
+    if (body.actualAttendees !== undefined) {
+      actualAttendees = Number(body.actualAttendees);
+    }
+  } catch {
+    // If no body provided, fallback to partySize
+  }
+
   const updated = await prisma.guest.update({
     where: { id: guestId },
     data: {
       hasCheckedIn: true,
       checkInTime: new Date(),
+      actualAttendees,
     },
   });
 

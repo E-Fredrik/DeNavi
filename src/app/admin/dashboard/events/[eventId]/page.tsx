@@ -45,6 +45,8 @@ export default function EventDetailPage() {
   const [editingGuest, setEditingGuest] = useState<Guest | null>(null);
   const [editTable, setEditTable] = useState("");
   const [editPartySize, setEditPartySize] = useState(1);
+  const [checkingInGuest, setCheckingInGuest] = useState<Guest | null>(null);
+  const [checkInAttendees, setCheckInAttendees] = useState(1);
 
   const fetchEvent = useCallback(async () => {
     if (!eventId) return;
@@ -61,10 +63,30 @@ export default function EventDetailPage() {
     setTimeout(() => setToast(null), 2500);
   };
 
-  const handleCheckIn = async (guestId: string) => {
-    const res = await fetch(`/api/events/${eventId}/guests/${guestId}/check-in`, { method: "POST" });
-    if (res.ok) { const g = await res.json(); showToast(`${g.name} checked in`, true); await fetchEvent(); }
-    else { const e = await res.json(); showToast(e.error || "Failed", false); }
+  const confirmCheckIn = async (guestId: string, actualAttendees: number) => {
+    const res = await fetch(`/api/events/${eventId}/guests/${guestId}/check-in`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ actualAttendees }),
+    });
+    if (res.ok) {
+      const g = await res.json();
+      showToast(`${g.name} checked in with ${g.actualAttendees} people`, true);
+      setCheckingInGuest(null);
+      await fetchEvent();
+    } else {
+      const e = await res.json();
+      showToast(e.error || "Failed", false);
+    }
+  };
+
+  const handleCheckIn = (guest: Guest) => {
+    if (guest.partySize > 1) {
+      setCheckingInGuest(guest);
+      setCheckInAttendees(guest.partySize);
+    } else {
+      confirmCheckIn(guest.id, 1);
+    }
   };
 
   const handleQrScan = async () => {
@@ -73,7 +95,7 @@ export default function EventDetailPage() {
     const guest = event.guests.find((g) => g.qrTicket === code);
     if (!guest) showToast("QR code not found", false);
     else if (guest.hasCheckedIn) showToast(`${guest.name} already checked in`, false);
-    else await handleCheckIn(guest.id);
+    else handleCheckIn(guest);
     setQrInput("");
   };
 
@@ -199,7 +221,7 @@ export default function EventDetailPage() {
               const guest = event.guests.find((g) => g.qrTicket === code.toUpperCase());
               if (!guest) showToast(`QR not found: ${code}`, false);
               else if (guest.hasCheckedIn) showToast(`${guest.name} already checked in`, false);
-              else handleCheckIn(guest.id);
+              else handleCheckIn(guest);
             }} />
 
             {/* Manual input fallback */}
@@ -267,7 +289,7 @@ export default function EventDetailPage() {
                     <span className="text-[#3c58a7] dark:text-[#b3c2ff]" style={{ fontFamily: "var(--font-body)", fontWeight: 500, fontSize: "10px" }}>IN</span>
                   </div>
                 ) : (
-                  <button onClick={() => handleCheckIn(guest.id)}
+                  <button onClick={() => handleCheckIn(guest)}
                     className="px-3 py-1.5 rounded-lg hover:bg-[#3c58a7] transition-colors"
                     style={{ background: "#2d3895", fontFamily: "var(--font-body)", fontWeight: 500, fontSize: "12px", color: "#fbeed4" }}>Check In</button>
                 )}
@@ -350,6 +372,37 @@ export default function EventDetailPage() {
               <button onClick={handleUpdateGuest}
                 className="w-full py-2.5 rounded-lg hover:bg-[#3c58a7] transition-colors"
                 style={{ background: "#2d3895", fontFamily: "var(--font-body)", fontWeight: 500, fontSize: "13px", color: "#fbeed4" }}>Save Changes</button>
+            </div>
+          </motion.div>
+        </div>
+      )}
+
+      {/* Check-in attendees modal */}
+      {checkingInGuest && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background: "rgba(12,18,59,0.45)" }}>
+          <motion.div initial={{ opacity: 0, scale: 0.97 }} animate={{ opacity: 1, scale: 1 }}
+            className="w-full max-w-sm rounded-xl p-6 bg-[#fbeed4] dark:bg-[#111a34] border border-[#867bba] dark:border-[#2a2660]">
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-[#0c123b] dark:text-[#e8eeff]" style={{ fontFamily: "var(--font-body)", fontWeight: 600, fontSize: "15px" }}>
+                Check in: {checkingInGuest.name}
+              </h3>
+              <button onClick={() => setCheckingInGuest(null)} className="p-1 hover:opacity-70"><X className="w-4 h-4 text-[#3c58a7] dark:text-[#b3c2ff]" strokeWidth={1.5} /></button>
+            </div>
+            <p className="text-[#3c58a7] dark:text-[#b3c2ff] mb-5" style={{ fontFamily: "var(--font-body)", fontWeight: 400, fontSize: "13px" }}>
+              This invitation is valid for up to <strong>{checkingInGuest.partySize} people</strong>. How many are checking in right now?
+            </p>
+            <div className="flex flex-col gap-4">
+              <div>
+                <label className="block mb-1.5 text-[#3c58a7] dark:text-[#b3c2ff]" style={{ fontFamily: "var(--font-body)", fontWeight: 500, fontSize: "12px", letterSpacing: "0.04em", textTransform: "uppercase" }}>Actual Attendees</label>
+                <input type="number" value={checkInAttendees} onChange={(e) => setCheckInAttendees(Math.max(1, Math.min(checkingInGuest.partySize, Number(e.target.value))))} min={1} max={checkingInGuest.partySize}
+                  className="w-full px-3.5 py-2.5 rounded-lg outline-none bg-[#f1e5ed] dark:bg-[#18203c] border border-[#867bba] dark:border-[#2a2660] text-[#0c123b] dark:text-[#e8eeff]"
+                  style={{ fontFamily: "var(--font-body)", fontSize: "14px" }} />
+              </div>
+              <button onClick={() => confirmCheckIn(checkingInGuest.id, checkInAttendees)}
+                className="w-full py-2.5 rounded-lg hover:bg-[#3c58a7] transition-colors mt-2"
+                style={{ background: "#2d3895", fontFamily: "var(--font-body)", fontWeight: 500, fontSize: "13px", color: "#fbeed4" }}>
+                Confirm Check In
+              </button>
             </div>
           </motion.div>
         </div>
