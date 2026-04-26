@@ -1,76 +1,210 @@
 "use client";
-import { useState, useEffect } from "react";
+
+import * as React from "react";
 import Link from "next/link";
-import TargetCursor from "@/components/TargetCursor";
-import { Target } from "lucide-react";
+import { motion, useMotionValueEvent, useScroll } from "motion/react";
+import { Menu, Navigation } from "lucide-react";
+import { SignInButton, SignOutButton, SignUpButton, UserButton, useAuth } from "@clerk/nextjs";
+import { cn } from "@/lib/utils";
+
+const navItems = [
+  { name: "Home", href: "#" },
+  { name: "About", href: "#" },
+  { name: "Services", href: "#" },
+  { name: "Contact", href: "#" },
+];
+
+const EXPAND_SCROLL_THRESHOLD = 80;
+
+const containerVariants = {
+  expanded: {
+    y: 0,
+    opacity: 1,
+    width: "auto",
+    transition: {
+      y: { type: "spring", damping: 18, stiffness: 250 },
+      opacity: { duration: 0.3 },
+      type: "spring",
+      damping: 20,
+      stiffness: 300,
+      staggerChildren: 0.07,
+      delayChildren: 0.2,
+    },
+  },
+  collapsed: {
+    y: 0,
+    opacity: 1,
+    width: "3rem",
+    transition: {
+      type: "spring",
+      damping: 20,
+      stiffness: 300,
+      when: "afterChildren",
+      staggerChildren: 0.05,
+      staggerDirection: -1,
+    },
+  },
+} as const;
+
+const logoVariants = {
+  expanded: {
+    opacity: 1,
+    x: 0,
+    rotate: 0,
+    transition: { type: "spring", damping: 15 },
+  },
+  collapsed: { opacity: 0, x: -25, rotate: -180, transition: { duration: 0.3 } },
+} as const;
+
+const itemVariants = {
+  expanded: {
+    opacity: 1,
+    x: 0,
+    scale: 1,
+    transition: { type: "spring", damping: 15 },
+  },
+  collapsed: { opacity: 0, x: -20, scale: 0.95, transition: { duration: 0.2 } },
+} as const;
+
+const collapsedIconVariants = {
+  expanded: { opacity: 0, scale: 0.8, transition: { duration: 0.2 } },
+  collapsed: {
+    opacity: 1,
+    scale: 1,
+    transition: {
+      type: "spring",
+      damping: 15,
+      stiffness: 300,
+      delay: 0.15,
+    },
+  },
+} as const;
 
 export function Navbar() {
-  const [scrolled, setScrolled] = useState(false);
+  const [isExpanded, setExpanded] = React.useState(true);
+  const { isSignedIn } = useAuth();
 
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 50);
-    window.addEventListener("scroll", onScroll);
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+  const { scrollY } = useScroll();
+  const lastScrollY = React.useRef(0);
+  const scrollPositionOnCollapse = React.useRef(0);
+
+  useMotionValueEvent(scrollY, "change", (latest) => {
+    const previous = lastScrollY.current;
+
+    if (isExpanded && latest > previous && latest > 150) {
+      setExpanded(false);
+      scrollPositionOnCollapse.current = latest;
+    } else if (
+      !isExpanded &&
+      latest < previous &&
+      scrollPositionOnCollapse.current - latest > EXPAND_SCROLL_THRESHOLD
+    ) {
+      setExpanded(true);
+    }
+
+    lastScrollY.current = latest;
+  });
+
+  const handleNavClick = (e: React.MouseEvent) => {
+    if (!isExpanded) {
+      e.preventDefault();
+      setExpanded(true);
+    }
+  };
 
   return (
-    <nav
-      className={`fixed top-0 left-0 right-0 z-50 transition-colors duration-300 ${
-        scrolled ? "bg-[#f8edd6] border-b border-[#867bba]" : "bg-transparent "
-      }`}
-    >
-      <div className="max-w-[1280px] mx-auto px-6 lg:px-10 h-14 flex items-center justify-between">
-        <Link href="/">
-          <span
-            style={{
-              fontFamily: "var(--font-body)",
-              fontWeight: 600,
-              fontSize: "17px",
-            color: "#0c123b",
-            letterSpacing: "-0.02em",
-          }}
+    <div className="fixed top-6 right-6 z-50">
+      <motion.nav
+        initial={{ y: -80, opacity: 0 }}
+        animate={isExpanded ? "expanded" : "collapsed"}
+        variants={containerVariants}
+        whileHover={isExpanded ? {} : { scale: 1.1 }}
+        whileTap={isExpanded ? {} : { scale: 0.95 }}
+        onClick={handleNavClick}
+        className={cn(
+          "flex items-center overflow-hidden rounded-full border bg-background/80 shadow-lg backdrop-blur-sm h-12",
+          !isExpanded && "cursor-pointer justify-center"
+        )}
+      >
+        <motion.div
+          variants={logoVariants}
+          className="shrink-0 flex items-center font-semibold pl-4 pr-2"
         >
-          Navi
-        </span>
-        </Link>
-        <div className="hidden md:flex items-center gap-10 ">
-          {["Features", "Pricing", "Docs"].map((item) => (
-            <a
-              key={item}
-              href={`#${item.toLowerCase()}`}
-              style={{
-                fontFamily: "var(--font-body)",
-                fontWeight: 400,
-                fontSize: "13px",
-                color: "#3c58a7",
-                letterSpacing: "0",
-              }}
-              className="hover:text-[#2d3895] transition-colors duration-200 cursor-target"
+          <Navigation className="h-6 w-6" />
+        </motion.div>
+
+        <motion.div
+          className={cn(
+            "flex items-center gap-1 sm:gap-4 pr-4",
+            !isExpanded && "pointer-events-none"
+          )}
+        >
+          {navItems.map((item) => (
+            <motion.a
+              key={item.name}
+              href={item.href}
+              variants={itemVariants}
+              onClick={(e) => e.stopPropagation()}
+              className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors px-2 py-1"
             >
-              {item}
-            </a>
+              {item.name}
+            </motion.a>
           ))}
+
+          {isSignedIn ? (
+            <>
+              <Link
+                href="/admin/dashboard"
+                onClick={(e) => e.stopPropagation()}
+                className="text-sm font-medium text-[#fbeed4] bg-[#2d3895] px-3 py-1.5 rounded-md hover:bg-[#3c58a7] transition-colors duration-200"
+              >
+                Dashboard
+              </Link>
+              <SignOutButton>
+                <button
+                  type="button"
+                  onClick={(e) => e.stopPropagation()}
+                  className="text-sm font-medium text-[#2d3895] border border-[#2d3895] bg-transparent px-3 py-1.5 rounded-md hover:bg-[#f1e5ed] transition-colors duration-200"
+                >
+                  Sign Out
+                </button>
+              </SignOutButton>
+              <UserButton />
+            </>
+          ) : (
+            <>
+              <SignInButton mode="modal">
+                <button
+                  type="button"
+                  onClick={(e) => e.stopPropagation()}
+                  className="text-sm font-medium text-[#fbeed4] bg-[#2d3895] px-3 py-1.5 rounded-md hover:bg-[#3c58a7] transition-colors duration-200"
+                >
+                  Sign In
+                </button>
+              </SignInButton>
+              <SignUpButton mode="modal">
+                <button
+                  type="button"
+                  onClick={(e) => e.stopPropagation()}
+                  className="text-sm font-medium text-[#2d3895] border border-[#2d3895] bg-transparent px-3 py-1.5 rounded-md hover:bg-[#f1e5ed] transition-colors duration-200"
+                >
+                  Sign Up
+                </button>
+              </SignUpButton>
+            </>
+          )}
+        </motion.div>
+
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+          <motion.div
+            variants={collapsedIconVariants}
+            animate={isExpanded ? "expanded" : "collapsed"}
+          >
+            <Menu className="h-6 w-6" />
+          </motion.div>
         </div>
-        {/* <Link
-          href="/login"
-          style={{
-            fontFamily: "var(--font-body)",
-            fontWeight: 500,
-            fontSize: "13px",
-            color: "#fbeed4",
-            background: "#2d3895",
-            padding: "7px 20px",
-            borderRadius: "6px",
-            textDecoration: "none",
-          }}
-          className="hover:bg-[#3c58a7] transition-colors duration-200"
-        >
-          Get Started
-        </Link> */}
-        <Link href = "/login" className="text-sm font-medium text-[#fbeed4] bg-[#2d3895] px-4 py-2 rounded-md cursor-target hover:bg-[#3c58a7] transition-colors duration-200">
-          Get Started
-        </Link>
-      </div>
-    </nav>
+      </motion.nav>
+    </div>
   );
 }
+

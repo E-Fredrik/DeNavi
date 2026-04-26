@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
-import { useAuth } from "../../../lib/auth";
+import { useOrganizer } from "@/lib/useOrganizer";
 import { LayoutDashboard, CalendarDays, Coins, Menu, X } from "lucide-react";
 import Link from "next/link";
 
@@ -14,10 +14,10 @@ const MOBILE_NAV = [
 
 export default function DashboardLayout({
   children,
-}: {
+}: Readonly<{
   children: React.ReactNode;
-}) {
-  const { organizer } = useAuth();
+}>) {
+  const { organizer, isLoaded } = useOrganizer();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [hydrated, setHydrated] = useState(false);
   const router = useRouter();
@@ -29,13 +29,13 @@ export default function DashboardLayout({
   }, []);
 
   useEffect(() => {
-    if (!hydrated) return;
+    if (!hydrated || !isLoaded) return;
     if (!organizer) {
-      router.replace("/login");
+      router.replace("/sign-in");
     }
-  }, [organizer, hydrated, router]);
+  }, [organizer, hydrated, isLoaded, router]);
 
-  if (!hydrated) {
+  if (!hydrated || !isLoaded) {
     return <div className="min-h-screen" style={{ background: "#f8edd6" }} />;
   }
 

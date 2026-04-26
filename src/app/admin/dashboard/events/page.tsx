@@ -1,13 +1,13 @@
 "use client";
 import { useState, useMemo } from "react";
 import Link from "next/link";
-import { useAuth } from "../../../../lib/auth";
-import { db } from "../../../../lib/db";
+import { useOrganizer } from "@/lib/useOrganizer";
+import { db } from "@/lib/db";
 import { Plus, CalendarDays, Users, ArrowRight, X } from "lucide-react";
 import { motion } from "motion/react";
 
 export default function EventsPage() {
-  const { organizer, refresh } = useAuth();
+  const { organizer, refresh } = useOrganizer();
   const [showCreate, setShowCreate] = useState(false);
   const [newName, setNewName] = useState("");
   const [newDate, setNewDate] = useState("");

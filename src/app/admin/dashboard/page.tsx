@@ -1,13 +1,13 @@
 "use client";
 import { useMemo } from "react";
 import Link from "next/link";
-import { useAuth } from "../../../lib/auth";
+import { useOrganizer } from "@/lib/useOrganizer";
 import { db } from "../../../lib/db";
 import { Coins, Users, CalendarDays, ArrowUpRight, QrCode } from "lucide-react";
 import { motion } from "motion/react";
 
 export default function DashboardOverview() {
-  const { organizer } = useAuth();
+  const { organizer } = useOrganizer();
 
   const events = useMemo(() => {
     if (!organizer) return [];
@@ -137,7 +137,7 @@ export default function DashboardOverview() {
                           fontFamily: "var(--font-body)",
                           fontWeight: 500,
                           fontSize: "11px",
-                          color: isUpcoming ? "#3c58a7" : "#3c58a7",
+                          color: "#3c58a7",
                           background: isUpcoming ? "#f1e5ed" : "rgba(60,88,167,0.12)",
                           border: isUpcoming ? "1px solid #867bba" : "1px solid rgba(60,88,167,0.18)",
                         }}

@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
-import { useAuth } from "../../../../lib/auth";
-import { db } from "../../../../lib/db";
+import { useOrganizer } from "@/lib/useOrganizer";
+import { db } from "@/lib/db";
 import { Coins, Plus, Minus } from "lucide-react";
 import { motion } from "motion/react";
 
@@ -12,7 +12,7 @@ function formatIDR(val: number): string {
 }
 
 export default function TokensPage() {
-  const { organizer, refresh } = useAuth();
+  const { organizer, refresh } = useOrganizer();
   const [buyAmount, setBuyAmount] = useState(5);
   const [purchased, setPurchased] = useState(false);
 

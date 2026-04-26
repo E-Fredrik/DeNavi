@@ -14,10 +14,18 @@ datasource db {
 model Organizer {
   id           String   @id @default(uuid())
   name         String
-  whatsapp     String?  
-  accessCode   String   @unique // Format: NAVI-XXXX-XXXX
-  tokenBalance Int      @default(0) 
+  whatsapp     String?
+  // Access code remains available as an optional fallback login method.
+  accessCode   String?  @unique // Format: NAVI-XXXX-XXXX
+  // Clerk user ID from Clerk session/user object (e.g. user_xxx)
+  clerkUserId  String?  @unique
+  email        String?  @unique
+  authProvider AuthProvider @default(ACCESS_CODE)
+  lastSignInAt DateTime?
+  signInCount  Int      @default(0)
+  tokenBalance Int      @default(0)
   events       Event[]
+  signInEvents SignInEvent[]
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 }
@@ -25,10 +33,10 @@ model Organizer {
 model Event {
   id          String   @id @default(uuid())
   organizerId String
-  organizer   Organizer @relation(fields: [organizerId], references: [id])
+  organizer   Organizer @relation(fields: [organizerId], references: [id], onDelete: Cascade)
   name        String
   date        DateTime
-  tokenCost   Int      
+  tokenCost   Int
   guests      Guest[]
   createdAt   DateTime @default(now())
 }
@@ -36,11 +44,36 @@ model Event {
 model Guest {
   id           String   @id @default(uuid())
   eventId      String
-  event        Event    @relation(fields: [eventId], references: [id])
+  event        Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
   name         String
-  qrTicket     String   @unique 
+  qrTicket     String   @unique
   hasCheckedIn Boolean  @default(false)
   isPlusOne    Boolean  @default(false)
   checkInTime  DateTime?
+}
+
+model SignInEvent {
+  id          String         @id @default(uuid())
+  organizerId String
+  organizer   Organizer      @relation(fields: [organizerId], references: [id], onDelete: Cascade)
+  provider    SignInProvider
+  clerkUserId String?
+  ipAddress   String?
+  userAgent   String?
+  createdAt   DateTime       @default(now())
+
+  @@index([organizerId, createdAt])
+  @@index([clerkUserId, createdAt])
+}
+
+enum AuthProvider {
+  ACCESS_CODE
+  CLERK
+  BOTH
+}
+
+enum SignInProvider {
+  ACCESS_CODE
+  CLERK
 }
 
