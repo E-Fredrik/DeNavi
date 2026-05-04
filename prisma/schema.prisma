@@ -82,6 +82,8 @@ model Organizer {
   tokenBalance Int      @default(0)
   events       Event[]
   signInEvents SignInEvent[]
+  transactions Transaction[]
+  globalCheckInPassword String?
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 }
@@ -93,8 +95,11 @@ model Event {
   name        String
   date        DateTime
   tokenCost   Int
-  guests      Guest[]
-  createdAt   DateTime @default(now())
+  checkInPassword String?
+  emailTemplate   String? @db.Text
+  guests          Guest[]
+  eventAddons     EventAddon[]
+  createdAt       DateTime @default(now())
 }
 
 model Guest {
@@ -109,6 +114,7 @@ model Guest {
   actualAttendees Int?  // How many people actually showed up
   isPlusOne    Boolean  @default(false)
   checkInTime  DateTime?
+  angpaos      Angpao[]
 }
 
 model SignInEvent {
@@ -134,4 +140,45 @@ enum AuthProvider {
 enum SignInProvider {
   ACCESS_CODE
   BETTER_AUTH
+}
+
+model Transaction {
+  id           String   @id @default(uuid())
+  organizerId  String
+  organizer    Organizer @relation(fields: [organizerId], references: [id], onDelete: Cascade)
+  amountTokens Int
+  amountRp     Int
+  status       String   // "PENDING", "SUCCESS", "FAILED"
+  midtransId   String?
+  paymentType  String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Angpao {
+  id        String   @id @default(uuid())
+  guestId   String
+  guest     Guest    @relation(fields: [guestId], references: [id], onDelete: Cascade)
+  amount    Int?
+  gift      String?  // e.g. "Toaster" if it's an item instead of money
+  fromName  String?  // Who gave it
+  createdAt DateTime @default(now())
+}
+
+model Addon {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  tokenCost   Int
+  events      EventAddon[]
+  createdAt   DateTime @default(now())
+}
+
+model EventAddon {
+  id      String @id @default(uuid())
+  eventId String
+  addonId String
+  event   Event  @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  addon   Addon  @relation(fields: [addonId], references: [id], onDelete: Cascade)
+  @@unique([eventId, addonId])
 }

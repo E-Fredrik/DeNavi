@@ -31,3 +31,32 @@ export async function GET() {
 
   return NextResponse.json(organizer);
 }
+
+// PATCH /api/organizer — update organizer profile
+export async function PATCH(request: Request) {
+  const session = await getSession();
+  if (!session?.user) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  let organizer = await prisma.organizer.findUnique({
+    where: { authUserId: session.user.id },
+  });
+
+  if (!organizer) {
+    return NextResponse.json({ error: "Organizer not found" }, { status: 404 });
+  }
+
+  const body = await request.json();
+  const { whatsapp, globalCheckInPassword } = body;
+
+  organizer = await prisma.organizer.update({
+    where: { id: organizer.id },
+    data: {
+      ...(whatsapp !== undefined && { whatsapp }),
+      ...(globalCheckInPassword !== undefined && { globalCheckInPassword }),
+    },
+  });
+
+  return NextResponse.json(organizer);
+}

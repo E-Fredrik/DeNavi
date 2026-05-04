@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { getSession } from "@/lib/auth-server";
 import { prisma } from "@/lib/prisma";
 
+export const dynamic = "force-dynamic";
+
 // GET /api/events — list events for the current organizer
 export async function GET() {
   const session = await getSession();
@@ -21,6 +23,7 @@ export async function GET() {
     where: { organizerId: organizer.id },
     include: {
       guests: true,
+      eventAddons: true,
     },
     orderBy: { date: "desc" },
   });
@@ -44,13 +47,24 @@ export async function POST(request: NextRequest) {
   }
 
   const body = await request.json();
-  const { name, date, expectedGuests } = body;
+  const { name, date, expectedGuests, addonIds } = body;
 
   if (!name || !date) {
     return NextResponse.json({ error: "Name and date are required" }, { status: 400 });
   }
 
-  const tokenCost = Math.max(1, Math.ceil((expectedGuests ?? 100) / 50));
+  // Base token cost based on expected guests
+  let tokenCost = Math.max(1, Math.ceil((expectedGuests ?? 100) / 50));
+
+  // Add-ons cost calculation
+  let selectedAddons: any[] = [];
+  if (addonIds && Array.isArray(addonIds) && addonIds.length > 0) {
+    selectedAddons = await prisma.addon.findMany({
+      where: { id: { in: addonIds } }
+    });
+    const addonCost = selectedAddons.reduce((acc, curr) => acc + curr.tokenCost, 0);
+    tokenCost += addonCost;
+  }
 
   if (organizer.tokenBalance < tokenCost) {
     return NextResponse.json({ error: "Insufficient tokens" }, { status: 400 });
@@ -64,8 +78,13 @@ export async function POST(request: NextRequest) {
         name,
         date: new Date(date),
         tokenCost,
+        eventAddons: {
+          create: selectedAddons.map(addon => ({
+            addonId: addon.id
+          }))
+        }
       },
-      include: { guests: true },
+      include: { guests: true, eventAddons: true },
     }),
     prisma.organizer.update({
       where: { id: organizer.id },
