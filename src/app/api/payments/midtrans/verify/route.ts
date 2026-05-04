@@ -36,7 +36,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Verify transaction status with Midtrans
-    const statusResponse = await snap.transaction.status(orderId);
+    const statusResponse = await (snap as any).transaction.status(orderId);
     const transactionStatus = statusResponse.transaction_status;
     const fraudStatus = statusResponse.fraud_status;
 
