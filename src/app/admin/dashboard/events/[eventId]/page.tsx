@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import dynamic from "next/dynamic";
-import { ArrowLeft, QrCode, UserPlus, Search, Check, X, Download, Users, LayoutTemplate, Send, Lock } from "lucide-react";
+import { ArrowLeft, QrCode, UserPlus, Search, Check, X, Download, Users, LayoutTemplate, Send, Lock, Eye, EyeOff } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 
 const QrScanner = dynamic(() => import("@/components/QrScanner"), { ssr: false });
@@ -28,6 +28,7 @@ interface EventData {
   id: string;
   name: string;
   date: string;
+  checkInPassword?: string | null;
   guests: Guest[];
   eventAddons?: any[];
 }
@@ -58,6 +59,10 @@ export default function EventDetailPage() {
 
   const [inviteModal, setInviteModal] = useState<{ guest: Guest, email?: string } | null>(null);
   const [showExport, setShowExport] = useState(false);
+  const [showSecurity, setShowSecurity] = useState(false);
+  const [newPassword, setNewPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [savingPassword, setSavingPassword] = useState(false);
 
   const fetchEvent = useCallback(async () => {
     if (!eventId) return;
@@ -208,6 +213,29 @@ export default function EventDetailPage() {
     showToast(`Exported as ${format.toUpperCase()}`, true);
   };
 
+  const handleUpdatePassword = async () => {
+    if (!eventId || savingPassword) return;
+    setSavingPassword(true);
+    try {
+      const res = await fetch(`/api/events/${eventId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ checkInPassword: newPassword.trim() || null }),
+      });
+      if (res.ok) {
+        showToast("Check-in password updated", true);
+        setShowSecurity(false);
+        await fetchEvent();
+      } else {
+        showToast("Failed to update password", false);
+      }
+    } catch {
+      showToast("An error occurred", false);
+    } finally {
+      setSavingPassword(false);
+    }
+  };
+
   if (loading) return <div className="max-w-5xl px-6 lg:px-10 py-12"><p className="text-[#3c58a7] dark:text-[#b3c2ff]" style={{ fontFamily: "var(--font-body)", fontSize: "14px" }}>Loading...</p></div>;
   if (!event) return <div className="max-w-5xl px-6 lg:px-10 py-12"><p className="text-[#3c58a7] dark:text-[#b3c2ff]" style={{ fontFamily: "var(--font-body)", fontSize: "14px" }}>Event not found.</p></div>;
 
@@ -275,6 +303,11 @@ export default function EventDetailPage() {
               <LayoutTemplate className="w-3.5 h-3.5" strokeWidth={1.5} /> 
               Email Builder
               {!hasEmailBuilder && <Lock className="w-3 h-3 ml-1 text-gray-400" strokeWidth={1.5} />}
+            </button>
+            <button onClick={() => { setShowSecurity(true); setNewPassword(event.checkInPassword || ""); }}
+              className="flex items-center gap-2 px-3.5 py-2 rounded-lg transition-colors hover:bg-[#f1e5ed] dark:hover:bg-[#18203c] bg-[#fbeed4] dark:bg-[#111a34] border border-[#867bba] dark:border-[#2a2660] text-[#3c58a7] dark:text-[#b3c2ff]"
+              style={{ fontFamily: "var(--font-body)", fontWeight: 500, fontSize: "12px" }}>
+              <Lock className="w-3.5 h-3.5" strokeWidth={1.5} /> Security
             </button>
             <button onClick={() => setShowExport(true)}
               className="flex items-center gap-2 px-3.5 py-2 rounded-lg transition-colors hover:bg-[#f1e5ed] dark:hover:bg-[#18203c] bg-[#fbeed4] dark:bg-[#111a34] border border-[#867bba] dark:border-[#2a2660] text-[#3c58a7] dark:text-[#b3c2ff]"
@@ -623,6 +656,40 @@ export default function EventDetailPage() {
                 className="w-full py-2.5 rounded-lg hover:bg-[#3c58a7] transition-colors mt-2 disabled:opacity-50"
                 style={{ background: "#2d3895", fontFamily: "var(--font-body)", fontWeight: 500, fontSize: "13px", color: "#fbeed4" }}>
                 Send Invitation
+              </button>
+            </div>
+          </motion.div>
+        </div>
+      )}
+      {/* Security Modal */}
+      {showSecurity && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background: "rgba(12,18,59,0.45)" }}>
+          <motion.div initial={{ opacity: 0, scale: 0.97 }} animate={{ opacity: 1, scale: 1 }}
+            className="w-full max-w-sm rounded-xl p-6 bg-[#fbeed4] dark:bg-[#111a34] border border-[#867bba] dark:border-[#2a2660]">
+            <div className="flex items-center justify-between mb-5">
+              <h3 className="text-[#0c123b] dark:text-[#e8eeff]" style={{ fontFamily: "var(--font-body)", fontWeight: 600, fontSize: "15px" }}>Staff Security</h3>
+              <button onClick={() => setShowSecurity(false)} className="p-1 hover:opacity-70"><X className="w-4 h-4 text-[#3c58a7] dark:text-[#b3c2ff]" strokeWidth={1.5} /></button>
+            </div>
+            <p className="text-[#3c58a7] dark:text-[#b3c2ff] -mt-3 mb-5" style={{ fontFamily: "var(--font-body)", fontWeight: 400, fontSize: "12px" }}>Set a password for staff members to access the check-in desk for this event.</p>
+            
+            <div className="flex flex-col gap-4">
+              <div>
+                <label className="block mb-1.5 text-[#3c58a7] dark:text-[#b3c2ff]" style={{ fontFamily: "var(--font-body)", fontWeight: 500, fontSize: "12px", letterSpacing: "0.04em", textTransform: "uppercase" }}>Check-in Password</label>
+                <div className="relative">
+                  <input type={showPassword ? "text" : "password"} value={newPassword} onChange={(e) => setNewPassword(e.target.value)} 
+                    placeholder="e.g. secret123"
+                    className="w-full px-3.5 py-2.5 rounded-lg outline-none transition-colors bg-[#f1e5ed] dark:bg-[#18203c] border border-[#867bba] dark:border-[#2a2660] text-[#0c123b] dark:text-[#e8eeff]"
+                    style={{ fontFamily: "var(--font-body)", fontSize: "14px" }} />
+                  <button onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#867bba] hover:text-[#3c58a7] transition-colors">
+                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </button>
+                </div>
+                <p className="mt-2 text-[#867bba]" style={{ fontFamily: "var(--font-body)", fontSize: "10px" }}>Leave blank to disable password protection for this event.</p>
+              </div>
+              <button onClick={handleUpdatePassword} disabled={savingPassword}
+                className="w-full py-2.5 rounded-lg hover:bg-[#3c58a7] transition-colors disabled:opacity-50"
+                style={{ background: "#2d3895", fontFamily: "var(--font-body)", fontWeight: 500, fontSize: "13px", color: "#fbeed4" }}>
+                {savingPassword ? "Saving..." : "Save Password"}
               </button>
             </div>
           </motion.div>
