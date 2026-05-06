@@ -16,15 +16,21 @@ export async function GET() {
     where: { authUserId: userId },
   });
 
-  // Auto-create organizer if none exists
+  // Auto-create organizer if none exists (handles users who registered before the pivot)
   if (!organizer) {
+    // Fetch the full user record to get the new fields
+    const user = await prisma.user.findUnique({ where: { id: userId } });
+    const displayName = user
+      ? (user.organizerName || user.name || "Organizer")
+      : "Organizer";
+
     organizer = await prisma.organizer.create({
       data: {
-        name: session.user.name ?? "Organizer",
+        name: displayName,
         email: session.user.email,
         authUserId: userId,
         authProvider: "BETTER_AUTH",
-        tokenBalance: 5, // starter tokens
+        tokenBalance: 1,
       },
     });
   }

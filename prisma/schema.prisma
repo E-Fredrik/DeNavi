@@ -12,16 +12,26 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// ─── Account Type Enum ────────────────────────────────────────────────────────
+
+enum AccountType {
+  INDIVIDUAL
+  ORGANIZER
+}
+
 // ─── Better Auth Models ───────────────────────────────────────────────────────
 
 model User {
-  id            String    @id
+  id            String      @id
   name          String
-  email         String    @unique
-  emailVerified Boolean   @default(false)
+  email         String      @unique
+  emailVerified Boolean     @default(false)
   image         String?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  accountType   AccountType @default(INDIVIDUAL)
+  organizerName String?     // Only required when accountType is ORGANIZER
+  accessCode    String?     @unique // For quick organizer login (e.g. "NAV-A1B2C3")
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
 
   sessions Session[]
   accounts Account[]

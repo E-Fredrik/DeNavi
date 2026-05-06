@@ -1,9 +1,12 @@
 // Mirrors the Prisma schema exactly
+
+export type AccountType = "INDIVIDUAL" | "ORGANIZER";
+
 export interface Organizer {
   id: string;
   name: string;
   whatsapp: string | null;
-  accessCode: string; // NAVI-XXXX-XXXX
+  accessCode: string | null;
   tokenBalance: number;
   createdAt: Date;
   updatedAt: Date;
@@ -35,4 +38,15 @@ export interface EventWithGuests extends Event {
 
 export interface OrganizerWithEvents extends Organizer {
   events: EventWithGuests[];
+}
+
+// User type matching the new schema
+export interface NaviUser {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  accountType: AccountType;
+  organizerName: string | null;
+  accessCode: string | null;
 }

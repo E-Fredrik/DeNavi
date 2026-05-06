@@ -102,9 +102,6 @@ export default function TokensPage() {
                 <span className="text-2xl text-zinc-400 dark:text-zinc-500 font-medium tracking-normal">tokens</span>
               </div>
             </div>
-            <div className="bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 px-4 py-2 rounded-full text-sm font-medium border border-indigo-100 dark:border-indigo-500/20 flex items-center gap-2">
-              <Sparkles className="w-4 h-4" /> Available for next event
-            </div>
           </div>
         </motion.div>
 
