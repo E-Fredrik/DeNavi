@@ -7,8 +7,8 @@ export async function middleware(request: NextRequest) {
 
   const { pathname } = request.nextUrl;
 
-  // Protect all /admin routes — redirect to sign-in if no session cookie
-  if (pathname.startsWith("/admin")) {
+  // Protect all /admin and /super-admin routes — redirect to sign-in if no session cookie
+  if (pathname.startsWith("/admin") || pathname.startsWith("/super-admin")) {
     if (!sessionCookie) {
       return NextResponse.redirect(new URL("/sign-in", request.url));
     }
@@ -17,7 +17,7 @@ export async function middleware(request: NextRequest) {
   // If already signed in, redirect away from auth pages
   if (pathname.startsWith("/sign-in") || pathname.startsWith("/sign-up")) {
     if (sessionCookie) {
-      return NextResponse.redirect(new URL("/admin/dashboard", request.url));
+      return NextResponse.redirect(new URL("/admin/dashboard", request.url)); // We let the layouts handle the specific redirect if ADMIN
     }
   }
 
@@ -25,5 +25,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/admin/:path*", "/sign-in", "/sign-up"],
+  matcher: ["/admin/:path*", "/super-admin/:path*", "/sign-in", "/sign-up"],
 };

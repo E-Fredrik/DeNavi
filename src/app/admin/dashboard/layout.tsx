@@ -17,7 +17,7 @@ export default function DashboardLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const { organizer, isLoaded } = useOrganizer();
+  const { organizer, isLoaded, isSignedIn, session } = useOrganizer();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [hydrated, setHydrated] = useState(false);
   const router = useRouter();
@@ -30,12 +30,24 @@ export default function DashboardLayout({
 
   useEffect(() => {
     if (!hydrated || !isLoaded) return;
-    if (!organizer) {
+    
+    // Redirect if they are global Admin
+    if (session?.user?.role === "ADMIN") {
+      router.replace("/super-admin/dashboard");
+      return;
+    }
+
+    if (!organizer && !isSignedIn) {
       router.replace("/sign-in");
     }
-  }, [organizer, hydrated, isLoaded, router]);
+  }, [organizer, hydrated, isLoaded, isSignedIn, session, router]);
 
   if (!hydrated || !isLoaded) {
+    return <div className="min-h-screen bg-[#f8edd6] dark:bg-[#0b1022]" />;
+  }
+
+  // If redirecting, prevent render
+  if (session?.user?.role === "ADMIN") {
     return <div className="min-h-screen bg-[#f8edd6] dark:bg-[#0b1022]" />;
   }
 

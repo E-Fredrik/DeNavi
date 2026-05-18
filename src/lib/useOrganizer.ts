@@ -19,6 +19,7 @@ interface OrganizerState {
   refresh: () => void;
   isLoaded: boolean;
   isSignedIn: boolean;
+  session: any | null;
 }
 
 export function useOrganizer(): OrganizerState {
@@ -59,5 +60,6 @@ export function useOrganizer(): OrganizerState {
     refresh,
     isLoaded: !isPending && fetched,
     isSignedIn,
+    session: session || null,
   };
 }

@@ -19,6 +19,20 @@ export const auth = betterAuth({
   database: prismaAdapter(prisma, {
     provider: "postgresql",
   }),
+  socialProviders: {
+    google: {
+      clientId: process.env.GOOGLE_CLIENT_ID || "",
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
+    },
+    // apple: {
+    //   clientId: process.env.APPLE_CLIENT_ID || "",
+    //   clientSecret: process.env.APPLE_CLIENT_SECRET || "",
+    // },
+    github: {
+      clientId: process.env.GITHUB_CLIENT_ID || "",
+      clientSecret: process.env.GITHUB_CLIENT_SECRET || "",
+    },
+  },
   emailAndPassword: {
     enabled: true,
     requireEmailVerification: false,
@@ -34,6 +48,13 @@ export const auth = betterAuth({
         required: false,
         defaultValue: "INDIVIDUAL",
         input: true,
+      },
+      role: {
+        type: "string",
+        required: false,
+        defaultValue: "USER",
+        input: false,
+        returned: true,
       },
       organizerName: {
         type: "string",

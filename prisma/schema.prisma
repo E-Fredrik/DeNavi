@@ -19,6 +19,12 @@ enum AccountType {
   ORGANIZER
 }
 
+enum Role {
+  USER
+  ORGANIZER
+  ADMIN
+}
+
 // ─── Better Auth Models ───────────────────────────────────────────────────────
 
 model User {
@@ -28,13 +34,32 @@ model User {
   emailVerified Boolean     @default(false)
   image         String?
   accountType   AccountType @default(INDIVIDUAL)
+  role          Role        @default(USER)
   organizerName String?     // Only required when accountType is ORGANIZER
   accessCode    String?     @unique // For quick organizer login (e.g. "NAV-A1B2C3")
+  promoCodeId   String?     @unique // Link to a specific promo code
+  codeUsed      PromoCode?  @relation(fields: [promoCodeId], references: [id])
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt
 
   sessions Session[]
   accounts Account[]
+}
+
+model PromoCode {
+  id           String    @id @default(cuid())
+  code         String    @unique
+  rewardAmount Int       // Dynamic reward amounts
+  rewardType   String    @default("PLATFORM_TOKEN") // Can be expanded to variants
+  expiryDate   DateTime? // Enforced expiry dates
+  usageLimit   Int?      // Optional max global uses
+  timesUsed    Int       @default(0)
+  isActive     Boolean   @default(true)
+
+  users        User[]
+
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
 }
 
 model Account {

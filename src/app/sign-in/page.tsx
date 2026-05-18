@@ -8,6 +8,7 @@ import { motion, AnimatePresence } from "motion/react";
 import { Mail, KeyRound, ArrowRight, AlertCircle } from "lucide-react";
 
 type LoginMode = "email" | "access-code";
+type SocialProvider = "google" | "github";
 
 export default function SignInPage() {
   const router = useRouter();
@@ -64,6 +65,30 @@ export default function SignInPage() {
       setLoading(false);
     }
   };
+
+  const handleSocialSignIn = async (provider: SocialProvider, providerLabel: string) => {
+    setError("");
+    setLoading(true);
+
+    await signIn.social(
+      {
+        provider,
+        callbackURL: "/admin/dashboard",
+      },
+      {
+        onError: (ctx) => {
+          setError(ctx.error.message ?? `${providerLabel} sign-in failed. Please try again.`);
+          setLoading(false);
+        },
+      }
+    );
+  };
+
+  const socialProviders: Array<{ provider: SocialProvider; label: string }> = [
+    { provider: "google", label: "Google" },
+    // { provider: "apple", label: "Apple" },
+    { provider: "github", label: "GitHub" },
+  ];
 
   // Shared styles
   const inputClass =
@@ -246,6 +271,62 @@ export default function SignInPage() {
                   {loading ? "Signing in..." : "Sign In"}
                   {!loading && <ArrowRight className="w-4 h-4" />}
                 </button>
+
+                <div className="relative py-1">
+                  <div className="absolute inset-0 flex items-center">
+                    <div className="w-full border-t border-[#867bba]/30" />
+                  </div>
+                  <div className="relative flex justify-center text-xs">
+                    <span
+                      className="px-2 bg-[#fbeed4] dark:bg-[#111a34] text-[#867bba]"
+                      style={{ fontFamily: "var(--font-body)" }}
+                    >
+                      or
+                    </span>
+                  </div>
+                </div>
+
+                {socialProviders.map(({ provider, label }) => (
+                  <button
+                    key={provider}
+                    type="button"
+                    onClick={() => handleSocialSignIn(provider, label)}
+                    disabled={loading}
+                    className="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg transition-all duration-200 disabled:opacity-50 hover:bg-[#f1e5ed] dark:hover:bg-[#18203c]"
+                    style={{
+                      border: "1px solid #867bba",
+                      fontFamily: "var(--font-body)",
+                      fontWeight: 500,
+                      fontSize: "14px",
+                      color: "var(--foreground)",
+                    }}
+                    id={`submit-${provider}-signin`}
+                  >
+                    {provider === "google" ? (
+                      <svg viewBox="0 0 24 24" aria-hidden="true" className="h-4 w-4">
+                        <path
+                          fill="#EA4335"
+                          d="M12 10.2v3.9h5.5c-.2 1.3-1.5 3.9-5.5 3.9-3.3 0-6-2.7-6-6s2.7-6 6-6c1.9 0 3.2.8 3.9 1.5l2.7-2.6C17 3.6 14.7 2.7 12 2.7 6.9 2.7 2.8 6.8 2.8 12S6.9 21.3 12 21.3c6.9 0 9.2-4.8 9.2-7.3 0-.5-.1-.9-.1-1.3H12z"
+                        />
+                      </svg>
+                    // ) : provider === "apple" ? (
+                    //   <svg viewBox="0 0 24 24" aria-hidden="true" className="h-4 w-4">
+                    //     <path
+                    //       fill="currentColor"
+                    //       d="M16.8 12.9c0-2.4 2-3.6 2.1-3.7-1.1-1.6-2.9-1.8-3.5-1.8-1.5-.2-2.9.9-3.7.9-.8 0-1.9-.9-3.2-.9-1.6 0-3.1.9-3.9 2.3-1.7 2.9-.4 7.2 1.2 9.5.8 1.1 1.7 2.4 3 2.3 1.2 0 1.7-.8 3.1-.8 1.4 0 1.8.8 3.2.8 1.3 0 2.2-1.2 3-2.3.9-1.3 1.3-2.6 1.3-2.6-.1 0-2.6-1-2.6-3.7zm-2.3-6.9c.6-.7 1-1.7.9-2.6-.9 0-1.9.6-2.5 1.3-.5.6-1 1.6-.9 2.5 1 0 2-.5 2.5-1.2z"
+                    //     />
+                    //   </svg>
+                    ) : (
+                      <svg viewBox="0 0 24 24" aria-hidden="true" className="h-4 w-4">
+                        <path
+                          fill="currentColor"
+                          d="M12 2C6.5 2 2 6.5 2 12c0 4.4 2.8 8.1 6.7 9.4.5.1.7-.2.7-.5v-1.8c-2.7.6-3.3-1.1-3.3-1.1-.4-1.1-1-1.4-1-1.4-.9-.6.1-.6.1-.6 1 .1 1.6 1.1 1.6 1.1.9 1.5 2.4 1.1 3 .9.1-.7.3-1.1.6-1.4-2.2-.3-4.5-1.1-4.5-4.8 0-1.1.4-2 1-2.8-.1-.2-.4-1.2.1-2.6 0 0 .8-.3 2.8 1.1a9.7 9.7 0 0 1 5 0c1.9-1.3 2.8-1.1 2.8-1.1.6 1.4.2 2.4.1 2.6.6.7 1 1.6 1 2.8 0 3.7-2.3 4.5-4.5 4.8.4.3.7 1 .7 2v3c0 .3.2.6.7.5A10 10 0 0 0 22 12c0-5.5-4.5-10-10-10z"
+                        />
+                      </svg>
+                    )}
+                    <span>{loading ? "Redirecting..." : `Continue with ${label}`}</span>
+                  </button>
+                ))}
               </motion.form>
             ) : (
               <motion.form
