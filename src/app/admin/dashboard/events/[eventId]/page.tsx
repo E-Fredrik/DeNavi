@@ -102,8 +102,8 @@ export default function EventDetailPage() {
     }
   };
 
-  const hasAngpao = event?.eventAddons?.some((ea: any) => ea.addon.id === "angpao_tracking");
-  const hasEmailBuilder = event?.eventAddons?.some((ea: any) => ea.addon.id === "custom_email");
+  const hasAngpao = event?.eventAddons?.some((ea: any) => ea.addon.id === "angpao_tracking" || ea.addon.name.toLowerCase().includes("angpao") || ea.addon.name.toLowerCase().includes("gift"));
+  const hasEmailBuilder = event?.eventAddons?.some((ea: any) => ea.addon.id === "custom_email" || ea.addon.name.toLowerCase().includes("email builder"));
 
   const handleCheckIn = (guest: Guest) => {
     if (guest.partySize > 1 || hasAngpao) {

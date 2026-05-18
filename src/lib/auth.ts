@@ -67,6 +67,17 @@ export const auth = betterAuth({
         input: false, // Never set by client; generated server-side
         returned: true,
       },
+      promoCodeId: {
+        type: "string",
+        required: false,
+        input: false,
+        returned: true,
+      },
+      promoCodeStr: {
+        type: "string",
+        required: false,
+        input: true,
+      },
     },
   },
   databaseHooks: {
@@ -75,6 +86,22 @@ export const auth = betterAuth({
         before: async (user) => {
           const data = user as Record<string, unknown>;
           const accountType = (data.accountType as string) || "INDIVIDUAL";
+
+          if (data.promoCodeStr) {
+             const code = String(data.promoCodeStr).trim().toUpperCase();
+             const promo = await prisma.promoCode.findUnique({ where: { code } });
+             if (!promo || !promo.isActive) {
+                throw new Error("Invalid or inactive promo code.");
+             }
+             if (promo.expiryDate && promo.expiryDate < new Date()) {
+                throw new Error("Promo code has expired.");
+             }
+             if (promo.usageLimit && promo.timesUsed >= promo.usageLimit) {
+                throw new Error("Promo code usage limit reached.");
+             }
+             data.promoCodeId = promo.id;
+             data.tokensToAward = promo.rewardAmount;
+          }
 
           // Generate access code for organizers
           if (accountType === "ORGANIZER") {
@@ -91,15 +118,25 @@ export const auth = betterAuth({
         },
         after: async (user) => {
           const data = user as Record<string, unknown>;
+
+          if (data.promoCodeId) {
+             await prisma.promoCode.update({
+                where: { id: data.promoCodeId as string },
+                data: { timesUsed: { increment: 1 } }
+             }).catch(() => {});
+          }
+
           // Auto-create the Organizer record if accountType is ORGANIZER
           if ((data.accountType as string) === "ORGANIZER") {
+            const tokenReward = (data.tokensToAward as number) || 0;
+            
             await prisma.organizer.create({
               data: {
                 name: (data.organizerName as string) || (data.name as string) || "Organizer",
                 email: data.email as string,
                 authUserId: data.id as string,
                 authProvider: "BETTER_AUTH",
-                tokenBalance: 1,
+                tokenBalance: 1 + tokenReward,
                 accessCode: data.accessCode as string | undefined,
               },
             });

@@ -179,26 +179,32 @@ export default function EventsPage() {
               ) : (
                 <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="flex flex-col gap-5">
                   <div className="space-y-3 max-h-[40vh] overflow-y-auto pr-2">
-                    {addonsCatalog.map(addon => {
-                      const isSelected = selectedAddonIds.includes(addon.id);
-                      return (
-                        <div key={addon.id} onClick={() => toggleAddon(addon.id)}
-                          className={`p-4 rounded-2xl border-2 transition-all cursor-pointer flex items-start gap-4 ${isSelected ? "border-indigo-500 bg-indigo-50/50 dark:bg-indigo-500/10" : "border-zinc-200 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700 bg-zinc-50 dark:bg-zinc-950/50"}`}>
-                          <div className={`mt-1 w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-colors ${isSelected ? "border-indigo-500 bg-indigo-500" : "border-zinc-300 dark:border-zinc-700"}`}>
-                            {isSelected && <CheckCircle2 className="w-3.5 h-3.5 text-white" strokeWidth={3} />}
-                          </div>
-                          <div className="flex-1">
-                            <div className="flex justify-between items-start">
-                              <h4 className={`font-semibold text-sm ${isSelected ? "text-indigo-900 dark:text-indigo-100" : "text-zinc-900 dark:text-white"}`}>{addon.name}</h4>
-                              <span className={`text-xs font-bold px-2 py-1 rounded-md ${isSelected ? "bg-indigo-100 dark:bg-indigo-500/20 text-indigo-700 dark:text-indigo-300" : "bg-zinc-200 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400"}`}>
-                                +{addon.tokenCost} T
-                              </span>
+                    {addonsCatalog.length === 0 ? (
+                      <div className="p-4 rounded-2xl border-2 border-zinc-200 border-dashed dark:border-zinc-800 text-center text-zinc-500 text-sm">
+                        No add-ons available at this time.
+                      </div>
+                    ) : (
+                      addonsCatalog.map(addon => {
+                        const isSelected = selectedAddonIds.includes(addon.id);
+                        return (
+                          <div key={addon.id} onClick={() => toggleAddon(addon.id)}
+                            className={`p-4 rounded-2xl border-2 transition-all cursor-pointer flex items-start gap-4 ${isSelected ? "border-indigo-500 bg-indigo-50/50 dark:bg-indigo-500/10" : "border-zinc-200 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700 bg-zinc-50 dark:bg-zinc-950/50"}`}>
+                            <div className={`mt-1 w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-colors ${isSelected ? "border-indigo-500 bg-indigo-500" : "border-zinc-300 dark:border-zinc-700"}`}>
+                              {isSelected && <CheckCircle2 className="w-3.5 h-3.5 text-white" strokeWidth={3} />}
                             </div>
-                            <p className={`text-xs mt-1 ${isSelected ? "text-indigo-700/70 dark:text-indigo-300/70" : "text-zinc-500 dark:text-zinc-400"}`}>{addon.description}</p>
+                            <div className="flex-1">
+                              <div className="flex justify-between items-start">
+                                <h4 className={`font-semibold text-sm ${isSelected ? "text-indigo-900 dark:text-indigo-100" : "text-zinc-900 dark:text-white"}`}>{addon.name}</h4>
+                                <span className={`text-xs font-bold px-2 py-1 rounded-md ${isSelected ? "bg-indigo-100 dark:bg-indigo-500/20 text-indigo-700 dark:text-indigo-300" : "bg-zinc-200 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400"}`}>
+                                  +{addon.tokenCost} T
+                                </span>
+                              </div>
+                              <p className={`text-xs mt-1 ${isSelected ? "text-indigo-700/70 dark:text-indigo-300/70" : "text-zinc-500 dark:text-zinc-400"}`}>{addon.description}</p>
+                            </div>
                           </div>
-                        </div>
-                      )
-                    })}
+                        )
+                      })
+                    )}
                   </div>
 
                   <div className="p-5 mt-2 rounded-2xl bg-zinc-100 dark:bg-zinc-950/50 border border-zinc-200 dark:border-zinc-800">

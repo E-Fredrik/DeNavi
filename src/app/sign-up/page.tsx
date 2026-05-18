@@ -14,11 +14,11 @@ export default function SignUpPage() {
   const router = useRouter();
   const [step, setStep] = useState<Step>("choose");
   const [accountType, setAccountType] = useState<AccountType | null>(null);
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
+  const [name, setName] = useState("");
   const [organizerName, setOrganizerName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [promoCode, setPromoCode] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [accessCode, setAccessCode] = useState("");
@@ -34,16 +34,15 @@ export default function SignUpPage() {
     setError("");
     setLoading(true);
 
-    const fullName = `${firstName} ${lastName}`.trim();
-
     await signUp.email(
       {
-        name: fullName,
+        name: name.trim(),
         email,
         password,
         accountType: accountType!,
         organizerName: accountType === "ORGANIZER" ? organizerName : undefined,
-      } as Parameters<typeof signUp.email>[0],
+        promoCodeStr: accountType === "ORGANIZER" && promoCode ? promoCode : undefined,
+      } as Parameters<typeof signUp.email>[0] & { promoCodeStr?: string },
       {
         onSuccess: async (ctx) => {
           if (accountType === "ORGANIZER") {
@@ -339,38 +338,21 @@ export default function SignUpPage() {
             )}
 
             <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-              {/* Name fields: side by side */}
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label htmlFor="firstName" className={labelClass} style={labelStyle}>
-                    First Name
-                  </label>
-                  <input
-                    id="firstName"
-                    type="text"
-                    value={firstName}
-                    onChange={(e) => setFirstName(e.target.value)}
-                    required
-                    className={inputClass}
-                    style={inputStyle}
-                    placeholder="John"
-                  />
-                </div>
-                <div>
-                  <label htmlFor="lastName" className={labelClass} style={labelStyle}>
-                    Last Name
-                  </label>
-                  <input
-                    id="lastName"
-                    type="text"
-                    value={lastName}
-                    onChange={(e) => setLastName(e.target.value)}
-                    required
-                    className={inputClass}
-                    style={inputStyle}
-                    placeholder="Doe"
-                  />
-                </div>
+              {/* Name field */}
+              <div>
+                <label htmlFor="name" className={labelClass} style={labelStyle}>
+                  Full Name
+                </label>
+                <input
+                  id="name"
+                  type="text"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  required
+                  className={inputClass}
+                  style={inputStyle}
+                  placeholder="John Doe"
+                />
               </div>
 
               {/* Organizer Name (conditionally shown) */}
@@ -432,6 +414,23 @@ export default function SignUpPage() {
                   placeholder="Min 8 characters"
                 />
               </div>
+
+              {accountType === "ORGANIZER" && (
+                <div>
+                  <label htmlFor="promoCode" className={labelClass} style={labelStyle}>
+                    Referral / Promo Code <span className="lowercase text-xs opacity-70">(Optional)</span>
+                  </label>
+                  <input
+                    id="promoCode"
+                    type="text"
+                    value={promoCode}
+                    onChange={(e) => setPromoCode(e.target.value)}
+                    className={inputClass}
+                    style={inputStyle}
+                    placeholder="e.g. SAVE50"
+                  />
+                </div>
+              )}
 
               <button
                 type="submit"

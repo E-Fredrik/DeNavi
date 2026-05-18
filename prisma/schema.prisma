@@ -37,10 +37,11 @@ model User {
   role          Role        @default(USER)
   organizerName String?     // Only required when accountType is ORGANIZER
   accessCode    String?     @unique // For quick organizer login (e.g. "NAV-A1B2C3")
-  promoCodeId   String?     @unique // Link to a specific promo code
+  promoCodeId   String?     // Link to a specific promo code
   codeUsed      PromoCode?  @relation(fields: [promoCodeId], references: [id])
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt
+  tokens        Int         @default(0) // Token balance
 
   sessions Session[]
   accounts Account[]
