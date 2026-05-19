@@ -13,7 +13,7 @@ interface Guest {
   status: "PENDING" | "CONFIRMED" | "DECLINED";
   isAttended: boolean;
   tableNumber: string | null;
-  pax: parseInt;
+  pax: number;
   angpaos: any[];
 }
 
