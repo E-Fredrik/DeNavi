@@ -36,7 +36,7 @@ export async function POST(
   }
 
   const body = await request.json();
-  const { name, isPlusOne, partySize, tableNumber } = body;
+  const { name, isPlusOne, partySize, tableNumber, phone } = body;
 
   if (!name?.trim()) {
     return NextResponse.json({ error: "Guest name is required" }, { status: 400 });
@@ -49,6 +49,7 @@ export async function POST(
       qrTicket: generateQR(),
       partySize: Math.max(1, Number(partySize) || 1),
       tableNumber: tableNumber?.trim() || null,
+      phone: phone?.trim() || null,
       isPlusOne: isPlusOne ?? false,
     },
   });
@@ -85,7 +86,7 @@ export async function PATCH(
   }
 
   const body = await request.json();
-  const { guestId, tableNumber, partySize, name } = body;
+  const { guestId, tableNumber, partySize, name, phone } = body;
 
   if (!guestId) {
     return NextResponse.json({ error: "Guest ID is required" }, { status: 400 });
@@ -103,6 +104,7 @@ export async function PATCH(
   if (tableNumber !== undefined) updateData.tableNumber = tableNumber?.trim() || null;
   if (partySize !== undefined) updateData.partySize = Math.max(1, Number(partySize) || 1);
   if (name !== undefined) updateData.name = name.trim();
+  if (phone !== undefined) updateData.phone = phone?.trim() || null;
   if (body.hasCheckedIn !== undefined) {
     updateData.hasCheckedIn = body.hasCheckedIn;
     updateData.actualAttendees = body.hasCheckedIn ? (body.actualAttendees ?? guest.partySize) : 0;

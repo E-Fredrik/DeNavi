@@ -101,6 +101,20 @@ model Verification {
   updatedAt  DateTime @updatedAt
 }
 
+// ─── Enums ────────────────────────────────────────────────────────────────────
+
+enum GuestCategory {
+  GENERAL
+  VIP
+  KIDS
+  ADULTS
+}
+
+enum SeatingMode {
+  ASSIGNED
+  SELF_SELECT
+}
+
 // ─── App-Specific Models ──────────────────────────────────────────────────────
 
 model Organizer {
@@ -132,6 +146,9 @@ model Event {
   date        DateTime
   tokenCost   Int
   checkInPassword String?
+  dresscode       String?
+  additionalInfo  String?       @db.Text
+  seatingMode     SeatingMode   @default(ASSIGNED)
   emailTemplate   String? @db.Text
   guests          Guest[]
   eventAddons     EventAddon[]
@@ -143,9 +160,12 @@ model Guest {
   eventId      String
   event        Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
   name         String
+  category     GuestCategory @default(GENERAL)
   qrTicket     String   @unique
   partySize    Int      @default(1) // How many people this QR code is valid for (1 = just the guest)
   tableNumber  String?  // Table or seat assignment (e.g. "Table 5" or "A-12")
+  seatNumber   String?  // Cinema-style seat (e.g. "A1", "B3")
+  phone        String?  // WhatsApp phone number
   hasCheckedIn Boolean  @default(false)
   actualAttendees Int?  // How many people actually showed up
   isPlusOne    Boolean  @default(false)

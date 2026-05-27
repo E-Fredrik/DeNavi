@@ -113,13 +113,21 @@ export default function TokensPage() {
             </h2>
             <div className="flex flex-col sm:flex-row items-center gap-6">
               <div className="flex items-center gap-4 bg-zinc-100/50 dark:bg-zinc-950/50 p-2 rounded-2xl border border-zinc-200/50 dark:border-zinc-800/50 w-full sm:w-auto">
-                <button onClick={() => setBuyAmount(Math.max(1, buyAmount - 1))} className="w-12 h-12 rounded-xl flex items-center justify-center transition-all hover:bg-white dark:hover:bg-zinc-800 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:shadow-sm">
+                <button onClick={() => setBuyAmount(prev => Math.max(1, (typeof prev === "number" ? prev : 1) - 1))} className="w-12 h-12 rounded-xl flex items-center justify-center transition-all hover:bg-white dark:hover:bg-zinc-800 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:shadow-sm">
                   <Minus className="w-5 h-5" strokeWidth={2} />
                 </button>
-                <div className="w-20 text-center">
-                  <span className="text-zinc-900 dark:text-white font-bold text-3xl tracking-tight">{buyAmount}</span>
+                <div className="w-24 text-center">
+                  <input
+                    type="number"
+                    value={buyAmount}
+                    onChange={(e) => setBuyAmount(e.target.value === "" ? "" as any : Number(e.target.value))}
+                    onBlur={() => setBuyAmount(prev => { const n = Number(prev); return isNaN(n) || n < 1 ? 1 : Math.min(n, 100); })}
+                    min={1}
+                    max={100}
+                    className="w-full text-center bg-transparent outline-none text-zinc-900 dark:text-white font-bold text-3xl tracking-tight [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                  />
                 </div>
-                <button onClick={() => setBuyAmount(Math.min(50, buyAmount + 1))} className="w-12 h-12 rounded-xl flex items-center justify-center transition-all hover:bg-white dark:hover:bg-zinc-800 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:shadow-sm">
+                <button onClick={() => setBuyAmount(prev => Math.min(100, (typeof prev === "number" ? prev : 1) + 1))} className="w-12 h-12 rounded-xl flex items-center justify-center transition-all hover:bg-white dark:hover:bg-zinc-800 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:shadow-sm">
                   <Plus className="w-5 h-5" strokeWidth={2} />
                 </button>
               </div>

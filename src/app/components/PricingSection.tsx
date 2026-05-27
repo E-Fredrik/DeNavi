@@ -133,7 +133,7 @@ export function PricingSection() {
               {/* Inputs */}
               <div style={{ padding: "40px", borderBottom: "1px solid #867bba" }}>
                 <div className="flex flex-col gap-10">
-                  {/* Guest Count */}
+                  {/* Guest Count — Number Input + Steppers */}
                   <div>
                     <div className="flex items-center justify-between mb-4">
                       <span
@@ -146,56 +146,65 @@ export function PricingSection() {
                       >
                         Guest Count
                       </span>
-                      <span
-                        style={{
-                          fontFamily: "var(--font-body)",
-                          fontWeight: 600,
-                          fontSize: "20px",
-                          color: "#0c123b",
-                          letterSpacing: "-0.02em",
-                        }}
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <button
+                        onClick={() => setGuests(prev => Math.max(50, prev - 50))}
+                        className="w-12 h-12 rounded-lg flex items-center justify-center transition-all hover:bg-[#f1e5ed] dark:hover:bg-[#18203c]"
+                        style={{ border: "1px solid #867bba" }}
                       >
-                        {guests.toLocaleString()}
-                      </span>
-                    </div>
-                    {/* Custom slider track */}
-                    <div className="relative w-full h-8 flex items-center">
-                      <div className="absolute inset-y-0 left-0 right-0 flex items-center">
-                        <div className="w-full h-[2px] bg-[#867bba] rounded-full relative">
-                          <div
-                            className="absolute top-0 left-0 h-full rounded-full"
-                            style={{
-                              width: `${((guests - 50) / (2000 - 50)) * 100}%`,
-                              background: "#2d3895",
-                            }}
-                          />
-                        </div>
+                        <span style={{ fontFamily: "var(--font-body)", fontWeight: 600, fontSize: "20px", color: "#3c58a7" }}>−</span>
+                      </button>
+                      <div className="flex-1 relative">
+                        <input
+                          type="number"
+                          value={guests}
+                          onChange={(e) => setGuests(e.target.value === "" ? "" as any : Number(e.target.value))}
+                          onBlur={() => setGuests((prev: any) => { const n = Number(prev); return isNaN(n) || n < 50 ? 50 : Math.min(n, 10000); })}
+                          min={50}
+                          max={10000}
+                          className="w-full text-center px-4 py-3 rounded-lg outline-none transition-colors bg-[#f1e5ed] dark:bg-[#18203c] border text-[#0c123b] dark:text-[#e8eeff] [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                          style={{
+                            fontFamily: "var(--font-body)",
+                            fontWeight: 600,
+                            fontSize: "20px",
+                            letterSpacing: "-0.02em",
+                            borderColor: "#867bba",
+                          }}
+                        />
                       </div>
-                      <input
-                        type="range"
-                        min={50}
-                        max={2000}
-                        step={50}
-                        value={guests}
-                        onChange={(e) => setGuests(Number(e.target.value))}
-                        className="absolute inset-0 w-full opacity-0 cursor-pointer"
-                        style={{ height: "32px" }}
-                      />
-                      {/* Thumb indicator */}
-                      <div
-                        className="absolute w-3.5 h-3.5 rounded-full pointer-events-none"
-                        style={{
-                          background: "#0c123b",
-                          border: "2px solid #2d3895",
-                          left: `calc(${((guests - 50) / (2000 - 50)) * 100}% - 7px)`,
-                          top: "50%",
-                          transform: "translateY(-50%)",
-                        }}
-                      />
+                      <button
+                        onClick={() => setGuests(prev => Math.min(10000, prev + 50))}
+                        className="w-12 h-12 rounded-lg flex items-center justify-center transition-all hover:bg-[#f1e5ed] dark:hover:bg-[#18203c]"
+                        style={{ border: "1px solid #867bba" }}
+                      >
+                        <span style={{ fontFamily: "var(--font-body)", fontWeight: 600, fontSize: "20px", color: "#3c58a7" }}>+</span>
+                      </button>
                     </div>
-                    <div className="flex justify-between mt-1">
-                      <span style={{ fontFamily: "var(--font-body)", fontWeight: 400, fontSize: "11px", color: "#867bba" }}>50</span>
-                      <span style={{ fontFamily: "var(--font-body)", fontWeight: 400, fontSize: "11px", color: "#867bba" }}>2,000</span>
+                    <div className="flex flex-wrap gap-2 mt-3">
+                      {[100, 200, 500, 1000, 2000, 5000].map((n) => (
+                        <button
+                          key={n}
+                          onClick={() => setGuests(n)}
+                          style={{
+                            fontFamily: "var(--font-body)",
+                            fontWeight: guests === n ? 600 : 400,
+                            fontSize: "12px",
+                            color: guests === n ? "#0c123b" : "#3c58a7",
+                            background: guests === n ? "#f1e5ed" : "transparent",
+                            border: guests === n ? "1px solid #2d3895" : "1px solid #867bba",
+                            borderRadius: "8px",
+                            padding: "8px 14px",
+                          }}
+                          className="transition-all duration-150 hover:border-[#867bba]"
+                        >
+                          {n.toLocaleString()}
+                        </button>
+                      ))}
+                    </div>
+                    <div className="flex justify-between mt-2">
+                      <span style={{ fontFamily: "var(--font-body)", fontWeight: 400, fontSize: "11px", color: "#867bba" }}>Min: 50</span>
+                      <span style={{ fontFamily: "var(--font-body)", fontWeight: 400, fontSize: "11px", color: "#867bba" }}>Max: 10,000</span>
                     </div>
                   </div>
 

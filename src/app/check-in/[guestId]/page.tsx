@@ -58,7 +58,7 @@ export default function GuestCheckInPage() {
         body: JSON.stringify({
           password,
           actualAttendees,
-          angpaoAmount: angpaoAmount ? parseInt(angpaoAmount.replace(/\\D/g, "")) : undefined,
+          angpaoAmount: angpaoAmount ? parseInt(angpaoAmount.replace(/\D/g, "")) : undefined,
           angpaoGift: angpaoGift || undefined
         })
       });
@@ -221,10 +221,10 @@ export default function GuestCheckInPage() {
                               type="text" 
                               value={angpaoAmount}
                               onChange={(e) => {
-                                const val = e.target.value.replace(/\\D/g, "");
+                                const val = e.target.value.replace(/\D/g, "");
                                 setAngpaoAmount(val ? parseInt(val).toLocaleString("id-ID") : "");
                               }}
-                              placeholder="0"
+                              placeholder="e.g. 500000"
                               className="w-full pl-9 pr-3 py-3 bg-zinc-950 border border-zinc-800 rounded-xl text-white outline-none focus:border-indigo-500 transition-all text-sm"
                             />
                           </div>

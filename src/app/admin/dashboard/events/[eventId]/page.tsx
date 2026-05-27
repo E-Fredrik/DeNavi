@@ -19,6 +19,8 @@ interface Guest {
   partySize: number;
   actualAttendees: number | null;
   tableNumber: string | null;
+  seatNumber: string | null;
+  phone: string | null;
   hasCheckedIn: boolean;
   isPlusOne: boolean;
   checkInTime: string | null;
@@ -44,16 +46,18 @@ export default function EventDetailPage() {
   const [toast, setToast] = useState<{ msg: string; ok: boolean } | null>(null);
   const [showAddGuest, setShowAddGuest] = useState(false);
   const [newGuestName, setNewGuestName] = useState("");
-  const [newPartySize, setNewPartySize] = useState(1);
+  const [newPartySize, setNewPartySize] = useState<number | string>(1);
   const [newTable, setNewTable] = useState("");
+  const [newPhone, setNewPhone] = useState("");
   const [editingGuest, setEditingGuest] = useState<Guest | null>(null);
   const [editTable, setEditTable] = useState("");
-  const [editPartySize, setEditPartySize] = useState(1);
+  const [editPhone, setEditPhone] = useState("");
+  const [editPartySize, setEditPartySize] = useState<number | string>(1);
   const [editHasCheckedIn, setEditHasCheckedIn] = useState(false);
-  const [editActualAttendees, setEditActualAttendees] = useState(1);
+  const [editActualAttendees, setEditActualAttendees] = useState<number | string>(1);
   
   const [checkingInGuest, setCheckingInGuest] = useState<Guest | null>(null);
-  const [checkInAttendees, setCheckInAttendees] = useState(1);
+  const [checkInAttendees, setCheckInAttendees] = useState<number | string>(1);
   const [angpaoAmount, setAngpaoAmount] = useState<number | "">("");
   const [angpaoGiftText, setAngpaoGiftText] = useState("");
 
@@ -131,12 +135,12 @@ export default function EventDetailPage() {
     const res = await fetch(`/api/events/${eventId}/guests`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name: newGuestName.trim(), isPlusOne: false, partySize: newPartySize, tableNumber: newTable }),
+      body: JSON.stringify({ name: newGuestName.trim(), isPlusOne: false, partySize: newPartySize, tableNumber: newTable, phone: newPhone }),
     });
     if (res.ok) {
       const g = await res.json();
       showToast(`${g.name} added`, true);
-      setNewGuestName(""); setNewPartySize(1); setNewTable(""); setShowAddGuest(false);
+      setNewGuestName(""); setNewPartySize(1); setNewTable(""); setNewPhone(""); setShowAddGuest(false);
       await fetchEvent();
     }
   };
@@ -149,6 +153,7 @@ export default function EventDetailPage() {
       body: JSON.stringify({ 
         guestId: editingGuest.id, 
         tableNumber: editTable, 
+        phone: editPhone,
         partySize: editPartySize,
         hasCheckedIn: editHasCheckedIn,
         actualAttendees: editHasCheckedIn ? editActualAttendees : 0
@@ -289,6 +294,11 @@ export default function EventDetailPage() {
               style={{ fontFamily: "var(--font-body)", fontWeight: 500, fontSize: "12px" }}>
               <UserPlus className="w-3.5 h-3.5" strokeWidth={1.5} /> Add Invited Guest
             </button>
+            <button onClick={() => router.push(`/admin/dashboard/events/${eventId}/seating`)}
+              className="flex items-center gap-2 px-3.5 py-2 rounded-lg transition-colors hover:bg-[#f1e5ed] dark:hover:bg-[#18203c] bg-[#fbeed4] dark:bg-[#111a34] border border-[#867bba] dark:border-[#2a2660] text-[#3c58a7] dark:text-[#b3c2ff]"
+              style={{ fontFamily: "var(--font-body)", fontWeight: 500, fontSize: "12px" }}>
+              <LayoutTemplate className="w-3.5 h-3.5" strokeWidth={1.5} /> Seating Map
+            </button>
             
             <button 
               onClick={() => {
@@ -418,11 +428,11 @@ export default function EventDetailPage() {
                 <button onClick={() => handleAddPlusOne(guest)}
                   className="px-2 py-1 rounded text-[#3c58a7] dark:text-[#b3c2ff] hover:bg-[#f1e5ed] dark:hover:bg-[#18203c] transition-colors border border-[#867bba] dark:border-[#2a2660]"
                   style={{ fontFamily: "var(--font-body)", fontWeight: 500, fontSize: "10px" }}>+1</button>
-                <button onClick={() => { setEditingGuest(guest); setEditTable(guest.tableNumber ?? ""); setEditPartySize(guest.partySize); setEditHasCheckedIn(guest.hasCheckedIn); setEditActualAttendees(guest.actualAttendees ?? guest.partySize); }}
+                <button onClick={() => { setEditingGuest(guest); setEditTable(guest.tableNumber ?? ""); setEditPhone(guest.phone ?? ""); setEditPartySize(guest.partySize); setEditHasCheckedIn(guest.hasCheckedIn); setEditActualAttendees(guest.actualAttendees ?? guest.partySize); }}
                   className="px-2 py-1 rounded text-[#3c58a7] dark:text-[#b3c2ff] hover:bg-[#f1e5ed] dark:hover:bg-[#18203c] transition-colors"
                   style={{ fontFamily: "var(--font-body)", fontSize: "10px" }}>Edit</button>
                 {guest.hasCheckedIn ? (
-                  <button onClick={() => { setEditingGuest(guest); setEditTable(guest.tableNumber ?? ""); setEditPartySize(guest.partySize); setEditHasCheckedIn(guest.hasCheckedIn); setEditActualAttendees(guest.actualAttendees ?? guest.partySize); }} className="flex items-center gap-1 px-2 py-1 rounded bg-[rgba(60,88,167,0.12)] border border-[rgba(60,88,167,0.18)] hover:bg-[rgba(60,88,167,0.2)] transition-colors">
+                  <button onClick={() => { setEditingGuest(guest); setEditTable(guest.tableNumber ?? ""); setEditPhone(guest.phone ?? ""); setEditPartySize(guest.partySize); setEditHasCheckedIn(guest.hasCheckedIn); setEditActualAttendees(guest.actualAttendees ?? guest.partySize); }} className="flex items-center gap-1 px-2 py-1 rounded bg-[rgba(60,88,167,0.12)] border border-[rgba(60,88,167,0.18)] hover:bg-[rgba(60,88,167,0.2)] transition-colors">
                     <Check className="w-3 h-3 text-[#3c58a7] dark:text-[#b3c2ff]" strokeWidth={2} />
                     <span className="text-[#3c58a7] dark:text-[#b3c2ff]" style={{ fontFamily: "var(--font-body)", fontWeight: 500, fontSize: "10px" }}>IN ({guest.actualAttendees || guest.partySize})</span>
                   </button>
@@ -491,7 +501,7 @@ export default function EventDetailPage() {
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="block mb-1.5 text-[#3c58a7] dark:text-[#b3c2ff]" style={{ fontFamily: "var(--font-body)", fontWeight: 500, fontSize: "12px", letterSpacing: "0.04em", textTransform: "uppercase" }}>Party Size</label>
-                  <input type="number" value={newPartySize} onChange={(e) => setNewPartySize(Math.max(1, Number(e.target.value)))} min={1} max={20}
+                  <input type="number" value={newPartySize} onChange={(e) => setNewPartySize(e.target.value === "" ? "" : Number(e.target.value))} onBlur={() => setNewPartySize(prev => { const n = Number(prev); return isNaN(n) || n < 1 ? 1 : n; })} min={1} max={20}
                     className="w-full px-3.5 py-2.5 rounded-lg outline-none transition-colors bg-[#f1e5ed] dark:bg-[#18203c] border border-[#867bba] dark:border-[#2a2660] text-[#0c123b] dark:text-[#e8eeff]"
                     style={{ fontFamily: "var(--font-body)", fontSize: "14px" }} />
                 </div>
@@ -501,6 +511,12 @@ export default function EventDetailPage() {
                     className="w-full px-3.5 py-2.5 rounded-lg outline-none transition-colors bg-[#f1e5ed] dark:bg-[#18203c] border border-[#867bba] dark:border-[#2a2660] text-[#0c123b] dark:text-[#e8eeff]"
                     style={{ fontFamily: "var(--font-body)", fontSize: "14px" }} />
                 </div>
+              </div>
+              <div>
+                <label className="block mb-1.5 text-[#3c58a7] dark:text-[#b3c2ff]" style={{ fontFamily: "var(--font-body)", fontWeight: 500, fontSize: "12px", letterSpacing: "0.04em", textTransform: "uppercase" }}>Phone (WhatsApp)</label>
+                <input value={newPhone} onChange={(e) => setNewPhone(e.target.value)} placeholder="e.g. +62812..."
+                  className="w-full px-3.5 py-2.5 rounded-lg outline-none transition-colors bg-[#f1e5ed] dark:bg-[#18203c] border border-[#867bba] dark:border-[#2a2660] text-[#0c123b] dark:text-[#e8eeff]"
+                  style={{ fontFamily: "var(--font-body)", fontSize: "14px" }} />
               </div>
               <button onClick={handleAddGuest} disabled={!newGuestName.trim()}
                 className="w-full py-2.5 rounded-lg hover:bg-[#3c58a7] transition-colors disabled:opacity-30"
@@ -523,7 +539,7 @@ export default function EventDetailPage() {
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="block mb-1.5 text-[#3c58a7] dark:text-[#b3c2ff]" style={{ fontFamily: "var(--font-body)", fontWeight: 500, fontSize: "12px", letterSpacing: "0.04em", textTransform: "uppercase" }}>Party Size</label>
-                  <input type="number" value={editPartySize} onChange={(e) => setEditPartySize(Math.max(1, Number(e.target.value)))} min={1}
+                  <input type="number" value={editPartySize} onChange={(e) => setEditPartySize(e.target.value === "" ? "" : Number(e.target.value))} onBlur={() => setEditPartySize(prev => { const n = Number(prev); return isNaN(n) || n < 1 ? 1 : n; })} min={1}
                     className="w-full px-3.5 py-2.5 rounded-lg outline-none bg-[#f1e5ed] dark:bg-[#18203c] border border-[#867bba] dark:border-[#2a2660] text-[#0c123b] dark:text-[#e8eeff]"
                     style={{ fontFamily: "var(--font-body)", fontSize: "14px" }} />
                 </div>
@@ -534,6 +550,12 @@ export default function EventDetailPage() {
                     style={{ fontFamily: "var(--font-body)", fontSize: "14px" }} />
                 </div>
               </div>
+              <div>
+                <label className="block mb-1.5 text-[#3c58a7] dark:text-[#b3c2ff]" style={{ fontFamily: "var(--font-body)", fontWeight: 500, fontSize: "12px", letterSpacing: "0.04em", textTransform: "uppercase" }}>Phone (WhatsApp)</label>
+                <input value={editPhone} onChange={(e) => setEditPhone(e.target.value)} placeholder="e.g. +62812..."
+                  className="w-full px-3.5 py-2.5 rounded-lg outline-none bg-[#f1e5ed] dark:bg-[#18203c] border border-[#867bba] dark:border-[#2a2660] text-[#0c123b] dark:text-[#e8eeff]"
+                  style={{ fontFamily: "var(--font-body)", fontSize: "14px" }} />
+              </div>
               <div className="grid grid-cols-2 gap-3 mt-1">
                 <label className="flex items-center gap-2 text-[#3c58a7] dark:text-[#b3c2ff] cursor-pointer" style={{ fontFamily: "var(--font-body)", fontWeight: 500, fontSize: "13px" }}>
                   <input type="checkbox" checked={editHasCheckedIn} onChange={(e) => setEditHasCheckedIn(e.target.checked)} className="w-4 h-4 rounded border-[#867bba]" />
@@ -542,7 +564,7 @@ export default function EventDetailPage() {
                 {editHasCheckedIn && (
                   <div>
                     <label className="block mb-1.5 text-[#3c58a7] dark:text-[#b3c2ff]" style={{ fontFamily: "var(--font-body)", fontWeight: 500, fontSize: "12px", letterSpacing: "0.04em", textTransform: "uppercase" }}>Attended</label>
-                    <input type="number" value={editActualAttendees} onChange={(e) => setEditActualAttendees(Math.max(1, Number(e.target.value)))} min={1} max={editPartySize}
+                    <input type="number" value={editActualAttendees} onChange={(e) => setEditActualAttendees(e.target.value === "" ? "" : Number(e.target.value))} onBlur={() => setEditActualAttendees(prev => { const n = Number(prev); return isNaN(n) || n < 1 ? 1 : Math.min(n, Number(editPartySize) || 1); })} min={1} max={Number(editPartySize) || 1}
                       className="w-full px-3.5 py-2.5 rounded-lg outline-none bg-[#f1e5ed] dark:bg-[#18203c] border border-[#867bba] dark:border-[#2a2660] text-[#0c123b] dark:text-[#e8eeff]"
                       style={{ fontFamily: "var(--font-body)", fontSize: "14px" }} />
                   </div>
@@ -584,7 +606,7 @@ export default function EventDetailPage() {
               {checkingInGuest.partySize > 1 && (
               <div>
                 <label className="block mb-1.5 text-[#3c58a7] dark:text-[#b3c2ff]" style={{ fontFamily: "var(--font-body)", fontWeight: 500, fontSize: "12px", letterSpacing: "0.04em", textTransform: "uppercase" }}>Actual Attendees</label>
-                <input type="number" value={checkInAttendees} onChange={(e) => setCheckInAttendees(Math.max(1, Math.min(checkingInGuest.partySize, Number(e.target.value))))} min={1} max={checkingInGuest.partySize}
+                <input type="number" value={checkInAttendees} onChange={(e) => setCheckInAttendees(e.target.value === "" ? "" : Number(e.target.value))} onBlur={() => setCheckInAttendees(prev => { const n = Number(prev); return isNaN(n) || n < 1 ? 1 : Math.min(n, checkingInGuest?.partySize || 1); })} min={1} max={checkingInGuest?.partySize || 1}
                   className="w-full px-3.5 py-2.5 rounded-lg outline-none bg-[#f1e5ed] dark:bg-[#18203c] border border-[#867bba] dark:border-[#2a2660] text-[#0c123b] dark:text-[#e8eeff]"
                   style={{ fontFamily: "var(--font-body)", fontSize: "14px" }} />
               </div>
@@ -608,7 +630,7 @@ export default function EventDetailPage() {
               </div>
               )}
 
-              <button onClick={() => confirmCheckIn(checkingInGuest.id, checkingInGuest.partySize > 1 ? checkInAttendees : 1)}
+              <button onClick={() => confirmCheckIn(checkingInGuest.id, checkingInGuest.partySize > 1 ? Number(checkInAttendees) || 1 : 1)}
                 className="w-full py-2.5 rounded-lg hover:bg-[#3c58a7] transition-colors mt-2"
                 style={{ background: "#2d3895", fontFamily: "var(--font-body)", fontWeight: 500, fontSize: "13px", color: "#fbeed4" }}>
                 Confirm Check In
