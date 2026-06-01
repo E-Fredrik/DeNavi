@@ -1,65 +1,94 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useEffect, useState, useCallback, use } from "react";
 import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
-import CinemaSeating from "@/components/CinemaSeating";
+import { ArrowLeft, Users } from "lucide-react";
+import VenueVisualizer from "@/components/VenueVisualizer";
 import { motion } from "motion/react";
 
-interface Guest {
-  id: string;
-  name: string;
-  seatNumber: string | null;
-}
-
-interface EventData {
-  id: string;
-  name: string;
-  guests: Guest[];
-}
-
-export default function SeatingMapPage() {
-  const { eventId } = useParams<{ eventId: string }>();
-  const [event, setEvent] = useState<EventData | null>(null);
+export default function SeatingChartPage({ params }: { params: Promise<{ eventId: string }> }) {
+  const { eventId } = use(params);
+  const [eventData, setEventData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
   const fetchEvent = useCallback(async () => {
-    if (!eventId) return;
     try {
       const res = await fetch(`/api/events/${eventId}`);
-      if (res.ok) setEvent(await res.json());
-    } catch { /* */ } finally { setLoading(false); }
+      if (res.ok) {
+        setEventData(await res.json());
+      }
+    } catch {
+      /* */
+    } finally {
+      setLoading(false);
+    }
   }, [eventId]);
 
-  useEffect(() => { fetchEvent(); }, [fetchEvent]);
+  useEffect(() => {
+    fetchEvent();
+  }, [fetchEvent]);
 
-  if (loading) return <div className="max-w-5xl px-6 lg:px-10 py-12"><p className="text-[#3c58a7] dark:text-[#b3c2ff]" style={{ fontFamily: "var(--font-body)", fontSize: "14px" }}>Loading...</p></div>;
-  if (!event) return <div className="max-w-5xl px-6 lg:px-10 py-12"><p className="text-[#3c58a7] dark:text-[#b3c2ff]" style={{ fontFamily: "var(--font-body)", fontSize: "14px" }}>Event not found.</p></div>;
+  if (loading) {
+    return (
+      <div className="max-w-6xl px-6 lg:px-10 py-12">
+        <p style={{ fontFamily: "var(--font-body)", fontSize: "14px", color: "#867bba" }}>Memuat...</p>
+      </div>
+    );
+  }
 
-  const occupiedSeats = event.guests
-    .filter((g) => g.seatNumber)
-    .map((g) => ({ seatId: g.seatNumber!, guestName: g.name }));
+  if (!eventData) {
+    return (
+      <div className="max-w-6xl px-6 lg:px-10 py-12">
+        <p style={{ fontFamily: "var(--font-body)", fontSize: "14px", color: "#867bba" }}>Acara tidak ditemukan.</p>
+      </div>
+    );
+  }
+
+  const occupiedSeats = eventData.guests
+    .filter((g: any) => g.seatNumber && g.tableNumber)
+    .map((g: any) => ({
+      tableId: g.tableNumber,
+      seatNumber: parseInt(g.seatNumber),
+      guestName: `${g.firstName} ${g.lastName || ""}`.trim(),
+    }))
+    .filter((g: any) => !isNaN(g.seatNumber));
 
   return (
-    <div className="max-w-5xl px-6 lg:px-10 py-8 lg:py-12">
+    <div className="max-w-6xl px-6 lg:px-10 py-8 lg:py-12">
       <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}>
-        <Link href={`/admin/dashboard/events/${eventId}`} className="inline-flex items-center gap-2 mb-6 hover:opacity-70 transition-opacity">
-          <ArrowLeft className="w-4 h-4 text-[#3c58a7] dark:text-[#b3c2ff]" strokeWidth={1.5} />
-          <span className="text-[#3c58a7] dark:text-[#b3c2ff]" style={{ fontFamily: "var(--font-body)", fontWeight: 400, fontSize: "13px" }}>Back to event details</span>
+        <Link
+          href={`/admin/dashboard/events/${eventId}`}
+          className="inline-flex items-center gap-2 mb-6 hover:opacity-70 transition-opacity"
+        >
+          <ArrowLeft className="w-4 h-4 text-[#867bba]" strokeWidth={1.5} />
+          <span style={{ fontFamily: "var(--font-body)", fontWeight: 400, fontSize: "13px", color: "#867bba" }}>
+            Kembali ke detail acara
+          </span>
         </Link>
-        <div className="mb-8">
-          <h1 className="text-[#0c123b] dark:text-[#e8eeff]" style={{ fontFamily: "var(--font-body)", fontWeight: 700, fontSize: "24px", letterSpacing: "-0.02em" }}>
-            Seating Map: {event.name}
+
+        <div className="flex items-center gap-3 mb-2">
+          <Users className="w-5 h-5 text-[#6B0F1A]" strokeWidth={1.5} />
+          <h1 style={{ fontFamily: "var(--font-body)", fontWeight: 700, fontSize: "24px", letterSpacing: "-0.02em", color: "#e8eeff" }}>
+            Live Seating Chart
           </h1>
-          <p className="mt-1 text-[#3c58a7] dark:text-[#b3c2ff]" style={{ fontFamily: "var(--font-body)", fontWeight: 400, fontSize: "13px" }}>
-            View occupied seats and assignments for your guests.
-          </p>
         </div>
+        <p style={{ fontFamily: "var(--font-body)", fontWeight: 400, fontSize: "13px", color: "#867bba" }}>
+          {eventData.name} — Lihat secara real-time kursi mana yang sudah terisi oleh tamu Anda.
+        </p>
       </motion.div>
 
-      <div className="p-6 rounded-xl bg-[#fbeed4] dark:bg-[#111a34] border border-[#867bba] dark:border-[#2a2660]">
-        <CinemaSeating mode="view" occupiedSeats={occupiedSeats} />
+      <div className="mt-8 p-6 rounded-xl" style={{ background: "#111111", border: "1px solid #333333" }}>
+        {eventData.venueLayoutConfig ? (
+          <VenueVisualizer
+            config={eventData.venueLayoutConfig}
+            occupiedSeats={occupiedSeats}
+            mode="view"
+          />
+        ) : (
+          <div className="py-12 text-center text-[#867bba]" style={{ fontFamily: "var(--font-body)" }}>
+            Belum ada denah venue yang diatur. Silakan atur di menu Venue Builder.
+          </div>
+        )}
       </div>
     </div>
   );

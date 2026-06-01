@@ -82,7 +82,7 @@ export async function POST(
           <div style="padding: 40px 30px;">
             <h2 style="color: ${config.textColor}; margin-top: 0; font-size: 24px; font-weight: bold;">${config.title}</h2>
             <p style="color: ${config.textColor}; opacity: 0.9; line-height: 1.6; margin-bottom: 30px;">
-              Hi ${guest.name},<br><br>
+              Hi ${guest.firstName},<br><br>
               ${config.bodyText.replace(/\\n/g, '<br>')}
             </p>
             
@@ -91,10 +91,18 @@ export async function POST(
             </div>
             
             <p style="color: ${config.textColor}; opacity: 0.6; font-size: 12px; margin-top: 24px; font-weight: 500;">
-              Scan to check in securely at the venue.
+              Pindai saat tiba di lokasi untuk Check-In.
             </p>
-            <p style="color: ${config.textColor}; opacity: 0.5; font-size: 11px; margin-top: 10px;">
-              Staff Check-in Link: <a href="${checkInUrl}" style="color: ${config.accentColor};">${checkInUrl}</a>
+            ${
+              event.seatingMode === "SELF_SELECT"
+                ? `
+            <div style="margin-top: 20px; text-align: center;">
+              <a href="${baseUrl}/rsvp/${guest.id}" style="display: inline-block; padding: 12px 24px; background-color: ${config.accentColor}; color: white; text-decoration: none; border-radius: 8px; font-weight: bold;">RSVP & Pilih Kursi Anda</a>
+            </div>
+            ` : ''
+            }
+            <p style="color: ${config.textColor}; opacity: 0.5; font-size: 11px; margin-top: 15px;">
+              Tautan Konfirmasi RSVP (Manual): <a href="${baseUrl}/rsvp/${guest.id}" style="color: ${config.accentColor};">${baseUrl}/rsvp/${guest.id}</a>
             </p>
           </div>
         </div>

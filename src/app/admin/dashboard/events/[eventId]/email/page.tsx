@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "motion/react";
 import { ArrowLeft, Plus, Type, Image as ImageIcon, Link as LinkIcon, Minus, Trash2, ChevronUp, ChevronDown, CheckCircle2 } from "lucide-react";
 
-type BlockType = "text" | "image" | "qrcode" | "divider";
+type BlockType = "text" | "image" | "qrcode" | "divider" | "rsvp";
 
 interface Block {
   id: string;
@@ -30,7 +30,7 @@ export default function EmailBuilderPage({ params }: { params: Promise<{ eventId
     const newBlock: Block = {
       id: Math.random().toString(36).substr(2, 9),
       type,
-      content: type === "text" ? "<p>New text block...</p>" : type === "qrcode" ? "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=Placeholder" : type === "image" ? "https://placehold.co/600x200/e2e8f0/475569?text=Upload+Image" : "",
+      content: type === "text" ? "<p>New text block...</p>" : type === "qrcode" ? "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=Placeholder" : type === "image" ? "https://placehold.co/600x200/e2e8f0/475569?text=Upload+Image" : type === "rsvp" ? "Pilih Tempat Duduk / RSVP" : "",
       align: "center"
     };
     setBlocks([...blocks, newBlock]);
@@ -61,6 +61,7 @@ export default function EmailBuilderPage({ params }: { params: Promise<{ eventId
       if (b.type === "text") return `<div style="text-align: ${b.align}; padding: 10px 0; color: #1a1a1a;">${b.content}</div>`;
       if (b.type === "image") return `<div style="text-align: ${b.align}; padding: 10px 0;"><img src="${b.content}" style="max-width: 100%; border-radius: 8px;" alt="Email Image" /></div>`;
       if (b.type === "qrcode") return `<div style="text-align: ${b.align}; padding: 20px 0;"><img src="${b.content}" style="width: 150px; height: 150px;" class="guest-qr-code" alt="Your QR Code" /></div>`;
+      if (b.type === "rsvp") return `<div style="text-align: ${b.align}; padding: 20px 0;"><a href="{rsvpLink}" style="display: inline-block; background-color: #2d3895; color: #ffffff; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: bold; font-family: sans-serif;">${b.content}</a></div>`;
       if (b.type === "divider") return `<hr style="border: none; border-top: 1px solid #e5e7eb; margin: 20px 0;" />`;
       return "";
     }).join("");
@@ -134,6 +135,10 @@ export default function EmailBuilderPage({ params }: { params: Promise<{ eventId
               <Minus className="w-6 h-6 text-[#3c58a7] dark:text-[#b3c2ff] group-hover:text-[#2d3895]" />
               <span className="text-xs mt-2 text-[#0c123b] dark:text-[#e8eeff] font-medium">Divider</span>
             </button>
+            <button onClick={() => addBlock("rsvp")} className="flex flex-col items-center justify-center p-4 rounded-xl border border-[#867bba]/40 bg-[#f1e5ed] dark:bg-[#18203c] hover:border-[#2d3895] transition-colors group col-span-2">
+              <LinkIcon className="w-6 h-6 text-[#3c58a7] dark:text-[#b3c2ff] group-hover:text-[#2d3895]" />
+              <span className="text-xs mt-2 text-[#0c123b] dark:text-[#e8eeff] font-medium">RSVP Button</span>
+            </button>
           </div>
 
           <AnimatePresence>
@@ -201,6 +206,20 @@ export default function EmailBuilderPage({ params }: { params: Promise<{ eventId
                         <p className="text-xs text-[#3c58a7] dark:text-[#b3c2ff] mt-2">When emails are sent, our system will automatically replace it with each guest's unique check-in QR code.</p>
                       </div>
                     )}
+                    {b.type === "rsvp" && (
+                      <div>
+                        <label className="block text-xs font-medium text-[#3c58a7] dark:text-[#b3c2ff] mb-2">Button Text</label>
+                        <input
+                          type="text"
+                          value={b.content}
+                          onChange={(e) => updateBlock(b.id, { content: e.target.value })}
+                          className="w-full p-2 text-sm rounded-lg border border-[#867bba]/40 bg-white dark:bg-[#0b1022] text-[#0c123b] dark:text-[#e8eeff] outline-none focus:border-[#2d3895]"
+                        />
+                        <p className="text-[10px] text-[#867bba] mt-2">
+                          The link will automatically direct the guest to their unique RSVP page ({"{rsvpLink}"}).
+                        </p>
+                      </div>
+                    )}
                     
                     {b.type !== "divider" && (
                       <div>
@@ -241,6 +260,11 @@ export default function EmailBuilderPage({ params }: { params: Promise<{ eventId
                     {block.type === "text" && <div dangerouslySetInnerHTML={{ __html: block.content }} className="prose dark:prose-invert max-w-none text-[#1a1a1a] dark:text-[#e8eeff]" />}
                     {block.type === "image" && <img src={block.content} alt="" className="max-w-full rounded-lg inline-block" />}
                     {block.type === "qrcode" && <img src={block.content} alt="QR Code" className="w-36 h-36 rounded-lg inline-block border border-gray-200 p-2" />}
+                    {block.type === "rsvp" && (
+                      <span className="inline-block bg-[#2d3895] text-white px-6 py-3 rounded-lg font-bold">
+                        {block.content}
+                      </span>
+                    )}
                     {block.type === "divider" && <hr className="border-t-2 border-[#e5e7eb] dark:border-[#2a2660] my-4" />}
                   </div>
                 </div>

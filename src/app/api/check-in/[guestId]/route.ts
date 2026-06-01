@@ -32,7 +32,8 @@ export async function GET(
     // Only return safe information (don't expose tokens or passwords)
     return NextResponse.json({
       id: guest.id,
-      name: guest.name,
+      firstName: guest.firstName,
+      lastName: guest.lastName,
       partySize: guest.partySize,
       actualAttendees: guest.actualAttendees,
       tableNumber: guest.tableNumber,

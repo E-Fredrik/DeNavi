@@ -4,6 +4,7 @@ import { useEffect, useState, useCallback } from "react";
 import { useOrganizer } from "@/lib/useOrganizer";
 import { BookOpen, Download, Search, X, Banknote, Gift } from "lucide-react";
 import { motion } from "motion/react";
+import { useLanguage } from "@/components/LanguageProvider";
 
 interface AngpaoEntry {
   id: string;
@@ -33,6 +34,7 @@ function formatIDR(val: number): string {
 
 export default function AngpaoLedgerPage() {
   const { organizer, isLoaded } = useOrganizer();
+  const { t } = useLanguage();
   const [data, setData] = useState<LedgerData | null>(null);
   const [loading, setLoading] = useState(true);
   const [query, setQuery] = useState("");
@@ -75,12 +77,12 @@ export default function AngpaoLedgerPage() {
 
   const handleExportCSV = () => {
     const header = [
-      "Guest",
-      "From",
-      "Event",
-      "Amount (Rp)",
-      "Gift",
-      "Date",
+      t("angpao.col.guest"),
+      t("angpao.col.from"),
+      t("angpao.col.event"),
+      t("angpao.col.cash"),
+      t("angpao.col.gift"),
+      t("angpao.col.date"),
     ].join(",");
     const rows = filtered
       .map((e) =>
@@ -90,7 +92,7 @@ export default function AngpaoLedgerPage() {
           `"${e.eventName}"`,
           e.amount ?? 0,
           `"${e.gift || "-"}"`,
-          `"${new Date(e.createdAt).toLocaleString()}"`,
+          `"${new Date(e.createdAt).toLocaleString("id-ID")}"`,
         ].join(",")
       )
       .join("\n");
@@ -99,20 +101,20 @@ export default function AngpaoLedgerPage() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = "angpao_ledger.csv";
+    a.download = "buku_angpao.csv";
     a.click();
     URL.revokeObjectURL(url);
   };
 
   return (
-    <div className="max-w-5xl px-6 lg:px-10 py-8 lg:py-12">
+    <div className="max-w-5xl px-6 lg:px-10 py-8 lg:py-12 bg-[#111111] min-h-screen">
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4 }}
       >
         <p
-          className="text-[#3c58a7] dark:text-[#b3c2ff]"
+          className="text-[#867bba]"
           style={{
             fontFamily: "var(--font-body)",
             fontWeight: 400,
@@ -121,10 +123,10 @@ export default function AngpaoLedgerPage() {
             textTransform: "uppercase",
           }}
         >
-          Financial Tracking
+          {t("nav.angpao")}
         </p>
         <h1
-          className="mt-2 text-[#0c123b] dark:text-[#e8eeff]"
+          className="mt-2 text-[#e8eeff]"
           style={{
             fontFamily: "var(--font-body)",
             fontWeight: 700,
@@ -133,18 +135,17 @@ export default function AngpaoLedgerPage() {
             lineHeight: 1.15,
           }}
         >
-          Angpao & Gift Ledger
+          {t("angpao.title")}
         </h1>
         <p
-          className="mt-2 text-[#3c58a7] dark:text-[#b3c2ff]"
+          className="mt-2 text-[#867bba]"
           style={{
             fontFamily: "var(--font-body)",
             fontWeight: 400,
             fontSize: "14px",
           }}
         >
-          Every angpao and gift received across all your events — fully detailed
-          for accountability and dispute prevention.
+          {t("angpao.desc")}
         </p>
       </motion.div>
 
@@ -152,23 +153,23 @@ export default function AngpaoLedgerPage() {
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mt-8">
         {[
           {
-            label: "Total Cash Received",
+            label: t("angpao.totalCash"),
             value: formatIDR(data?.totalCash ?? 0),
             icon: Banknote,
           },
           {
-            label: "Physical Gifts",
+            label: t("angpao.totalGifts"),
             value: (data?.totalGifts ?? 0).toString(),
             icon: Gift,
           },
           {
-            label: "Total Records",
+            label: t("angpao.totalEntries"),
             value: (data?.totalEntries ?? 0).toString(),
             icon: BookOpen,
           },
           {
-            label: "Showing",
-            value: `${filtered.length} entries`,
+            label: t("angpao.showing"),
+            value: `${filtered.length}`,
             icon: Search,
           },
         ].map((stat, i) => (
@@ -177,7 +178,7 @@ export default function AngpaoLedgerPage() {
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, delay: 0.05 * i }}
-            className="p-5 rounded-xl bg-[#fbeed4] dark:bg-[#111a34] border border-[#867bba] dark:border-[#2a2660]"
+            className="p-5 rounded-xl bg-[#1A1A1A] border border-[#333333]"
           >
             <div className="flex items-center gap-2 mb-2">
               <stat.icon
@@ -185,10 +186,10 @@ export default function AngpaoLedgerPage() {
                 strokeWidth={1.5}
               />
               <span
-                className="text-[#3c58a7] dark:text-[#b3c2ff]"
+                className="text-[#867bba]"
                 style={{
                   fontFamily: "var(--font-body)",
-                  fontWeight: 400,
+                  fontWeight: 500,
                   fontSize: "11px",
                   letterSpacing: "0.04em",
                   textTransform: "uppercase",
@@ -198,7 +199,7 @@ export default function AngpaoLedgerPage() {
               </span>
             </div>
             <div
-              className="text-[#0c123b] dark:text-[#e8eeff]"
+              className="text-[#e8eeff]"
               style={{
                 fontFamily: "var(--font-body)",
                 fontWeight: 700,
@@ -214,7 +215,7 @@ export default function AngpaoLedgerPage() {
 
       {/* Filters + Export */}
       <div className="mt-8 flex flex-col sm:flex-row gap-3">
-        <div className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-[#fbeed4] dark:bg-[#111a34] border border-[#867bba] dark:border-[#2a2660] flex-1">
+        <div className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-[#1A1A1A] border border-[#333333] flex-1 focus-within:border-[#867bba] transition-colors">
           <Search
             className="w-4 h-4 flex-shrink-0 text-[#867bba]"
             strokeWidth={1.5}
@@ -222,14 +223,14 @@ export default function AngpaoLedgerPage() {
           <input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search by guest name or sender..."
-            className="flex-1 bg-transparent outline-none text-[#0c123b] dark:text-[#e8eeff]"
+            placeholder={t("angpao.search")}
+            className="flex-1 bg-transparent outline-none text-[#e8eeff] placeholder-[#867bba]"
             style={{ fontFamily: "var(--font-body)", fontSize: "13px" }}
           />
           {query && (
             <button onClick={() => setQuery("")}>
               <X
-                className="w-3.5 h-3.5 text-[#3c58a7] dark:text-[#b3c2ff]"
+                className="w-4 h-4 text-[#867bba] hover:text-[#e8eeff] transition-colors"
                 strokeWidth={1.5}
               />
             </button>
@@ -240,10 +241,10 @@ export default function AngpaoLedgerPage() {
           <select
             value={eventFilter}
             onChange={(e) => setEventFilter(e.target.value)}
-            className="px-4 py-2.5 rounded-lg bg-[#fbeed4] dark:bg-[#111a34] border border-[#867bba] dark:border-[#2a2660] text-[#0c123b] dark:text-[#e8eeff] outline-none"
+            className="px-4 py-2.5 rounded-lg bg-[#1A1A1A] border border-[#333333] text-[#e8eeff] outline-none"
             style={{ fontFamily: "var(--font-body)", fontSize: "13px" }}
           >
-            <option value="">All Events</option>
+            <option value="">{t("angpao.col.event")}</option>
             {eventNames.map((name) => (
               <option key={name} value={name}>
                 {name}
@@ -254,34 +255,34 @@ export default function AngpaoLedgerPage() {
 
         <button
           onClick={handleExportCSV}
-          className="flex items-center gap-2 px-4 py-2.5 rounded-lg transition-colors hover:bg-[#f1e5ed] dark:hover:bg-[#18203c] bg-[#fbeed4] dark:bg-[#111a34] border border-[#867bba] dark:border-[#2a2660] text-[#3c58a7] dark:text-[#b3c2ff]"
+          className="flex items-center gap-2 px-4 py-2.5 rounded-lg transition-colors bg-[#1A1A1A] hover:bg-[#333333] border border-[#333333] text-[#e8eeff]"
           style={{
             fontFamily: "var(--font-body)",
             fontWeight: 500,
             fontSize: "12px",
           }}
         >
-          <Download className="w-3.5 h-3.5" strokeWidth={1.5} /> Export CSV
+          <Download className="w-4 h-4" strokeWidth={1.5} /> {t("angpao.export")}
         </button>
       </div>
 
       {/* Ledger table */}
-      <div className="mt-4 rounded-xl overflow-hidden border border-[#867bba] dark:border-[#2a2660]">
+      <div className="mt-6 rounded-xl overflow-hidden border border-[#333333] bg-[#1A1A1A]">
         <div className="overflow-x-auto">
           <table className="w-full min-w-[640px]">
             <thead>
-              <tr className="bg-[#fbeed4] dark:bg-[#111a34] border-b border-[#867bba] dark:border-[#2a2660]">
+              <tr className="bg-[#1A1A1A] border-b border-[#333333]">
                 {[
-                  "Guest",
-                  "From",
-                  "Event",
-                  "Amount",
-                  "Gift",
-                  "Date",
+                  t("angpao.col.guest"),
+                  t("angpao.col.from"),
+                  t("angpao.col.event"),
+                  t("angpao.col.cash"),
+                  t("angpao.col.gift"),
+                  t("angpao.col.date"),
                 ].map((h) => (
                   <th
                     key={h}
-                    className="text-left px-4 py-3 text-[#3c58a7] dark:text-[#b3c2ff]"
+                    className="text-left px-5 py-4 text-[#867bba]"
                     style={{
                       fontFamily: "var(--font-body)",
                       fontWeight: 500,
@@ -299,17 +300,17 @@ export default function AngpaoLedgerPage() {
               {filtered.map((entry, idx) => (
                 <tr
                   key={entry.id}
-                  className="bg-[#fbeed4] dark:bg-[#111a34] transition-colors hover:bg-[#f1e5ed] dark:hover:bg-[#18203c]"
+                  className="bg-[#1A1A1A] transition-colors hover:bg-[#333333]/50"
                   style={{
                     borderBottom:
                       idx < filtered.length - 1
-                        ? "1px solid #f1e5ed"
+                        ? "1px solid #333333"
                         : "none",
                   }}
                 >
-                  <td className="px-4 py-3">
+                  <td className="px-5 py-4">
                     <span
-                      className="text-[#0c123b] dark:text-[#e8eeff]"
+                      className="text-[#e8eeff]"
                       style={{
                         fontFamily: "var(--font-body)",
                         fontWeight: 500,
@@ -319,9 +320,9 @@ export default function AngpaoLedgerPage() {
                       {entry.guestName}
                     </span>
                   </td>
-                  <td className="px-4 py-3">
+                  <td className="px-5 py-4">
                     <span
-                      className="text-[#3c58a7] dark:text-[#b3c2ff]"
+                      className="text-[#867bba]"
                       style={{
                         fontFamily: "var(--font-body)",
                         fontWeight: 400,
@@ -331,21 +332,21 @@ export default function AngpaoLedgerPage() {
                       {entry.fromName || "—"}
                     </span>
                   </td>
-                  <td className="px-4 py-3">
+                  <td className="px-5 py-4">
                     <span
-                      className="text-[#3c58a7] dark:text-[#b3c2ff]"
+                      className="text-[#867bba]"
                       style={{
                         fontFamily: "var(--font-body)",
                         fontWeight: 400,
-                        fontSize: "12px",
+                        fontSize: "13px",
                       }}
                     >
                       {entry.eventName}
                     </span>
                   </td>
-                  <td className="px-4 py-3">
+                  <td className="px-5 py-4">
                     <span
-                      className="text-[#0c123b] dark:text-[#e8eeff]"
+                      className="text-[#e8eeff]"
                       style={{
                         fontFamily: "var(--font-body)",
                         fontWeight: 600,
@@ -355,9 +356,9 @@ export default function AngpaoLedgerPage() {
                       {entry.amount ? formatIDR(entry.amount) : "—"}
                     </span>
                   </td>
-                  <td className="px-4 py-3">
+                  <td className="px-5 py-4">
                     <span
-                      className="text-[#3c58a7] dark:text-[#b3c2ff]"
+                      className="text-[#867bba]"
                       style={{
                         fontFamily: "var(--font-body)",
                         fontWeight: 400,
@@ -367,13 +368,13 @@ export default function AngpaoLedgerPage() {
                       {entry.gift || "—"}
                     </span>
                   </td>
-                  <td className="px-4 py-3">
+                  <td className="px-5 py-4">
                     <span
                       className="text-[#867bba]"
                       style={{
                         fontFamily: "var(--font-body)",
                         fontWeight: 400,
-                        fontSize: "11px",
+                        fontSize: "12px",
                       }}
                     >
                       {new Date(entry.createdAt).toLocaleString("id-ID", {
@@ -391,10 +392,10 @@ export default function AngpaoLedgerPage() {
                 <tr>
                   <td
                     colSpan={6}
-                    className="px-5 py-12 text-center bg-[#fbeed4] dark:bg-[#111a34]"
+                    className="px-5 py-12 text-center bg-[#1A1A1A]"
                   >
                     <span
-                      className="text-[#3c58a7] dark:text-[#b3c2ff]"
+                      className="text-[#867bba]"
                       style={{
                         fontFamily: "var(--font-body)",
                         fontWeight: 400,
@@ -402,8 +403,8 @@ export default function AngpaoLedgerPage() {
                       }}
                     >
                       {loading
-                        ? "Loading ledger data..."
-                        : "No angpao or gift records found."}
+                        ? "..."
+                        : t("angpao.empty")}
                     </span>
                   </td>
                 </tr>
@@ -411,25 +412,25 @@ export default function AngpaoLedgerPage() {
             </tbody>
             {filtered.length > 0 && (
               <tfoot>
-                <tr className="bg-[#f1e5ed] dark:bg-[#18203c] border-t border-[#867bba] dark:border-[#2a2660]">
+                <tr className="bg-[#111111] border-t border-[#333333]">
                   <td
                     colSpan={3}
-                    className="px-4 py-3 text-right"
+                    className="px-5 py-4 text-right"
                   >
                     <span
-                      className="text-[#0c123b] dark:text-[#e8eeff]"
+                      className="text-[#e8eeff]"
                       style={{
                         fontFamily: "var(--font-body)",
                         fontWeight: 600,
                         fontSize: "13px",
                       }}
                     >
-                      Totals
+                      {t("angpao.total")}
                     </span>
                   </td>
-                  <td className="px-4 py-3">
+                  <td className="px-5 py-4">
                     <span
-                      className="text-[#0c123b] dark:text-[#e8eeff]"
+                      className="text-[#e8eeff]"
                       style={{
                         fontFamily: "var(--font-body)",
                         fontWeight: 700,
@@ -439,16 +440,16 @@ export default function AngpaoLedgerPage() {
                       {formatIDR(filteredTotal)}
                     </span>
                   </td>
-                  <td className="px-4 py-3">
+                  <td className="px-5 py-4">
                     <span
-                      className="text-[#0c123b] dark:text-[#e8eeff]"
+                      className="text-[#e8eeff]"
                       style={{
                         fontFamily: "var(--font-body)",
                         fontWeight: 600,
                         fontSize: "13px",
                       }}
                     >
-                      {filteredGifts} gift{filteredGifts !== 1 ? "s" : ""}
+                      {filteredGifts} {t("angpao.giftSuffix")}
                     </span>
                   </td>
                   <td />

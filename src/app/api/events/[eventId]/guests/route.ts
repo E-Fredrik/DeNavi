@@ -36,19 +36,21 @@ export async function POST(
   }
 
   const body = await request.json();
-  const { name, isPlusOne, partySize, tableNumber, phone } = body;
+  const { firstName, lastName, isPlusOne, partySize, tableNumber, seatNumber, phone } = body;
 
-  if (!name?.trim()) {
-    return NextResponse.json({ error: "Guest name is required" }, { status: 400 });
+  if (!firstName?.trim()) {
+    return NextResponse.json({ error: "Guest first name is required" }, { status: 400 });
   }
 
   const guest = await prisma.guest.create({
     data: {
       eventId,
-      name: name.trim(),
+      firstName: firstName.trim(),
+      lastName: lastName?.trim() || "",
       qrTicket: generateQR(),
       partySize: Math.max(1, Number(partySize) || 1),
       tableNumber: tableNumber?.trim() || null,
+      seatNumber: seatNumber?.trim() || null,
       phone: phone?.trim() || null,
       isPlusOne: isPlusOne ?? false,
     },
@@ -86,7 +88,7 @@ export async function PATCH(
   }
 
   const body = await request.json();
-  const { guestId, tableNumber, partySize, name, phone } = body;
+  const { guestId, tableNumber, seatNumber, partySize, firstName, lastName, phone } = body;
 
   if (!guestId) {
     return NextResponse.json({ error: "Guest ID is required" }, { status: 400 });
@@ -102,8 +104,10 @@ export async function PATCH(
 
   const updateData: Record<string, unknown> = {};
   if (tableNumber !== undefined) updateData.tableNumber = tableNumber?.trim() || null;
+  if (seatNumber !== undefined) updateData.seatNumber = seatNumber?.trim() || null;
   if (partySize !== undefined) updateData.partySize = Math.max(1, Number(partySize) || 1);
-  if (name !== undefined) updateData.name = name.trim();
+  if (firstName !== undefined) updateData.firstName = firstName.trim();
+  if (lastName !== undefined) updateData.lastName = lastName.trim();
   if (phone !== undefined) updateData.phone = phone?.trim() || null;
   if (body.hasCheckedIn !== undefined) {
     updateData.hasCheckedIn = body.hasCheckedIn;
