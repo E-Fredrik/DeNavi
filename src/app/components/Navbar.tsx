@@ -98,7 +98,7 @@ export function Navbar() {
     await signOut({ fetchOptions: { onSuccess: () => { window.location.href = "/"; } } });
   };
 
-  if (isDashboard) return null;
+  // Removed: if (isDashboard) return null;
 
   return (
     <>

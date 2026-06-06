@@ -61,27 +61,37 @@ export async function POST(
     actualAttendees = Number(body.actualAttendees);
   }
 
-  // Update check-in status and actual attendees
-  const updatedGuest = await prisma.guest.update({
-    where: { id: guestId },
-    data: {
-      hasCheckedIn: true,
-      checkInTime: guest.checkInTime || new Date(),
-      actualAttendees,
-    },
-  });
-
-  // Track angpao if provided
-  if (body.angpaoAmount || body.angpaoGift) {
-    await prisma.angpao.create({
-      data: {
-        guestId: guest.id,
-        amount: body.angpaoAmount ? Number(body.angpaoAmount) : null,
-        gift: body.angpaoGift || null,
-        fromName: body.angpaoFromName || guest.name,
-      }
-    });
+  let newAngpaoStatus = guest.angpaoStatus;
+  
+  if (body.angpaoMode === "no_gift") {
+    newAngpaoStatus = "NO_GIFT";
+  } else if (body.angpaoMode === "gift") {
+    newAngpaoStatus = "SUCCESS";
   }
+
+  // Use a transaction for checkin + angpao creation
+  const [updatedGuest] = await prisma.$transaction([
+    prisma.guest.update({
+      where: { id: guestId },
+      data: {
+        hasCheckedIn: true,
+        checkInTime: guest.checkInTime || new Date(),
+        actualAttendees,
+        angpaoStatus: newAngpaoStatus
+      },
+    }),
+    ...(body.angpaoMode === "gift" ? [
+      prisma.angpao.create({
+        data: {
+          guestId: guest.id,
+          amount: body.angpaoAmount ? Number(body.angpaoAmount) : null,
+          gift: body.angpaoGift || null,
+          fromName: body.angpaoFromName || `${guest.firstName} ${guest.lastName}`.trim(),
+          status: "SUCCESS"
+        }
+      })
+    ] : [])
+  ]);
 
   return NextResponse.json(updatedGuest);
 }

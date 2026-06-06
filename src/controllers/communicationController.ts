@@ -2,6 +2,7 @@
 
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/auth-server";
+import { batchSendMessages, sendTextMessage } from "./waController";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -20,29 +21,6 @@ interface BlastResponse {
   failed: number;
   skipped: number;
   results: BlastResult[];
-}
-
-// ─── Mock WhatsApp API ────────────────────────────────────────────────────────
-
-async function mockSendWhatsApp(
-  phoneNumber: string,
-  message: string
-): Promise<{ success: boolean; messageId?: string }> {
-  // Simulate network delay (200-800ms)
-  await new Promise((resolve) =>
-    setTimeout(resolve, 200 + Math.random() * 600)
-  );
-
-  // 95% success rate simulation
-  const success = Math.random() > 0.05;
-
-  if (success) {
-    return {
-      success: true,
-      messageId: `wa_${crypto.randomUUID().substring(0, 12)}`,
-    };
-  }
-  return { success: false };
 }
 
 // ─── Send WhatsApp Blast ──────────────────────────────────────────────────────
@@ -80,23 +58,46 @@ export async function sendWhatsAppBlast(
   let failed = 0;
   let skipped = 0;
 
-  // Iterate through all guests
+  // Prepare messages for guests who haven't checked in and have a phone number
+  const messagesToSend: {
+    guestId: string;
+    guestName: string;
+    phone: string;
+    message: string;
+  }[] = [];
+
   for (const guest of event.guests) {
+    const fullName = `${guest.firstName} ${guest.lastName}`.trim();
+
     // Skip guests who have already checked in
     if (guest.hasCheckedIn) {
       results.push({
         guestId: guest.id,
-        guestName: guest.name,
+        guestName: fullName,
         status: "skipped",
-        message: "Already checked in",
+        message: "Sudah check-in",
       });
       skipped++;
       continue;
     }
 
-    // Build personalized message
+    // Skip guests without a phone number
+    if (!guest.phone) {
+      results.push({
+        guestId: guest.id,
+        guestName: fullName,
+        status: "skipped",
+        message: "Tidak ada nomor telepon",
+      });
+      skipped++;
+      continue;
+    }
+
+    // Build personalized message with all template variables
     const personalizedMessage = messageTemplate
-      .replace(/\{guestName\}/g, guest.name)
+      .replace(/\{guestName\}/g, fullName)
+      .replace(/\{firstName\}/g, guest.firstName)
+      .replace(/\{lastName\}/g, guest.lastName)
       .replace(/\{eventName\}/g, event.name)
       .replace(
         /\{eventDate\}/g,
@@ -110,38 +111,50 @@ export async function sendWhatsAppBlast(
       .replace(/\{qrTicket\}/g, guest.qrTicket)
       .replace(/\{partySize\}/g, guest.partySize.toString())
       .replace(/\{tableNumber\}/g, guest.tableNumber || "-")
-      .replace(/\{seatNumber\}/g, guest.seatNumber || "-");
+      .replace(/\{seatNumber\}/g, guest.seatNumber || "-")
+      .replace(/\{dresscode\}/g, event.dresscode || "-")
+      .replace(/\{additionalInfo\}/g, event.additionalInfo || "-")
+      .replace(/\{rsvpLink\}/g, `${process.env.BETTER_AUTH_URL || 'http://localhost:3000'}/rsvp/${guest.id}`);
 
-    // Use actual phone number if available, otherwise fallback to mock for testing
-    const targetPhone = (guest as any).phone || `+62812${Math.floor(Math.random() * 90000000 + 10000000)}`;
+    messagesToSend.push({
+      guestId: guest.id,
+      guestName: fullName,
+      phone: guest.phone,
+      message: personalizedMessage,
+    });
+  }
 
-    try {
-      const result = await mockSendWhatsApp(targetPhone, personalizedMessage);
-      if (result.success) {
+  // Use the batched sender from waController for rate-limit safety
+  if (messagesToSend.length > 0) {
+    const batchItems = messagesToSend.map((m) => ({
+      phone: m.phone,
+      message: m.message,
+    }));
+
+    const batchResult = await batchSendMessages(batchItems, 50, 1000);
+
+    // Map batch results back to guest info
+    for (let i = 0; i < messagesToSend.length; i++) {
+      const guestInfo = messagesToSend[i];
+      const sendResult = batchResult.results[i];
+
+      if (sendResult.success) {
         results.push({
-          guestId: guest.id,
-          guestName: guest.name,
+          guestId: guestInfo.guestId,
+          guestName: guestInfo.guestName,
           status: "sent",
-          message: `Message ID: ${result.messageId}`,
+          message: `ID Pesan: ${sendResult.messageId}`,
         });
         sent++;
       } else {
         results.push({
-          guestId: guest.id,
-          guestName: guest.name,
+          guestId: guestInfo.guestId,
+          guestName: guestInfo.guestName,
           status: "failed",
-          message: "WhatsApp API returned failure",
+          message: sendResult.error || "Gagal mengirim",
         });
         failed++;
       }
-    } catch {
-      results.push({
-        guestId: guest.id,
-        guestName: guest.name,
-        status: "failed",
-        message: "Network error",
-      });
-      failed++;
     }
   }
 

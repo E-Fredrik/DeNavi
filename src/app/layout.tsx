@@ -7,6 +7,7 @@ import AnimatedBackground from "./components/AnimatedBackground";
 import ClickSpark from "../components/ClickSpark";
 import SplashCursor from "../components/SplashCursor";
 import { ThemeProvider } from "@/components/theme-provider";
+import { Providers } from "./providers";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -34,7 +35,7 @@ export default function RootLayout({
       suppressHydrationWarning
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">
+      <body className="min-h-full flex flex-col" suppressHydrationWarning>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
         <ClickSpark
           sparkColor="#2d3895"
@@ -58,9 +59,11 @@ export default function RootLayout({
             RAINBOW_MODE={false}
             COLOR="#2d3895"
           />
-          <Navbar />
-          {children}
-          <Footer />
+          <Providers>
+            <Navbar />
+            {children}
+            <Footer />
+          </Providers>
         </ClickSpark>
         </ThemeProvider>
       </body>

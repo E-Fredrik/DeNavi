@@ -111,11 +111,11 @@ export default function WhatsAppBlastPage() {
       });
 
       showToast(
-        `Blast complete! ${response.sent} sent, ${response.failed} failed, ${response.skipped} skipped.`,
+        `Blast selesai! ${response.sent} terkirim, ${response.failed} gagal, ${response.skipped} dilewati.`,
         response.failed === 0
       );
     } catch (err: any) {
-      showToast(err.message || "Failed to send blast", false);
+      showToast(err.message || "Gagal mengirim pesan massal", false);
     } finally {
       setSending(false);
       setTimeout(() => setProgress(0), 1000);
@@ -132,8 +132,11 @@ export default function WhatsAppBlastPage() {
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
-            className="fixed top-4 right-4 z-50 px-4 py-3 rounded-lg bg-[#fbeed4] dark:bg-[#111a34] border border-[#867bba] dark:border-[#2a2660] text-[#3c58a7] dark:text-[#b3c2ff]"
+            className="fixed top-4 right-4 z-50 px-4 py-3 rounded-lg"
             style={{
+              background: "#111111",
+              border: "1px solid #333333",
+              color: toast.ok ? "#e8eeff" : "#ff6b7a",
               fontFamily: "var(--font-body)",
               fontWeight: 500,
               fontSize: "13px",
@@ -150,7 +153,7 @@ export default function WhatsAppBlastPage() {
         transition={{ duration: 0.4 }}
       >
         <p
-          className="text-[#3c58a7] dark:text-[#b3c2ff]"
+          className="text-[#867bba]"
           style={{
             fontFamily: "var(--font-body)",
             fontWeight: 400,
@@ -159,10 +162,10 @@ export default function WhatsAppBlastPage() {
             textTransform: "uppercase",
           }}
         >
-          Guest Communication
+          Komunikasi Tamu
         </p>
         <h1
-          className="mt-2 text-[#0c123b] dark:text-[#e8eeff]"
+          className="mt-2 text-[#e8eeff]"
           style={{
             fontFamily: "var(--font-body)",
             fontWeight: 700,
@@ -174,15 +177,14 @@ export default function WhatsAppBlastPage() {
           WhatsApp Blast
         </h1>
         <p
-          className="mt-2 text-[#3c58a7] dark:text-[#b3c2ff]"
+          className="mt-2 text-[#b3c2ff]"
           style={{
             fontFamily: "var(--font-body)",
             fontWeight: 400,
             fontSize: "14px",
           }}
         >
-          Send personalized reminders to all your guests via WhatsApp. Guests
-          who&apos;ve already checked in will be skipped automatically.
+          Kirim pengingat WhatsApp ke semua tamu Anda dengan sekali klik. Tamu yang sudah check-in akan dilewati secara otomatis.
         </p>
       </motion.div>
 
@@ -190,9 +192,9 @@ export default function WhatsAppBlastPage() {
         {/* Left — Config */}
         <div className="flex flex-col gap-5">
           {/* Event selector */}
-          <div className="p-5 rounded-xl bg-[#fbeed4] dark:bg-[#111a34] border border-[#867bba] dark:border-[#2a2660]">
+          <div className="p-5 rounded-xl bg-[#111111] border border-[#333333]">
             <label
-              className="block mb-2 text-[#3c58a7] dark:text-[#b3c2ff]"
+              className="block mb-2 text-[#867bba]"
               style={{
                 fontFamily: "var(--font-body)",
                 fontWeight: 500,
@@ -201,7 +203,7 @@ export default function WhatsAppBlastPage() {
                 textTransform: "uppercase",
               }}
             >
-              Select Event
+              Pilih Acara
             </label>
             <select
               value={selectedEventId}
@@ -210,13 +212,13 @@ export default function WhatsAppBlastPage() {
                 setResults(null);
                 setSummary(null);
               }}
-              className="w-full px-4 py-3 rounded-lg outline-none bg-[#f1e5ed] dark:bg-[#18203c] border border-[#867bba] dark:border-[#2a2660] text-[#0c123b] dark:text-[#e8eeff]"
+              className="w-full px-4 py-3 rounded-lg outline-none bg-[#1A1A1A] border border-[#333333] text-[#e8eeff]"
               style={{ fontFamily: "var(--font-body)", fontSize: "14px" }}
             >
-              <option value="">— Choose an event —</option>
+              <option value="">— Pilih acara —</option>
               {events.map((evt) => (
                 <option key={evt.id} value={evt.id}>
-                  {evt.name} ({evt.guestCount} guests)
+                  {evt.name} ({evt.guestCount} tamu)
                 </option>
               ))}
             </select>
@@ -224,16 +226,16 @@ export default function WhatsAppBlastPage() {
             {selectedEvent && (
               <div className="mt-3 flex items-center gap-4">
                 <span
-                  className="text-[#3c58a7] dark:text-[#b3c2ff]"
+                  className="text-[#b3c2ff]"
                   style={{
                     fontFamily: "var(--font-body)",
                     fontWeight: 400,
                     fontSize: "12px",
                   }}
                 >
-                  📤 Will send to:{" "}
-                  <strong className="text-[#0c123b] dark:text-[#e8eeff]">
-                    {pendingGuests} guests
+                  📤 Akan dikirim ke:{" "}
+                  <strong className="text-[#e8eeff]">
+                    {pendingGuests} tamu
                   </strong>
                 </span>
                 <span
@@ -244,16 +246,16 @@ export default function WhatsAppBlastPage() {
                     fontSize: "11px",
                   }}
                 >
-                  ({selectedEvent.checkedInCount} already checked in — skipped)
+                  ({selectedEvent.checkedInCount} sudah check-in — dilewati)
                 </span>
               </div>
             )}
           </div>
 
           {/* Message template */}
-          <div className="p-5 rounded-xl bg-[#fbeed4] dark:bg-[#111a34] border border-[#867bba] dark:border-[#2a2660]">
+          <div className="p-5 rounded-xl bg-[#111111] border border-[#333333]">
             <label
-              className="block mb-2 text-[#3c58a7] dark:text-[#b3c2ff]"
+              className="block mb-2 text-[#867bba]"
               style={{
                 fontFamily: "var(--font-body)",
                 fontWeight: 500,
@@ -262,13 +264,13 @@ export default function WhatsAppBlastPage() {
                 textTransform: "uppercase",
               }}
             >
-              Message Template
+              Template Pesan
             </label>
             <textarea
               value={messageTemplate}
               onChange={(e) => setMessageTemplate(e.target.value)}
               rows={10}
-              className="w-full px-4 py-3 rounded-lg outline-none bg-[#f1e5ed] dark:bg-[#18203c] border border-[#867bba] dark:border-[#2a2660] text-[#0c123b] dark:text-[#e8eeff] resize-y"
+              className="w-full px-4 py-3 rounded-lg outline-none bg-[#1A1A1A] border border-[#333333] text-[#e8eeff] resize-y"
               style={{
                 fontFamily: "var(--font-body)",
                 fontSize: "13px",
@@ -286,7 +288,7 @@ export default function WhatsAppBlastPage() {
               ].map((v) => (
                 <span
                   key={v}
-                  className="px-2 py-1 rounded bg-[#f1e5ed] dark:bg-[#18203c] border border-[#867bba] dark:border-[#2a2660] text-[#3c58a7] dark:text-[#b3c2ff]"
+                  className="px-2 py-1 rounded bg-[#1A1A1A] border border-[#333333] text-[#867bba]"
                   style={{
                     fontFamily: "monospace",
                     fontSize: "10px",
@@ -303,34 +305,35 @@ export default function WhatsAppBlastPage() {
           <button
             onClick={handleSendBlast}
             disabled={!selectedEventId || sending || pendingGuests === 0}
-            className="w-full flex items-center justify-center gap-2 py-3.5 rounded-lg hover:bg-[#3c58a7] transition-colors disabled:opacity-40"
+            className="w-full flex items-center justify-center gap-2 py-3.5 rounded-lg hover:opacity-90 transition-opacity disabled:opacity-40"
             style={{
-              background: "#2d3895",
+              background: "#6B0F1A",
+              border: "1px solid #8B1F2A",
               fontFamily: "var(--font-body)",
-              fontWeight: 500,
+              fontWeight: 600,
               fontSize: "14px",
-              color: "#fbeed4",
+              color: "#fff",
             }}
           >
             {sending ? (
               <>
                 <Loader2 className="w-4 h-4 animate-spin" />
-                Sending... {progress}%
+                Mengirim... {progress}%
               </>
             ) : (
               <>
                 <Send className="w-4 h-4" strokeWidth={1.5} />
-                Send WhatsApp Blast to {pendingGuests} Guests
+                Kirim ke {pendingGuests} Tamu
               </>
             )}
           </button>
 
           {/* Progress bar */}
           {sending && (
-            <div className="h-1.5 rounded-full overflow-hidden bg-[#f1e5ed] dark:bg-[#18203c]">
+            <div className="h-1.5 rounded-full overflow-hidden bg-[#1A1A1A] border border-[#333333]">
               <motion.div
                 className="h-full rounded-full"
-                style={{ background: "#2d3895" }}
+                style={{ background: "#6B0F1A" }}
                 initial={{ width: "0%" }}
                 animate={{ width: `${progress}%` }}
                 transition={{ duration: 0.3 }}
@@ -345,32 +348,32 @@ export default function WhatsAppBlastPage() {
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              className="p-5 rounded-xl bg-[#fbeed4] dark:bg-[#111a34] border border-[#867bba] dark:border-[#2a2660]"
+              className="p-5 rounded-xl bg-[#111111] border border-[#333333]"
             >
               <h3
-                className="text-[#0c123b] dark:text-[#e8eeff] mb-3"
+                className="text-[#e8eeff] mb-3"
                 style={{
                   fontFamily: "var(--font-body)",
                   fontWeight: 600,
                   fontSize: "15px",
                 }}
               >
-                Blast Summary
+                Ringkasan Blast
               </h3>
               <div className="grid grid-cols-3 gap-3">
                 {[
                   {
-                    label: "Sent",
+                    label: "Terkirim",
                     value: summary.sent,
-                    color: "#2d3895",
+                    color: "#b3c2ff",
                   },
                   {
-                    label: "Failed",
+                    label: "Gagal",
                     value: summary.failed,
-                    color: summary.failed > 0 ? "#dc2626" : "#867bba",
+                    color: summary.failed > 0 ? "#ff6b7a" : "#867bba",
                   },
                   {
-                    label: "Skipped",
+                    label: "Dilewati",
                     value: summary.skipped,
                     color: "#867bba",
                   },
@@ -387,7 +390,7 @@ export default function WhatsAppBlastPage() {
                       {s.value}
                     </div>
                     <span
-                      className="text-[#3c58a7] dark:text-[#b3c2ff]"
+                      className="text-[#867bba]"
                       style={{
                         fontFamily: "var(--font-body)",
                         fontWeight: 400,
@@ -405,21 +408,21 @@ export default function WhatsAppBlastPage() {
           )}
 
           {results && (
-            <div className="rounded-xl overflow-hidden border border-[#867bba] dark:border-[#2a2660]">
+            <div className="rounded-xl overflow-hidden border border-[#333333] bg-[#111111]">
               <div className="max-h-[400px] overflow-y-auto">
                 {results.map((r, idx) => (
                   <div
                     key={r.guestId}
-                    className="flex items-center justify-between px-4 py-2.5 bg-[#fbeed4] dark:bg-[#111a34] transition-colors hover:bg-[#f1e5ed] dark:hover:bg-[#18203c]"
+                    className="flex items-center justify-between px-4 py-2.5 transition-colors hover:bg-[#1A1A1A]"
                     style={{
                       borderBottom:
                         idx < results.length - 1
-                          ? "1px solid #f1e5ed"
+                          ? "1px solid #333333"
                           : "none",
                     }}
                   >
                     <span
-                      className="text-[#0c123b] dark:text-[#e8eeff]"
+                      className="text-[#e8eeff]"
                       style={{
                         fontFamily: "var(--font-body)",
                         fontWeight: 500,
@@ -431,13 +434,13 @@ export default function WhatsAppBlastPage() {
                     <div className="flex items-center gap-1.5">
                       {r.status === "sent" && (
                         <Check
-                          className="w-3.5 h-3.5 text-[#2d3895]"
+                          className="w-3.5 h-3.5 text-[#b3c2ff]"
                           strokeWidth={2}
                         />
                       )}
                       {r.status === "failed" && (
                         <AlertCircle
-                          className="w-3.5 h-3.5 text-red-500"
+                          className="w-3.5 h-3.5 text-[#ff6b7a]"
                           strokeWidth={2}
                         />
                       )}
@@ -450,9 +453,9 @@ export default function WhatsAppBlastPage() {
                       <span
                         className={
                           r.status === "sent"
-                            ? "text-[#2d3895]"
+                            ? "text-[#b3c2ff]"
                             : r.status === "failed"
-                            ? "text-red-500"
+                            ? "text-[#ff6b7a]"
                             : "text-[#867bba]"
                         }
                         style={{
@@ -463,7 +466,7 @@ export default function WhatsAppBlastPage() {
                           letterSpacing: "0.04em",
                         }}
                       >
-                        {r.status}
+                        {r.status === "sent" ? "Terkirim" : r.status === "failed" ? "Gagal" : "Dilewati"}
                       </span>
                     </div>
                   </div>
@@ -473,21 +476,20 @@ export default function WhatsAppBlastPage() {
           )}
 
           {!results && !sending && (
-            <div className="p-8 rounded-xl bg-[#fbeed4] dark:bg-[#111a34] border border-[#867bba] dark:border-[#2a2660] text-center">
+            <div className="p-8 rounded-xl bg-[#111111] border border-[#333333] text-center">
               <MessageCircle
                 className="w-10 h-10 text-[#867bba] mx-auto mb-3"
                 strokeWidth={1}
               />
               <p
-                className="text-[#3c58a7] dark:text-[#b3c2ff]"
+                className="text-[#b3c2ff]"
                 style={{
                   fontFamily: "var(--font-body)",
                   fontWeight: 400,
                   fontSize: "13px",
                 }}
               >
-                Select an event and click &quot;Send Blast&quot; to send
-                reminders to all guests who haven&apos;t checked in yet.
+                Pilih acara dan klik &quot;Kirim ke Tamu&quot; untuk mengirim pengingat kepada semua tamu yang belum check-in.
               </p>
             </div>
           )}

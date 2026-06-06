@@ -44,22 +44,25 @@ export async function GET() {
 
   const entries = angpaos.map((a) => ({
     id: a.id,
-    guestName: a.guest.name,
+    guestName: `${a.guest.firstName} ${a.guest.lastName}`.trim(),
     eventName: a.guest.event.name,
     eventId: a.guest.event.id,
     amount: a.amount,
     gift: a.gift,
     fromName: a.fromName,
+    angpaoStatus: a.status,
     createdAt: a.createdAt,
   }));
 
   const totalCash = entries.reduce((sum, e) => sum + (e.amount || 0), 0);
   const totalGifts = entries.filter((e) => e.gift).length;
+  const noGiftCount = entries.filter((e) => e.angpaoStatus === "NO_GIFT").length;
 
   return NextResponse.json({
     entries,
     totalCash,
     totalGifts,
     totalEntries: entries.length,
+    noGiftCount,
   });
 }
