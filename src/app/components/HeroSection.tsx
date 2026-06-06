@@ -21,6 +21,20 @@ export function HeroSection() {
   // 4. Determine the border color based on the theme
   // Default to the light mode color before mounting to prevent hydration errors
   const currentBorderColor = mounted && resolvedTheme === "dark" ? "#0c123b" : "#fbeed4";
+
+  // Extract theme state
+  const isDark = mounted && resolvedTheme === "dark";
+
+  // Dynamic palette for the browser mockup
+  const mockupColors = {
+    appBg: isDark ? "#0c123b" : "#fbeed4",        // Main background of the dashboard
+    uiBg: isDark ? "#171e45" : "#f1e5ed",         // Sidebars, browser chrome, and cards
+    border: isDark ? "#2d3895" : "#867bba",       // Borders and dividers
+    textMain: isDark ? "#fbeed4" : "#0c123b",     // Primary text (Headers, Values)
+    textSub: isDark ? "#867bba" : "#3c58a7",      // Secondary text (Labels, Time)
+    accent: isDark ? "#6279d6" : "#2d3895",       // Accent items (Names, active states)
+    accentText: isDark ? "#0c123b" : "#fbeed4",   // Text sitting on top of accent colors
+  };
   return (
     <section
       className="relative min-h-screen flex items-end lg:items-center overflow-hidden"
@@ -168,18 +182,20 @@ export function HeroSection() {
               {/* iPad frame */}
               <div
                 style={{
-                  background: "#f1e5ed",
+                  background: mockupColors.uiBg,
                   borderRadius: "20px",
-                  border: "1px solid #867bba",
+                  border: `1px solid ${mockupColors.border}`,
                   padding: "12px",
+                  transition: "all 0.3s ease"
                 }}
               >
                 <div
                   className="relative"
                   style={{
-                    backgroundColor: "#fbeed4",
+                    backgroundColor: mockupColors.appBg,
                     borderRadius: "12px",
                     overflow: "hidden",
+                    transition: "all 0.3s ease"
                   }}
                 >
                   {/* Browser chrome */}
@@ -187,22 +203,22 @@ export function HeroSection() {
                     className="flex items-center px-4 gap-2 relative z-10"
                     style={{
                       height: "36px",
-                      borderBottom: "1px solid #867bba",
+                      borderBottom: `1px solid ${mockupColors.border}`,
                     }}
                   >
                     <div className="flex gap-1.5">
-                      <div className="w-2 h-2 rounded-full bg-[#867bba]" />
-                      <div className="w-2 h-2 rounded-full bg-[#867bba]" />
-                      <div className="w-2 h-2 rounded-full bg-[#867bba]" />
+                      <div className="w-2 h-2 rounded-full" style={{ backgroundColor: mockupColors.border }} />
+                      <div className="w-2 h-2 rounded-full" style={{ backgroundColor: mockupColors.border }} />
+                      <div className="w-2 h-2 rounded-full" style={{ backgroundColor: mockupColors.border }} />
                     </div>
                     <div className="flex-1 flex justify-center">
                       <div
                         className="px-4 py-0.5 rounded"
                         style={{
-                          background: "#f1e5ed",
+                          background: mockupColors.uiBg,
                           fontFamily: "var(--font-body)",
                           fontSize: "10px",
-                          color: "#3c58a7",
+                          color: mockupColors.textSub,
                         }}
                       >
                         app.navi.events
@@ -217,11 +233,11 @@ export function HeroSection() {
                       <div className="flex items-center gap-2 mb-5">
                         <div
                           className="w-5 h-5 rounded flex items-center justify-center"
-                          style={{ background: "#2d3895" }}
+                          style={{ background: mockupColors.accent }}
                         >
-                          <span style={{ fontFamily: "var(--font-body)", fontWeight: 700, fontSize: "9px", color: "#fbeed4" }}>N</span>
+                          <span style={{ fontFamily: "var(--font-body)", fontWeight: 700, fontSize: "9px", color: mockupColors.accentText }}>N</span>
                         </div>
-                        <span style={{ fontFamily: "var(--font-body)", fontWeight: 600, fontSize: "11px", color: "#2d3895" }}>
+                        <span style={{ fontFamily: "var(--font-body)", fontWeight: 600, fontSize: "11px", color: mockupColors.accent }}>
                           Navi
                         </span>
                       </div>
@@ -236,8 +252,8 @@ export function HeroSection() {
                           key={item.label}
                           className="px-2.5 py-1.5 rounded"
                           style={{
-                            background: item.active ? "#f1e5ed" : "transparent",
-                            border: item.active ? "1px solid #867bba" : "1px solid transparent",
+                            background: item.active ? mockupColors.uiBg : "transparent",
+                            border: item.active ? `1px solid ${mockupColors.border}` : "1px solid transparent",
                           }}
                         >
                           <span
@@ -245,7 +261,7 @@ export function HeroSection() {
                               fontFamily: "var(--font-body)",
                               fontWeight: item.active ? 500 : 400,
                               fontSize: "10px",
-                              color: item.active ? "#0c123b" : "#3c58a7",
+                              color: item.active ? mockupColors.textMain : mockupColors.textSub,
                             }}
                           >
                             {item.label}
@@ -257,15 +273,15 @@ export function HeroSection() {
                     {/* Main area */}
                     <div className="flex-1 flex flex-col gap-3 min-w-0">
                       <div className="flex flex-wrap items-center justify-between gap-2">
-                        <span style={{ fontFamily: "var(--font-body)", fontWeight: 600, fontSize: "13px", color: "#0c123b" }}>
+                        <span style={{ fontFamily: "var(--font-body)", fontWeight: 600, fontSize: "13px", color: mockupColors.textMain }}>
                           Grand Ballroom A
                         </span>
                         <div
                           className="flex items-center gap-1.5 px-2 py-0.5 rounded"
-                          style={{ background: "#fbeed4", border: "1px solid #867bba" }}
+                          style={{ background: mockupColors.appBg, border: `1px solid ${mockupColors.border}` }}
                         >
-                          <div className="w-1.5 h-1.5 rounded-full bg-[#3c58a7]" />
-                          <span style={{ fontFamily: "var(--font-body)", fontWeight: 500, fontSize: "9px", color: "#3c58a7" }}>
+                          <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: mockupColors.textSub }} />
+                          <span style={{ fontFamily: "var(--font-body)", fontWeight: 500, fontSize: "9px", color: mockupColors.textSub }}>
                             LIVE
                           </span>
                         </div>
@@ -281,19 +297,19 @@ export function HeroSection() {
                           <div
                             key={s.label}
                             style={{
-                              background: "#f1e5ed",
-                              border: "1px solid #867bba",
+                              background: mockupColors.uiBg,
+                              border: `1px solid ${mockupColors.border}`,
                               borderRadius: "8px",
                               padding: "10px",
                             }}
                           >
-                            <span style={{ fontFamily: "var(--font-body)", fontWeight: 400, fontSize: "9px", color: "#3c58a7" }}>
+                            <span style={{ fontFamily: "var(--font-body)", fontWeight: 400, fontSize: "9px", color: mockupColors.textSub }}>
                               {s.label}
                             </span>
-                            <div style={{ fontFamily: "var(--font-body)", fontWeight: 700, fontSize: "20px", color: "#0c123b", letterSpacing: "-0.03em", marginTop: "2px" }}>
+                            <div style={{ fontFamily: "var(--font-body)", fontWeight: 700, fontSize: "20px", color: mockupColors.textMain, letterSpacing: "-0.03em", marginTop: "2px" }}>
                               {s.value}
                             </div>
-                            <span style={{ fontFamily: "var(--font-body)", fontWeight: 400, fontSize: "8px", color: "#3c58a7" }}>
+                            <span style={{ fontFamily: "var(--font-body)", fontWeight: 400, fontSize: "8px", color: mockupColors.textSub }}>
                               {s.sub}
                             </span>
                           </div>
@@ -303,13 +319,13 @@ export function HeroSection() {
                       {/* Activity table */}
                       <div
                         className="flex-1 rounded-lg overflow-hidden"
-                        style={{ background: "#f1e5ed", border: "1px solid #867bba" }}
+                        style={{ background: mockupColors.uiBg, border: `1px solid ${mockupColors.border}` }}
                       >
                         <div
                           className="px-3 py-2"
-                          style={{ borderBottom: "1px solid #867bba" }}
+                          style={{ borderBottom: `1px solid ${mockupColors.border}` }}
                         >
-                          <span style={{ fontFamily: "var(--font-body)", fontWeight: 500, fontSize: "10px", color: "#3c58a7" }}>
+                          <span style={{ fontFamily: "var(--font-body)", fontWeight: 500, fontSize: "10px", color: mockupColors.textSub }}>
                             Recent Activity
                           </span>
                         </div>
@@ -323,9 +339,9 @@ export function HeroSection() {
                             <div
                               key={row.name}
                               className="flex flex-wrap items-center justify-between gap-1 py-2"
-                              style={{ borderBottom: idx < 3 ? "1px solid #867bba" : "none" }}
+                              style={{ borderBottom: idx < 3 ? `1px solid ${mockupColors.border}` : "none" }}
                             >
-                              <span style={{ fontFamily: "var(--font-body)", fontWeight: 400, fontSize: "10px", color: "#2d3895" }}>
+                              <span style={{ fontFamily: "var(--font-body)", fontWeight: 400, fontSize: "10px", color: mockupColors.accent }}>
                                 {row.name}
                               </span>
                               <div className="flex items-center gap-3">
@@ -334,12 +350,12 @@ export function HeroSection() {
                                     fontFamily: "var(--font-body)",
                                     fontWeight: 500,
                                     fontSize: "9px",
-                                    color: row.method === "QR Scan" ? "#2d3895" : "#3c58a7",
+                                    color: row.method === "QR Scan" ? mockupColors.accent : mockupColors.textSub,
                                   }}
                                 >
                                   {row.method}
                                 </span>
-                                <span style={{ fontFamily: "var(--font-body)", fontWeight: 400, fontSize: "9px", color: "#867bba" }}>
+                                <span style={{ fontFamily: "var(--font-body)", fontWeight: 400, fontSize: "9px", color: mockupColors.textSub }}>
                                   {row.time}
                                 </span>
                               </div>

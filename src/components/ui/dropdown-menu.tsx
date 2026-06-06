@@ -103,7 +103,7 @@ function DropdownMenuContent({
     <div
       role="menu"
       className={cn(
-        "absolute z-50 mt-2 min-w-32 rounded-md border border-border bg-popover p-1 text-popover-foreground shadow-md",
+        "absolute z-50 mt-2 min-w-32 rounded-md border border-border bg-popover p-1 text-popover-foreground shadow-md translate-x-20",
         align === "end" && "right-0",
         align === "start" && "left-0",
         align === "center" && "left-1/2 -translate-x-1/2",
