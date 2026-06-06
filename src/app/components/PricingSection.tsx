@@ -39,7 +39,7 @@ export function PricingSection() {
                 fontFamily: "var(--font-body)",
                 fontWeight: 400,
                 fontSize: "13px",
-                color: "#2d3895",
+                color: "var(--palette-secondary)",
                 letterSpacing: "0.08em",
                 textTransform: "uppercase",
                 marginBottom: "16px",
@@ -54,7 +54,7 @@ export function PricingSection() {
                 fontSize: "clamp(28px, 4vw, 44px)",
                 lineHeight: 1.1,
                 letterSpacing: "-0.03em",
-                color: "#0c123b",
+                color: "var(--palette-ink)",
               }}
             >
               Pay only for
@@ -67,7 +67,7 @@ export function PricingSection() {
                 fontWeight: 400,
                 fontSize: "15px",
                 lineHeight: 1.7,
-                color: "#3c58a7",
+                color: "var(--palette-text-sub)",
                 marginTop: "16px",
                 maxWidth: "340px",
               }}
@@ -84,7 +84,7 @@ export function PricingSection() {
                   fontWeight: 700,
                   fontSize: "24px",
                   letterSpacing: "-0.02em",
-                  color: "#0c123b",
+                  color: "var(--palette-ink)",
                 }}
               >
                 {formatIDR(PRICE_PER_TOKEN)}
@@ -94,7 +94,7 @@ export function PricingSection() {
                   fontFamily: "var(--font-body)",
                   fontWeight: 400,
                   fontSize: "14px",
-                  color: "#3c58a7",
+                  color: "var(--palette-text-sub)",
                 }}
               >
                 per token
@@ -105,7 +105,7 @@ export function PricingSection() {
                 fontFamily: "var(--font-body)",
                 fontWeight: 400,
                 fontSize: "12px",
-                color: "#3c58a7",
+                color: "var(--palette-text-sub)",
                 marginTop: "8px",
               }}
             >
@@ -141,7 +141,7 @@ export function PricingSection() {
                           fontFamily: "var(--font-body)",
                           fontWeight: 500,
                           fontSize: "14px",
-                          color: "#3c58a7",
+                          color: "var(--palette-text-sub)",
                         }}
                       >
                         Guest Count
@@ -216,7 +216,7 @@ export function PricingSection() {
                           fontFamily: "var(--font-body)",
                           fontWeight: 500,
                           fontSize: "14px",
-                          color: "#3c58a7",
+                          color: "var(--palette-text-sub)",
                         }}
                       >
                         Event Duration
@@ -226,7 +226,7 @@ export function PricingSection() {
                           fontFamily: "var(--font-body)",
                           fontWeight: 600,
                           fontSize: "20px",
-                          color: "#0c123b",
+                          color: "var(--palette-ink)",
                           letterSpacing: "-0.02em",
                         }}
                       >
@@ -242,8 +242,8 @@ export function PricingSection() {
                             fontFamily: "var(--font-body)",
                             fontWeight: days === d ? 600 : 400,
                             fontSize: "13px",
-                            color: days === d ? "#0c123b" : "#3c58a7",
-                            background: days === d ? "#f1e5ed" : "transparent",
+                            color: days === d ? "var(--palette-ink)" : "var(--palette-text-sub)",
+                            background: days === d ? "var(--palette-secondary)" : "transparent",
                             border: days === d ? "1px solid #2d3895" : "1px solid #867bba",
                             borderRadius: "8px",
                             padding: "10px 18px",

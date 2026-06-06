@@ -107,7 +107,7 @@ export default function AngpaoLedgerPage() {
   };
 
   return (
-    <div className="max-w-5xl px-6 lg:px-10 py-8 lg:py-12 bg-dash-surface min-h-screen">
+    <div className="max-w-5xl px-6 lg:px-10 py-8 lg:py-12 min-h-screen">
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}

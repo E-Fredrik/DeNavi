@@ -45,7 +45,7 @@ export default function DashboardOverview() {
   const isId = language === "id";
 
   return (
-    <div className="max-w-5xl px-6 lg:px-10 py-8 lg:py-12 bg-dash-surface min-h-screen">
+    <div className="max-w-5xl px-6 lg:px-10 py-8 lg:py-12 min-h-screen">
       {/* Greeting */}
       <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}>
         <p className="text-dash-text-muted" style={{ fontFamily: "var(--font-body)", fontWeight: 400, fontSize: "13px", letterSpacing: "0.06em", textTransform: "uppercase" }}>

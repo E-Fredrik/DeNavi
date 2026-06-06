@@ -34,7 +34,7 @@ export function DualModeSection() {
               fontSize: "clamp(28px, 4vw, 44px)",
               lineHeight: 1.1,
               letterSpacing: "-0.03em",
-              color: "#0c123b",
+              color: "var(--palette-primary)",
             }}
           >
             One system.
@@ -47,7 +47,7 @@ export function DualModeSection() {
               fontWeight: 400,
               fontSize: "15px",
               lineHeight: 1.7,
-              color: "#3c58a7",
+              color: "var(--palette-secondary)",
               marginTop: "16px",
             }}
           >
@@ -83,7 +83,7 @@ export function DualModeSection() {
                     fontFamily: "var(--font-body)",
                     fontWeight: 500,
                     fontSize: "12px",
-                    color: "#2d3895",
+                    color: "var(--palette-secondary)",
                     letterSpacing: "0.06em",
                     textTransform: "uppercase",
                   }}
@@ -98,7 +98,7 @@ export function DualModeSection() {
                   fontSize: "28px",
                   lineHeight: 1.15,
                   letterSpacing: "-0.025em",
-                  color: "#0c123b",
+                  color: "var(--palette-primary)",
                   marginBottom: "12px",
                 }}
               >
@@ -110,7 +110,7 @@ export function DualModeSection() {
                   fontWeight: 400,
                   fontSize: "15px",
                   lineHeight: 1.7,
-                  color: "#3c58a7",
+                  color: "var(--palette-secondary)",
                   maxWidth: "380px",
                 }}
               >
@@ -135,7 +135,7 @@ export function DualModeSection() {
                   <div className="w-16 h-1 rounded-full bg-[#867bba]" />
                 </div>
                 <div className="text-center mb-4">
-                  <span style={{ fontFamily: "var(--font-body)", fontWeight: 500, fontSize: "12px", color: "#3c58a7" }}>
+                  <span style={{ fontFamily: "var(--font-body)", fontWeight: 500, fontSize: "12px", color: "var(--palette-ivory)" }}>
                     Scan to check in
                   </span>
                 </div>
@@ -165,7 +165,7 @@ export function DualModeSection() {
                   className="py-2.5 rounded-lg text-center bg-[#fbeed4] dark:bg-[#111a34]"
             style={{ border: "1px solid #867bba" }}
                 >
-                  <span style={{ fontFamily: "var(--font-body)", fontWeight: 600, fontSize: "11px", color: "#3c58a7" }}>
+                  <span style={{ fontFamily: "var(--font-body)", fontWeight: 600, fontSize: "11px", color: "var(--palette-secondary)" }}>
                     ✓ Verified — Table 12
                   </span>
                 </div>
@@ -193,7 +193,7 @@ export function DualModeSection() {
                   fontFamily: "var(--font-body)",
                   fontWeight: 500,
                   fontSize: "12px",
-                  color: "#2d3895",
+                  color: "var(--palette-secondary)",
                   letterSpacing: "0.06em",
                   textTransform: "uppercase",
                 }}
@@ -208,7 +208,7 @@ export function DualModeSection() {
                 fontSize: "24px",
                 lineHeight: 1.15,
                 letterSpacing: "-0.02em",
-                color: "#0c123b",
+                color: "var(--palette-primary)",
                 marginBottom: "10px",
               }}
             >
@@ -220,7 +220,7 @@ export function DualModeSection() {
                 fontWeight: 400,
                 fontSize: "14px",
                 lineHeight: 1.7,
-                color: "#3c58a7",
+                color: "var(--palette-secondary)",
                 marginBottom: "20px",
               }}
             >
@@ -268,7 +268,7 @@ export function DualModeSection() {
                       fontFamily: "var(--font-body)",
                       fontWeight: 400,
                       fontSize: "11px",
-                      color: "#867bba",
+                      color: "var(--palette-secondary)",
                       flexShrink: 0,
                       width: "20px",
                       marginTop: "2px",
@@ -282,7 +282,7 @@ export function DualModeSection() {
                         fontFamily: "var(--font-body)",
                         fontWeight: 600,
                         fontSize: "14px",
-                        color: "#0c123b",
+                        color: "var(--palette-primary)",
                         display: "block",
                         marginBottom: "2px",
                       }}
@@ -294,13 +294,13 @@ export function DualModeSection() {
                         fontFamily: "var(--font-body)",
                         fontWeight: 400,
                         fontSize: "13px",
-                        color: "#3c58a7",
+                        color: "var(--palette-secondary)",
                       }}
                     >
                       {item.desc}
                     </span>
                   </div>
-                  <ArrowRight className="w-3.5 h-3.5 flex-shrink-0 mt-1" style={{ color: "#867bba" }} strokeWidth={1.5} />
+                  <ArrowRight className="w-3.5 h-3.5 flex-shrink-0 mt-1" style={{ color: "var(--palette-lavender)" }} strokeWidth={1.5} />
                 </div>
               ))}
             </div>

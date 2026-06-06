@@ -94,7 +94,7 @@ export function HeroSection() {
                   fontSize: "clamp(32px, 8vw, 64px)",
                   lineHeight: 1.05,
                   letterSpacing: "-0.035em",
-                  color: "var(--palette-ink)",
+                  color: "var(--palette-primary)",
                 }}
               >
                 Pro check-ins,
@@ -116,7 +116,7 @@ export function HeroSection() {
                   fontWeight: 400,
                   fontSize: "16px",
                   lineHeight: 1.7,
-                  color: "#3c58a7",
+                  color: "var(--palette-lavender)",
                   marginTop: "24px",
                   maxWidth: "420px",
                 }}
