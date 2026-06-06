@@ -2,8 +2,25 @@
 import { motion } from "motion/react";
 import ShapeGrid from "@/components/ShapeGrid";
 import DecryptedText from "@/components/DecryptedText";
+import { useEffect, useState } from "react";
+import { useTheme } from "next-themes";
+
+
 
 export function HeroSection() {
+  // 1. Add state to check if the component has mounted
+  const [mounted, setMounted] = useState(false);
+  // 2. Extract the current theme
+  const { resolvedTheme } = useTheme();
+
+  // 3. Set mounted to true after the first render
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // 4. Determine the border color based on the theme
+  // Default to the light mode color before mounting to prevent hydration errors
+  const currentBorderColor = mounted && resolvedTheme === "dark" ? "#0c123b" : "#fbeed4";
   return (
     <section
       className="relative min-h-screen flex items-end lg:items-center overflow-hidden"
@@ -27,9 +44,9 @@ export function HeroSection() {
           speed={0.1}
           squareSize={70}
           direction='right' // up, down, left, right, diagonal
-          borderColor='#fbeed4'
+          borderColor={currentBorderColor}
           hoverFillColor='#3C58a7'
-          shape='square' // square, hexagon, circle, triangle
+          shape='hexagon' // square, hexagon, circle, triangle
           hoverTrailAmount={0} // number of trailing hovered shapes (0 = no trail)
           />
       </div>
@@ -80,6 +97,15 @@ export function HeroSection() {
                 useOriginalCharsOnly={false}
                 className="whitespace-pre-wrap"
                 speed={15}
+                style={{
+                  fontFamily: "var(--font-body)",
+                  fontWeight: 400,
+                  fontSize: "16px",
+                  lineHeight: 1.7,
+                  color: "#3c58a7",
+                  marginTop: "24px",
+                  maxWidth: "420px",
+                }}
               />
               {/* <p
                 style={{

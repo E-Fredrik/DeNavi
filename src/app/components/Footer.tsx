@@ -40,7 +40,7 @@ export function Footer() {
             </p>
           </div>
 
-          {columns.map((col) => (
+          {/* {columns.map((col) => (
             <div key={col.title}>
               <span
                 style={{
@@ -75,7 +75,7 @@ export function Footer() {
                 ))}
               </div>
             </div>
-          ))}
+          ))} */}
         </div>
 
         <div
@@ -93,7 +93,7 @@ export function Footer() {
             © 2026 Navi. All rights reserved.
           </span>
           <div className="flex items-center gap-6">
-            {["Twitter", "LinkedIn", "Instagram"].map((s) => (
+            {["Instagram"].map((s) => (
               <a
                 key={s}
                 href="#"

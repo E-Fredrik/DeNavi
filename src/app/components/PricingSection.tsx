@@ -3,7 +3,7 @@ import { useState, useMemo } from "react";
 import { motion } from "motion/react";
 import Link from "next/link";
 
-const PRICE_PER_TOKEN = 50000; //Change this to update the price displayed taken from postgre
+const PRICE_PER_TOKEN = 10000; //Change this to update the price displayed taken from postgre
 
 function formatIDR(val: number): string {
   const formattedNumber = new Intl.NumberFormat("id-ID", { minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(val);

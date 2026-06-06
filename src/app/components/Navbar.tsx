@@ -11,9 +11,9 @@ import { ModeToggle } from "@/components/mode-toggle";
 
 const navItems = [
   { name: "Home", href: "/" },
-  { name: "About", href: "/" },
-  { name: "Services", href: "/" },
-  { name: "Contact", href: "/" },
+  { name: "Features", href: "#features" },
+  { name: "Pricing", href: "#pricing" },
+  { name: "Contact", href: "#contact" },
 ];
 
 const EXPAND_SCROLL_THRESHOLD = 80;
