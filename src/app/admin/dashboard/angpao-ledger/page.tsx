@@ -107,14 +107,14 @@ export default function AngpaoLedgerPage() {
   };
 
   return (
-    <div className="max-w-5xl px-6 lg:px-10 py-8 lg:py-12 bg-[#111111] min-h-screen">
+    <div className="max-w-5xl px-6 lg:px-10 py-8 lg:py-12 bg-dash-surface min-h-screen">
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4 }}
       >
         <p
-          className="text-[#867bba]"
+          className="text-dash-text-muted"
           style={{
             fontFamily: "var(--font-body)",
             fontWeight: 400,
@@ -126,7 +126,7 @@ export default function AngpaoLedgerPage() {
           {t("nav.angpao")}
         </p>
         <h1
-          className="mt-2 text-[#e8eeff]"
+          className="mt-2 text-dash-text"
           style={{
             fontFamily: "var(--font-body)",
             fontWeight: 700,
@@ -138,7 +138,7 @@ export default function AngpaoLedgerPage() {
           {t("angpao.title")}
         </h1>
         <p
-          className="mt-2 text-[#867bba]"
+          className="mt-2 text-dash-text-muted"
           style={{
             fontFamily: "var(--font-body)",
             fontWeight: 400,
@@ -178,15 +178,15 @@ export default function AngpaoLedgerPage() {
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, delay: 0.05 * i }}
-            className="p-5 rounded-xl bg-[#1A1A1A] border border-[#333333]"
+            className="p-5 rounded-xl bg-dash-surface-alt border border-dash-border"
           >
             <div className="flex items-center gap-2 mb-2">
               <stat.icon
-                className="w-4 h-4 text-[#867bba]"
+                className="w-4 h-4 text-dash-text-muted"
                 strokeWidth={1.5}
               />
               <span
-                className="text-[#867bba]"
+                className="text-dash-text-muted"
                 style={{
                   fontFamily: "var(--font-body)",
                   fontWeight: 500,
@@ -199,7 +199,7 @@ export default function AngpaoLedgerPage() {
               </span>
             </div>
             <div
-              className="text-[#e8eeff]"
+              className="text-dash-text"
               style={{
                 fontFamily: "var(--font-body)",
                 fontWeight: 700,
@@ -215,22 +215,22 @@ export default function AngpaoLedgerPage() {
 
       {/* Filters + Export */}
       <div className="mt-8 flex flex-col sm:flex-row gap-3">
-        <div className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-[#1A1A1A] border border-[#333333] flex-1 focus-within:border-[#867bba] transition-colors">
+        <div className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-dash-surface-alt border border-dash-border flex-1 focus-within:border-[#867bba] transition-colors">
           <Search
-            className="w-4 h-4 flex-shrink-0 text-[#867bba]"
+            className="w-4 h-4 flex-shrink-0 text-dash-text-muted"
             strokeWidth={1.5}
           />
           <input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder={t("angpao.search")}
-            className="flex-1 bg-transparent outline-none text-[#e8eeff] placeholder-[#867bba]"
+            className="flex-1 bg-transparent outline-none text-dash-text placeholder-[#867bba]"
             style={{ fontFamily: "var(--font-body)", fontSize: "13px" }}
           />
           {query && (
             <button onClick={() => setQuery("")}>
               <X
-                className="w-4 h-4 text-[#867bba] hover:text-[#e8eeff] transition-colors"
+                className="w-4 h-4 text-dash-text-muted hover:text-dash-text transition-colors"
                 strokeWidth={1.5}
               />
             </button>
@@ -241,7 +241,7 @@ export default function AngpaoLedgerPage() {
           <select
             value={eventFilter}
             onChange={(e) => setEventFilter(e.target.value)}
-            className="px-4 py-2.5 rounded-lg bg-[#1A1A1A] border border-[#333333] text-[#e8eeff] outline-none"
+            className="px-4 py-2.5 rounded-lg bg-dash-surface-alt border border-dash-border text-dash-text outline-none"
             style={{ fontFamily: "var(--font-body)", fontSize: "13px" }}
           >
             <option value="">{t("angpao.col.event")}</option>
@@ -255,7 +255,7 @@ export default function AngpaoLedgerPage() {
 
         <button
           onClick={handleExportCSV}
-          className="flex items-center gap-2 px-4 py-2.5 rounded-lg transition-colors bg-[#1A1A1A] hover:bg-[#333333] border border-[#333333] text-[#e8eeff]"
+          className="flex items-center gap-2 px-4 py-2.5 rounded-lg transition-colors bg-dash-surface-alt hover:bg-dash-surface-hover border border-dash-border text-dash-text"
           style={{
             fontFamily: "var(--font-body)",
             fontWeight: 500,
@@ -267,11 +267,11 @@ export default function AngpaoLedgerPage() {
       </div>
 
       {/* Ledger table */}
-      <div className="mt-6 rounded-xl overflow-hidden border border-[#333333] bg-[#1A1A1A]">
+      <div className="mt-6 rounded-xl overflow-hidden border border-dash-border bg-dash-surface-alt">
         <div className="overflow-x-auto">
           <table className="w-full min-w-[640px]">
             <thead>
-              <tr className="bg-[#1A1A1A] border-b border-[#333333]">
+              <tr className="bg-dash-surface-alt border-b border-dash-border">
                 {[
                   t("angpao.col.guest"),
                   t("angpao.col.from"),
@@ -282,7 +282,7 @@ export default function AngpaoLedgerPage() {
                 ].map((h) => (
                   <th
                     key={h}
-                    className="text-left px-5 py-4 text-[#867bba]"
+                    className="text-left px-5 py-4 text-dash-text-muted"
                     style={{
                       fontFamily: "var(--font-body)",
                       fontWeight: 500,
@@ -300,7 +300,7 @@ export default function AngpaoLedgerPage() {
               {filtered.map((entry, idx) => (
                 <tr
                   key={entry.id}
-                  className="bg-[#1A1A1A] transition-colors hover:bg-[#333333]/50"
+                  className="bg-dash-surface-alt transition-colors hover:bg-dash-surface-hover/50"
                   style={{
                     borderBottom:
                       idx < filtered.length - 1
@@ -310,7 +310,7 @@ export default function AngpaoLedgerPage() {
                 >
                   <td className="px-5 py-4">
                     <span
-                      className="text-[#e8eeff]"
+                      className="text-dash-text"
                       style={{
                         fontFamily: "var(--font-body)",
                         fontWeight: 500,
@@ -322,7 +322,7 @@ export default function AngpaoLedgerPage() {
                   </td>
                   <td className="px-5 py-4">
                     <span
-                      className="text-[#867bba]"
+                      className="text-dash-text-muted"
                       style={{
                         fontFamily: "var(--font-body)",
                         fontWeight: 400,
@@ -334,7 +334,7 @@ export default function AngpaoLedgerPage() {
                   </td>
                   <td className="px-5 py-4">
                     <span
-                      className="text-[#867bba]"
+                      className="text-dash-text-muted"
                       style={{
                         fontFamily: "var(--font-body)",
                         fontWeight: 400,
@@ -346,7 +346,7 @@ export default function AngpaoLedgerPage() {
                   </td>
                   <td className="px-5 py-4">
                     <span
-                      className="text-[#e8eeff]"
+                      className="text-dash-text"
                       style={{
                         fontFamily: "var(--font-body)",
                         fontWeight: 600,
@@ -358,7 +358,7 @@ export default function AngpaoLedgerPage() {
                   </td>
                   <td className="px-5 py-4">
                     <span
-                      className="text-[#867bba]"
+                      className="text-dash-text-muted"
                       style={{
                         fontFamily: "var(--font-body)",
                         fontWeight: 400,
@@ -370,7 +370,7 @@ export default function AngpaoLedgerPage() {
                   </td>
                   <td className="px-5 py-4">
                     <span
-                      className="text-[#867bba]"
+                      className="text-dash-text-muted"
                       style={{
                         fontFamily: "var(--font-body)",
                         fontWeight: 400,
@@ -392,10 +392,10 @@ export default function AngpaoLedgerPage() {
                 <tr>
                   <td
                     colSpan={6}
-                    className="px-5 py-12 text-center bg-[#1A1A1A]"
+                    className="px-5 py-12 text-center bg-dash-surface-alt"
                   >
                     <span
-                      className="text-[#867bba]"
+                      className="text-dash-text-muted"
                       style={{
                         fontFamily: "var(--font-body)",
                         fontWeight: 400,
@@ -412,13 +412,13 @@ export default function AngpaoLedgerPage() {
             </tbody>
             {filtered.length > 0 && (
               <tfoot>
-                <tr className="bg-[#111111] border-t border-[#333333]">
+                <tr className="bg-dash-surface border-t border-dash-border">
                   <td
                     colSpan={3}
                     className="px-5 py-4 text-right"
                   >
                     <span
-                      className="text-[#e8eeff]"
+                      className="text-dash-text"
                       style={{
                         fontFamily: "var(--font-body)",
                         fontWeight: 600,
@@ -430,7 +430,7 @@ export default function AngpaoLedgerPage() {
                   </td>
                   <td className="px-5 py-4">
                     <span
-                      className="text-[#e8eeff]"
+                      className="text-dash-text"
                       style={{
                         fontFamily: "var(--font-body)",
                         fontWeight: 700,
@@ -442,7 +442,7 @@ export default function AngpaoLedgerPage() {
                   </td>
                   <td className="px-5 py-4">
                     <span
-                      className="text-[#e8eeff]"
+                      className="text-dash-text"
                       style={{
                         fontFamily: "var(--font-body)",
                         fontWeight: 600,

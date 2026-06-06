@@ -61,8 +61,8 @@ export default function VenueBuilderPage() {
 
   if (loading) {
     return (
-      <div className="max-w-6xl px-6 lg:px-10 py-12">
-        <p style={{ fontFamily: "var(--font-body)", fontSize: "14px", color: "#867bba" }}>
+      <div className="max-w-6xl px-6 lg:px-10 py-12 bg-dash-bg min-h-screen">
+        <p className="text-dash-text-muted" style={{ fontFamily: "var(--font-body)", fontSize: "14px" }}>
           Memuat...
         </p>
       </div>
@@ -76,14 +76,11 @@ export default function VenueBuilderPage() {
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="fixed top-4 right-4 z-50 px-4 py-3 rounded-lg"
+          className="fixed top-4 right-4 z-50 px-4 py-3 rounded-lg bg-dash-surface-alt border border-dash-border text-dash-text shadow-lg"
           style={{
-            background: "#1A1A1A",
-            border: "1px solid #333333",
             fontFamily: "var(--font-body)",
             fontWeight: 500,
             fontSize: "13px",
-            color: "#e8eeff",
           }}
         >
           {toast}
@@ -95,24 +92,24 @@ export default function VenueBuilderPage() {
           href={`/admin/dashboard/events/${eventId}`}
           className="inline-flex items-center gap-2 mb-6 hover:opacity-70 transition-opacity"
         >
-          <ArrowLeft className="w-4 h-4 text-[#867bba]" strokeWidth={1.5} />
-          <span style={{ fontFamily: "var(--font-body)", fontWeight: 400, fontSize: "13px", color: "#867bba" }}>
+          <ArrowLeft className="w-4 h-4 text-dash-text-muted" strokeWidth={1.5} />
+          <span className="text-dash-text-muted" style={{ fontFamily: "var(--font-body)", fontWeight: 400, fontSize: "13px" }}>
             Kembali ke detail acara
           </span>
         </Link>
 
         <div className="flex items-center gap-3 mb-2">
-          <LayoutTemplate className="w-5 h-5 text-[#6B0F1A]" strokeWidth={1.5} />
-          <h1 style={{ fontFamily: "var(--font-body)", fontWeight: 700, fontSize: "24px", letterSpacing: "-0.02em", color: "#e8eeff" }}>
+          <LayoutTemplate className="w-5 h-5 text-dash-accent" strokeWidth={1.5} />
+          <h1 className="text-dash-text" style={{ fontFamily: "var(--font-body)", fontWeight: 700, fontSize: "24px", letterSpacing: "-0.02em" }}>
             Atur Denah Venue
           </h1>
         </div>
-        <p style={{ fontFamily: "var(--font-body)", fontWeight: 400, fontSize: "13px", color: "#867bba" }}>
+        <p className="text-dash-text-muted" style={{ fontFamily: "var(--font-body)", fontWeight: 400, fontSize: "13px" }}>
           {eventName} — Tambahkan meja, atur posisi, lalu simpan. Denah ini bisa digunakan tamu untuk pilih kursi sendiri.
         </p>
       </motion.div>
 
-      <div className="mt-8 p-6 rounded-xl" style={{ background: "#111111", border: "1px solid #333333" }}>
+      <div className="mt-8 p-6 rounded-xl bg-dash-surface border border-dash-border">
         <VenueBuilder
           initialConfig={layoutConfig}
           onSave={handleSave}

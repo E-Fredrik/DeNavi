@@ -16,6 +16,17 @@
   --palette-ivory: #fbeed4;
   --palette-bg: #f8edd6;
 
+  --dash-bg: var(--palette-bg);
+  --dash-surface: var(--palette-ivory);
+  --dash-surface-alt: var(--palette-mist);
+  --dash-surface-hover: var(--palette-blush);
+  --dash-border: var(--palette-lavender);
+  --dash-text: var(--palette-ink);
+  --dash-text-muted: var(--palette-secondary);
+  --dash-text-sub: var(--palette-primary);
+  --dash-accent: var(--palette-primary);
+  --dash-accent-light: var(--palette-secondary);
+
   --font-display: "Dela Gothic One";
   --font-subheading: "MuseoModerno";
   --font-body: "Montserrat", sans-serif;
@@ -69,6 +80,17 @@
   --palette-ivory: #dce6ff;
   --palette-bg: #0b1022;
 
+  --dash-bg: var(--palette-bg);
+  --dash-surface: #111a34;
+  --dash-surface-alt: #18203c;
+  --dash-surface-hover: var(--palette-mist);
+  --dash-border: var(--palette-sand);
+  --dash-text: var(--palette-ink);
+  --dash-text-muted: var(--palette-lavender);
+  --dash-text-sub: var(--palette-secondary);
+  --dash-accent: var(--palette-primary);
+  --dash-accent-light: var(--palette-secondary);
+
   --background: oklch(0.145 0 0);
   --foreground: oklch(0.985 0 0);
   --card: oklch(0.2 0 0);
@@ -112,6 +134,17 @@
 }
 
 @theme inline {
+  --color-dash-bg: var(--dash-bg);
+  --color-dash-surface: var(--dash-surface);
+  --color-dash-surface-alt: var(--dash-surface-alt);
+  --color-dash-surface-hover: var(--dash-surface-hover);
+  --color-dash-border: var(--dash-border);
+  --color-dash-text: var(--dash-text);
+  --color-dash-text-muted: var(--dash-text-muted);
+  --color-dash-text-sub: var(--dash-text-sub);
+  --color-dash-accent: var(--dash-accent);
+  --color-dash-accent-light: var(--dash-accent-light);
+
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);

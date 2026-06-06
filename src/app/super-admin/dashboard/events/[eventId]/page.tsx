@@ -7,13 +7,13 @@ import Link from "next/link";
 
 interface Guest {
   id: string;
-  name: string;
-  email: string | null;
-  phoneNumber: string | null;
-  status: "PENDING" | "CONFIRMED" | "DECLINED";
-  isAttended: boolean;
+  firstName: string;
+  lastName: string;
+  phone: string | null;
+  hasCheckedIn: boolean;
   tableNumber: string | null;
-  pax: number;
+  partySize: number;
+  qrTicket: string;
   angpaos: any[];
 }
 
@@ -64,8 +64,8 @@ export default function SuperAdminEventDetailsPage({ params }: { params: Promise
     return <div className="text-[#3c58a7]">Event not found.</div>;
   }
 
-  const attendedCount = event.guests.filter(g => g.isAttended).length;
-  const angpaoTotal = event.guests.reduce((sum, g) => sum + g.angpaos.reduce((a, angpao) => a + angpao.amount, 0), 0);
+  const attendedCount = event.guests.filter(g => g.hasCheckedIn).length;
+  const angpaoTotal = event.guests.reduce((sum, g) => sum + g.angpaos.reduce((a, angpao) => a + (angpao.amount || 0), 0), 0);
 
   return (
     <motion.div
@@ -127,26 +127,25 @@ export default function SuperAdminEventDetailsPage({ params }: { params: Promise
                 event.guests.map((guest) => (
                   <tr key={guest.id} className="border-b border-[#867bba]/10 hover:bg-[#f1e5ed]/30 dark:hover:bg-[#18203c]/30 transition-colors">
                     <td className="px-6 py-4 font-medium text-[#0c123b] dark:text-[#e8eeff]">
-                      {guest.name}
+                      {guest.firstName} {guest.lastName}
                     </td>
                     <td className="px-6 py-4 text-[#3c58a7] dark:text-[#b3c2ff]">
-                      <div>{guest.email || "No email"}</div>
-                      <div className="text-xs text-[#867bba]">{guest.phoneNumber || "No phone"}</div>
+                      <div>{guest.phone || "No phone"}</div>
+                      <div className="text-xs text-[#867bba]">Party size: {guest.partySize}</div>
                     </td>
                     <td className="px-6 py-4">
                       <span className={`px-2.5 py-1 text-xs font-semibold rounded-full ${
-                        guest.status === "CONFIRMED" ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400" :
-                        guest.status === "DECLINED" ? "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400" :
+                        guest.hasCheckedIn ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400" :
                         "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400"
                       }`}>
-                        {guest.status}
+                        {guest.hasCheckedIn ? "Checked In" : "Pending"}
                       </span>
                     </td>
                     <td className="px-6 py-4 text-[#3c58a7] dark:text-[#b3c2ff]">
-                      {guest.tableNumber ? `Table ${guest.tableNumber}` : "No Table"} <span className="text-[#867bba]">({guest.pax} pax)</span>
+                      {guest.tableNumber ? `Table ${guest.tableNumber}` : "No Table"} <span className="text-[#867bba]">({guest.partySize} pax)</span>
                     </td>
                     <td className="px-6 py-4">
-                      {guest.isAttended ? (
+                      {guest.hasCheckedIn ? (
                         <span className="flex items-center gap-1.5 text-green-600 dark:text-green-400 font-medium text-xs">
                           <CheckCircle2 className="w-4 h-4" /> Checked In
                         </span>

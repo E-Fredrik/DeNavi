@@ -90,19 +90,19 @@ export default function TokensPage() {
       <div className="max-w-4xl px-6 lg:px-10 py-8 lg:py-12 min-h-[calc(100vh-64px)] flex flex-col">
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}>
           <p
-            className="text-[#3c58a7] dark:text-[#b3c2ff]"
+            className="text-[#3c58a7] dark:text-dash-text-sub"
             style={{ fontFamily: "var(--font-body)", fontWeight: 400, fontSize: "13px", letterSpacing: "0.06em", textTransform: "uppercase" }}
           >
             Tagihan & Top-Up
           </p>
           <h1
-            className="mt-2 text-[#0c123b] dark:text-[#e8eeff]"
+            className="mt-2 text-[#0c123b] dark:text-dash-text"
             style={{ fontFamily: "var(--font-body)", fontWeight: 700, fontSize: "28px", letterSpacing: "-0.03em", lineHeight: 1.15 }}
           >
             Token Navi
           </h1>
           <p
-            className="mt-2 text-[#3c58a7] dark:text-[#b3c2ff] max-w-xl"
+            className="mt-2 text-[#3c58a7] dark:text-dash-text-sub max-w-xl"
             style={{ fontFamily: "var(--font-body)", fontWeight: 400, fontSize: "14px" }}
           >
             Token adalah mata uang di Navi. Gunakan untuk membuat acara, mengirim undangan, dan membuka fitur premium.
@@ -114,19 +114,18 @@ export default function TokensPage() {
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.05 }}
-          className="mt-10 relative overflow-hidden rounded-xl"
-          style={{ background: "#111111", border: "1px solid #333333" }}
+          className="mt-10 relative overflow-hidden rounded-xl bg-dash-surface border border-dash-border"
         >
           <div className="p-8 sm:p-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
             <div>
-              <span className="flex items-center gap-2" style={{ fontFamily: "var(--font-body)", fontWeight: 400, fontSize: "13px", color: "#867bba" }}>
+              <span className="flex items-center gap-2 text-dash-text-muted" style={{ fontFamily: "var(--font-body)", fontWeight: 400, fontSize: "13px" }}>
                 <Coins className="w-4 h-4" /> Saldo Saat Ini
               </span>
               <div className="mt-2 flex items-baseline gap-3">
-                <span style={{ fontFamily: "var(--font-body)", fontWeight: 700, fontSize: "56px", letterSpacing: "-0.03em", color: "#e8eeff" }}>
+                <span className="text-dash-text" style={{ fontFamily: "var(--font-body)", fontWeight: 700, fontSize: "56px", letterSpacing: "-0.03em" }}>
                   {organizer.tokenBalance}
                 </span>
-                <span style={{ fontFamily: "var(--font-body)", fontWeight: 400, fontSize: "20px", color: "#867bba" }}>token</span>
+                <span className="text-dash-text-muted" style={{ fontFamily: "var(--font-body)", fontWeight: 400, fontSize: "20px" }}>token</span>
               </div>
             </div>
           </div>
@@ -137,30 +136,28 @@ export default function TokensPage() {
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.1 }}
-          className="mt-6 rounded-xl overflow-hidden"
-          style={{ background: "#111111", border: "1px solid #333333" }}
+          className="mt-6 rounded-xl overflow-hidden bg-dash-surface border border-dash-border"
         >
-          <div className="p-8 sm:p-10" style={{ borderBottom: "1px solid #333333" }}>
-            <h2 className="flex items-center gap-2 mb-6" style={{ fontFamily: "var(--font-body)", fontWeight: 600, fontSize: "18px", color: "#e8eeff" }}>
-              <CreditCard className="w-5 h-5" style={{ color: "#867bba" }} /> Isi Ulang Saldo
+          <div className="p-8 sm:p-10 border-b border-dash-border">
+            <h2 className="flex items-center gap-2 mb-6 text-dash-text" style={{ fontFamily: "var(--font-body)", fontWeight: 600, fontSize: "18px" }}>
+              <CreditCard className="w-5 h-5 text-dash-text-muted" /> Isi Ulang Saldo
             </h2>
 
             {/* Stepper Input */}
             <div className="flex flex-col sm:flex-row items-center gap-6">
-              <div className="flex items-center gap-2 p-2 rounded-xl" style={{ background: "#1A1A1A", border: "1px solid #333333" }}>
+              <div className="flex items-center gap-2 p-2 rounded-xl bg-dash-surface-alt border border-dash-border">
                 {/* -10 */}
                 <button
                   onClick={() => increment(-10)}
-                  className="w-10 h-10 rounded-lg flex items-center justify-center transition-colors hover:opacity-80"
-                  style={{ background: "#111111", border: "1px solid #333333", fontFamily: "var(--font-body)", fontWeight: 600, fontSize: "11px", color: "#867bba" }}
+                  className="w-10 h-10 rounded-lg flex items-center justify-center transition-colors hover:opacity-80 bg-dash-surface border border-dash-border text-dash-text-muted"
+                  style={{ fontFamily: "var(--font-body)", fontWeight: 600, fontSize: "11px" }}
                 >
                   -10
                 </button>
                 {/* -1 */}
                 <button
                   onClick={() => increment(-1)}
-                  className="w-10 h-10 rounded-lg flex items-center justify-center transition-colors hover:opacity-80"
-                  style={{ background: "#111111", border: "1px solid #333333", color: "#867bba" }}
+                  className="w-10 h-10 rounded-lg flex items-center justify-center transition-colors hover:opacity-80 bg-dash-surface border border-dash-border text-dash-text-muted"
                 >
                   <Minus className="w-4 h-4" strokeWidth={2} />
                 </button>
@@ -173,23 +170,22 @@ export default function TokensPage() {
                     onBlur={() => setBuyAmount((prev) => { const n = Number(prev); return isNaN(n) || n < 1 ? 1 : Math.min(n, 9999); })}
                     min={1}
                     max={9999}
-                    className="w-full text-center bg-transparent outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                    style={{ fontFamily: "var(--font-body)", fontWeight: 700, fontSize: "28px", color: "#e8eeff" }}
+                    className="w-full text-center bg-transparent outline-none text-dash-text [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                    style={{ fontFamily: "var(--font-body)", fontWeight: 700, fontSize: "28px" }}
                   />
                 </div>
                 {/* +1 */}
                 <button
                   onClick={() => increment(1)}
-                  className="w-10 h-10 rounded-lg flex items-center justify-center transition-colors hover:opacity-80"
-                  style={{ background: "#111111", border: "1px solid #333333", color: "#b3c2ff" }}
+                  className="w-10 h-10 rounded-lg flex items-center justify-center transition-colors hover:opacity-80 bg-dash-surface border border-dash-border text-[#3c58a7] dark:text-dash-text-sub"
                 >
                   <Plus className="w-4 h-4" strokeWidth={2} />
                 </button>
                 {/* +10 */}
                 <button
                   onClick={() => increment(10)}
-                  className="w-10 h-10 rounded-lg flex items-center justify-center transition-colors hover:opacity-80"
-                  style={{ background: "#111111", border: "1px solid #333333", fontFamily: "var(--font-body)", fontWeight: 600, fontSize: "11px", color: "#b3c2ff" }}
+                  className="w-10 h-10 rounded-lg flex items-center justify-center transition-colors hover:opacity-80 bg-dash-surface border border-dash-border text-[#3c58a7] dark:text-dash-text-sub"
+                  style={{ fontFamily: "var(--font-body)", fontWeight: 600, fontSize: "11px" }}
                 >
                   +10
                 </button>
@@ -201,14 +197,14 @@ export default function TokensPage() {
                   <button
                     key={n}
                     onClick={() => setBuyAmount(n)}
-                    className="px-4 py-2.5 rounded-lg transition-all duration-200"
+                    className="px-4 py-2.5 rounded-lg transition-all duration-200 border"
                     style={{
-                      background: numAmount === n ? "#6B0F1A" : "#1A1A1A",
-                      border: `1px solid ${numAmount === n ? "#8B1F2A" : "#333333"}`,
+                      background: numAmount === n ? "var(--dash-accent)" : undefined,
+                      borderColor: numAmount === n ? "var(--dash-accent-light)" : undefined,
                       fontFamily: "var(--font-body)",
                       fontWeight: 500,
                       fontSize: "13px",
-                      color: numAmount === n ? "#fff" : "#867bba",
+                      color: numAmount === n ? "#fff" : undefined,
                     }}
                   >
                     {n}
@@ -219,28 +215,28 @@ export default function TokensPage() {
 
             {/* Info: how many guests this covers */}
             <div className="mt-4 px-1">
-              <span style={{ fontFamily: "var(--font-body)", fontWeight: 400, fontSize: "12px", color: "#867bba" }}>
-                💡 {numAmount} token ≈ cukup untuk <strong style={{ color: "#e8eeff" }}>{numAmount * 50}</strong> tamu undangan (1 token = 50 tamu)
+              <span className="text-dash-text-muted" style={{ fontFamily: "var(--font-body)", fontWeight: 400, fontSize: "12px" }}>
+                💡 {numAmount} token ≈ cukup untuk <strong className="text-dash-text">{numAmount * 50}</strong> tamu undangan (1 token = 50 tamu)
               </span>
             </div>
           </div>
 
           {/* Summary + Buy */}
-          <div className="p-8 sm:p-10" style={{ background: "#0d0d0d" }}>
+          <div className="p-8 sm:p-10 bg-dash-surface-alt">
             <div className="flex items-center justify-between mb-4">
-              <span style={{ fontFamily: "var(--font-body)", fontWeight: 400, fontSize: "14px", color: "#867bba" }}>
+              <span className="text-dash-text-muted" style={{ fontFamily: "var(--font-body)", fontWeight: 400, fontSize: "14px" }}>
                 Total ({numAmount} × {formatIDR(PRICE_PER_TOKEN)})
               </span>
-              <span style={{ fontFamily: "var(--font-body)", fontWeight: 700, fontSize: "26px", letterSpacing: "-0.02em", color: "#e8eeff" }}>
+              <span className="text-dash-text" style={{ fontFamily: "var(--font-body)", fontWeight: 700, fontSize: "26px", letterSpacing: "-0.02em" }}>
                 {formatIDR(total)}
               </span>
             </div>
 
             <div className="flex items-center justify-between mb-6">
-              <span style={{ fontFamily: "var(--font-body)", fontWeight: 400, fontSize: "12px", color: "#867bba" }}>
+              <span className="text-dash-text-muted" style={{ fontFamily: "var(--font-body)", fontWeight: 400, fontSize: "12px" }}>
                 Harga per tamu
               </span>
-              <span style={{ fontFamily: "var(--font-body)", fontWeight: 500, fontSize: "13px", color: "#b3c2ff" }}>
+              <span className="text-[#3c58a7] dark:text-dash-text-sub" style={{ fontFamily: "var(--font-body)", fontWeight: 500, fontSize: "13px" }}>
                 {numAmount > 0 ? formatIDR(Math.round(total / (numAmount * 50))) : "Rp0"} / tamu
               </span>
             </div>
@@ -250,8 +246,8 @@ export default function TokensPage() {
               disabled={buying || numAmount < 1}
               className="w-full py-4 rounded-xl transition-all duration-300 disabled:opacity-50 flex items-center justify-center gap-2"
               style={{
-                background: "#6B0F1A",
-                border: "1px solid #8B1F2A",
+                background: "var(--dash-accent)",
+                border: "1px solid var(--dash-accent-light)",
                 fontFamily: "var(--font-body)",
                 fontWeight: 600,
                 fontSize: "15px",

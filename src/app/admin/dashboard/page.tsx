@@ -45,13 +45,13 @@ export default function DashboardOverview() {
   const isId = language === "id";
 
   return (
-    <div className="max-w-5xl px-6 lg:px-10 py-8 lg:py-12 bg-[#111111] min-h-screen">
+    <div className="max-w-5xl px-6 lg:px-10 py-8 lg:py-12 bg-dash-surface min-h-screen">
       {/* Greeting */}
       <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}>
-        <p className="text-[#867bba]" style={{ fontFamily: "var(--font-body)", fontWeight: 400, fontSize: "13px", letterSpacing: "0.06em", textTransform: "uppercase" }}>
+        <p className="text-dash-text-muted" style={{ fontFamily: "var(--font-body)", fontWeight: 400, fontSize: "13px", letterSpacing: "0.06em", textTransform: "uppercase" }}>
           Dashboard
         </p>
-        <h1 className="mt-2 text-[#e8eeff]" style={{ fontFamily: "var(--font-body)", fontWeight: 700, fontSize: "28px", letterSpacing: "-0.03em", lineHeight: 1.15 }}>
+        <h1 className="mt-2 text-dash-text" style={{ fontFamily: "var(--font-body)", fontWeight: 700, fontSize: "28px", letterSpacing: "-0.03em", lineHeight: 1.15 }}>
           {isId ? "Selamat datang kembali," : "Welcome back,"} {organizer.name.split(" ")[0]}.
         </h1>
       </motion.div>
@@ -69,17 +69,17 @@ export default function DashboardOverview() {
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, delay: 0.05 * i }}
-            className={`p-5 rounded-xl bg-[#1A1A1A] border ${
-              stat.accent ? "border-[#e8eeff]" : "border-[#333333]"
+            className={`p-5 rounded-xl bg-dash-surface-alt border ${
+              stat.accent ? "border-dash-accent-light" : "border-dash-border"
             }`}
           >
             <div className="flex items-center justify-between mb-3">
-              <stat.icon className={`w-4 h-4 ${stat.accent ? "text-[#e8eeff]" : "text-[#867bba]"}`} strokeWidth={1.5} />
+              <stat.icon className={`w-4 h-4 ${stat.accent ? "text-dash-accent-light" : "text-dash-text-muted"}`} strokeWidth={1.5} />
             </div>
-            <div className="text-[#e8eeff]" style={{ fontFamily: "var(--font-body)", fontWeight: 700, fontSize: "28px", letterSpacing: "-0.03em" }}>
+            <div className="text-dash-text" style={{ fontFamily: "var(--font-body)", fontWeight: 700, fontSize: "28px", letterSpacing: "-0.03em" }}>
               {stat.value}
             </div>
-            <span className="text-[#867bba]" style={{ fontFamily: "var(--font-body)", fontWeight: 400, fontSize: "12px" }}>
+            <span className="text-dash-text-muted" style={{ fontFamily: "var(--font-body)", fontWeight: 400, fontSize: "12px" }}>
               {stat.label}
             </span>
           </motion.div>
@@ -89,20 +89,20 @@ export default function DashboardOverview() {
       {/* Events table */}
       <div className="mt-10">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-[#e8eeff]" style={{ fontFamily: "var(--font-body)", fontWeight: 600, fontSize: "16px" }}>
+          <h2 className="text-dash-text" style={{ fontFamily: "var(--font-body)", fontWeight: 600, fontSize: "16px" }}>
             {isId ? "Acara Kamu" : "Your Events"}
           </h2>
           <Link href="/admin/dashboard/events" className="flex items-center gap-1.5 hover:opacity-70 transition-opacity">
-            <span className="text-[#867bba]" style={{ fontFamily: "var(--font-body)", fontWeight: 400, fontSize: "13px" }}>{isId ? "Lihat semua" : "View all"}</span>
-            <ArrowUpRight className="w-3.5 h-3.5 text-[#867bba]" strokeWidth={1.5} />
+            <span className="text-dash-text-muted" style={{ fontFamily: "var(--font-body)", fontWeight: 400, fontSize: "13px" }}>{isId ? "Lihat semua" : "View all"}</span>
+            <ArrowUpRight className="w-3.5 h-3.5 text-dash-text-muted" strokeWidth={1.5} />
           </Link>
         </div>
-        <div className="rounded-xl overflow-hidden border border-[#333333]">
+        <div className="rounded-xl overflow-hidden border border-dash-border">
           <table className="w-full">
             <thead>
-              <tr className="bg-[#1A1A1A] border-b border-[#333333]">
+              <tr className="bg-dash-surface-alt border-b border-dash-border">
                 {[isId ? "Acara" : "Event", isId ? "Tanggal" : "Date", isId ? "Tamu" : "Guests", isId ? "Orang" : "People", "Status"].map((h) => (
-                  <th key={h} className="text-left px-5 py-3 first:pl-5 text-[#867bba]" style={{ fontFamily: "var(--font-body)", fontWeight: 500, fontSize: "11px", letterSpacing: "0.05em", textTransform: "uppercase" }}>
+                  <th key={h} className="text-left px-5 py-3 first:pl-5 text-dash-text-muted" style={{ fontFamily: "var(--font-body)", fontWeight: 500, fontSize: "11px", letterSpacing: "0.05em", textTransform: "uppercase" }}>
                     {h}
                   </th>
                 ))}
@@ -113,25 +113,25 @@ export default function DashboardOverview() {
                 const people = evt.guests.reduce((s, g) => s + g.partySize, 0);
                 const isUpcoming = new Date(evt.date) > new Date();
                 return (
-                  <tr key={evt.id} className="bg-[#1A1A1A] transition-colors hover:bg-[#333333]/50" style={{ borderBottom: idx < events.length - 1 ? "1px solid #333333" : "none" }}>
+                  <tr key={evt.id} className={`bg-dash-surface transition-colors hover:bg-dash-surface-hover ${idx < events.length - 1 ? "border-b border-dash-border" : ""}`}>
                     <td className="px-5 py-4">
-                      <Link href={`/admin/dashboard/events/${evt.id}`} className="hover:underline text-[#e8eeff]" style={{ fontFamily: "var(--font-body)", fontWeight: 500, fontSize: "13px", textDecoration: "none" }}>
+                      <Link href={`/admin/dashboard/events/${evt.id}`} className="hover:underline text-dash-text" style={{ fontFamily: "var(--font-body)", fontWeight: 500, fontSize: "13px", textDecoration: "none" }}>
                         {evt.name}
                       </Link>
                     </td>
                     <td className="px-5 py-4">
-                      <span className="text-[#867bba]" style={{ fontFamily: "var(--font-body)", fontWeight: 400, fontSize: "13px" }}>
+                      <span className="text-dash-text-muted" style={{ fontFamily: "var(--font-body)", fontWeight: 400, fontSize: "13px" }}>
                         {new Date(evt.date).toLocaleDateString(isId ? "id-ID" : "en-US", { day: "numeric", month: "short", year: "numeric" })}
                       </span>
                     </td>
                     <td className="px-5 py-4">
-                      <span className="text-[#e8eeff]" style={{ fontFamily: "var(--font-body)", fontWeight: 500, fontSize: "13px" }}>{evt.guests.length}</span>
+                      <span className="text-dash-text" style={{ fontFamily: "var(--font-body)", fontWeight: 500, fontSize: "13px" }}>{evt.guests.length}</span>
                     </td>
                     <td className="px-5 py-4">
-                      <span className="text-[#867bba]" style={{ fontFamily: "var(--font-body)", fontWeight: 400, fontSize: "13px" }}>{people}</span>
+                      <span className="text-dash-text-muted" style={{ fontFamily: "var(--font-body)", fontWeight: 400, fontSize: "13px" }}>{people}</span>
                     </td>
                     <td className="px-5 py-4">
-                      <span className={`inline-block px-2.5 py-1 rounded ${isUpcoming ? "bg-[#333333] border border-[#333333] text-[#e8eeff]" : "bg-green-900/30 border border-green-800 text-green-400"}`} style={{ fontFamily: "var(--font-body)", fontWeight: 500, fontSize: "11px" }}>
+                      <span className={`inline-block px-2.5 py-1 rounded ${isUpcoming ? "bg-gray-100 dark:bg-dash-surface-hover border border-dash-border text-dash-text-sub" : "bg-dash-surface-alt border border-dash-accent-light text-dash-accent-light"}`} style={{ fontFamily: "var(--font-body)", fontWeight: 500, fontSize: "11px" }}>
                         {isUpcoming ? (isId ? "Akan Datang" : "Upcoming") : (isId ? "Aktif" : "Active")}
                       </span>
                     </td>
@@ -140,8 +140,8 @@ export default function DashboardOverview() {
               })}
               {events.length === 0 && (
                 <tr>
-                  <td colSpan={5} className="px-5 py-8 text-center bg-[#1A1A1A]">
-                    <span className="text-[#867bba]" style={{ fontFamily: "var(--font-body)", fontWeight: 400, fontSize: "14px" }}>
+                  <td colSpan={5} className="px-5 py-8 text-center bg-dash-surface">
+                    <span className="text-dash-text-muted" style={{ fontFamily: "var(--font-body)", fontWeight: 400, fontSize: "14px" }}>
                       {isId ? "Belum ada acara. Buat acara pertamamu!" : "No events yet. Create your first event!"}
                     </span>
                   </td>
@@ -154,25 +154,25 @@ export default function DashboardOverview() {
 
       {/* Quick Stats */}
       <div className="mt-10 grid grid-cols-1 lg:grid-cols-2 gap-3">
-        <div className="p-6 rounded-xl bg-[#1A1A1A] border border-[#333333]">
-          <span className="text-[#867bba]" style={{ fontFamily: "var(--font-body)", fontWeight: 500, fontSize: "12px", letterSpacing: "0.06em", textTransform: "uppercase" }}>
+        <div className="p-6 rounded-xl bg-dash-surface-alt border border-dash-border">
+          <span className="text-dash-text-muted" style={{ fontFamily: "var(--font-body)", fontWeight: 500, fontSize: "12px", letterSpacing: "0.06em", textTransform: "uppercase" }}>
             {isId ? "Total Undangan" : "Total Invitations"}
           </span>
-          <div className="mt-2 text-[#e8eeff]" style={{ fontFamily: "var(--font-body)", fontWeight: 700, fontSize: "32px", letterSpacing: "-0.03em" }}>
+          <div className="mt-2 text-dash-text" style={{ fontFamily: "var(--font-body)", fontWeight: 700, fontSize: "32px", letterSpacing: "-0.03em" }}>
             {totalGuests}
           </div>
-          <span className="text-[#867bba]" style={{ fontFamily: "var(--font-body)", fontWeight: 400, fontSize: "13px" }}>
+          <span className="text-dash-text-muted" style={{ fontFamily: "var(--font-body)", fontWeight: 400, fontSize: "13px" }}>
             {isId ? `mencakup ${totalPeople} orang total` : `covering ${totalPeople} people in total`}
           </span>
         </div>
-        <div className="p-6 rounded-xl bg-[#1A1A1A] border border-[#333333]">
-          <span className="text-[#867bba]" style={{ fontFamily: "var(--font-body)", fontWeight: 500, fontSize: "12px", letterSpacing: "0.06em", textTransform: "uppercase" }}>
+        <div className="p-6 rounded-xl bg-dash-surface-alt border border-dash-border">
+          <span className="text-dash-text-muted" style={{ fontFamily: "var(--font-body)", fontWeight: 500, fontSize: "12px", letterSpacing: "0.06em", textTransform: "uppercase" }}>
             {isId ? "Tingkat Check-in" : "Check-in Rate"}
           </span>
-          <div className="mt-2 text-[#e8eeff]" style={{ fontFamily: "var(--font-body)", fontWeight: 700, fontSize: "32px", letterSpacing: "-0.03em" }}>
+          <div className="mt-2 text-dash-text" style={{ fontFamily: "var(--font-body)", fontWeight: 700, fontSize: "32px", letterSpacing: "-0.03em" }}>
             {totalGuests > 0 ? Math.round((totalCheckedIn / totalGuests) * 100) : 0}%
           </div>
-          <span className="text-[#867bba]" style={{ fontFamily: "var(--font-body)", fontWeight: 400, fontSize: "13px" }}>
+          <span className="text-dash-text-muted" style={{ fontFamily: "var(--font-body)", fontWeight: 400, fontSize: "13px" }}>
             {isId ? "kehadiran keseluruhan" : "overall attendance"}
           </span>
         </div>
