@@ -232,9 +232,9 @@ export default function WhatsAppBlastPage() {
         </p>
       </motion.div>
 
-      <div className="mt-8 grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
         {/* Left Column - Configuration */}
-        <div className="lg:col-span-2 space-y-6">
+        <div className="lg:col-span-1 xl:col-span-2 space-y-6">
           
           {/* Event Selection Card */}
           <motion.div
@@ -417,7 +417,7 @@ export default function WhatsAppBlastPage() {
         </div>
 
         {/* Right Column - Preview & Results */}
-        <div className="space-y-6">
+        <div className="space-y-6 lg:sticky lg:top-6 lg:self-start">
           
           {/* Live Preview */}
           {showPreview && selectedEvent && (
@@ -425,7 +425,7 @@ export default function WhatsAppBlastPage() {
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.2 }}
-              className="p-6 rounded-2xl dash-card border border-dash-border shadow-lg"
+              className="p-4 sm:p-6 rounded-2xl dash-card border border-dash-border shadow-lg"
             >
               <div className="flex items-center justify-between mb-4">
                 <label className="flex items-center gap-2 text-dash-text font-semibold text-sm tracking-wide uppercase">
@@ -434,29 +434,29 @@ export default function WhatsAppBlastPage() {
                 </label>
                 <button
                   onClick={() => setShowPreview(!showPreview)}
-                  className="text-xs text-dash-text-muted hover:text-dash-text"
+                  className="text-xs text-dash-text-muted hover:text-dash-text transition-colors"
                 >
                   Sembunyikan
                 </button>
               </div>
               
               {/* WhatsApp Chat Bubble Mockup */}
-              <div className="relative">
-                <div className="absolute top-0 left-0 right-0 h-16 bg-gradient-to-br from-green-600 to-green-700 rounded-t-2xl flex items-center px-4 gap-3">
-                  <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center">
-                    <Smartphone className="w-5 h-5 text-green-600" />
+              <div className="relative max-w-sm mx-auto lg:max-w-full">
+                <div className="absolute top-0 left-0 right-0 h-14 sm:h-16 bg-gradient-to-br from-green-600 to-green-700 rounded-t-2xl flex items-center px-3 sm:px-4 gap-2 sm:gap-3">
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-white flex items-center justify-center flex-shrink-0">
+                    <Smartphone className="w-4 h-4 sm:w-5 sm:h-5 text-green-600" />
                   </div>
-                  <div>
-                    <p className="text-white font-semibold text-sm">DeNavi Bot</p>
-                    <p className="text-green-100 text-xs">Online</p>
+                  <div className="min-w-0">
+                    <p className="text-white font-semibold text-xs sm:text-sm truncate">DeNavi Bot</p>
+                    <p className="text-green-100 text-[10px] sm:text-xs">Online</p>
                   </div>
                 </div>
-                <div className="pt-20 pb-4 px-4 bg-[#ece5dd] dark:bg-[#0b0b0b] rounded-2xl min-h-[300px]">
-                  <div className="bg-dash-surface rounded-2xl rounded-tl-none p-4 shadow-md max-w-[85%]">
-                    <pre className="whitespace-pre-wrap text-sm text-dash-text font-sans leading-relaxed">
+                <div className="pt-16 sm:pt-20 pb-3 sm:pb-4 px-3 sm:px-4 bg-[#ece5dd] dark:bg-[#0b0b0b] rounded-2xl min-h-[280px] sm:min-h-[300px]">
+                  <div className="bg-dash-surface rounded-2xl rounded-tl-none p-3 sm:p-4 shadow-md max-w-[90%] sm:max-w-[85%]">
+                    <pre className="whitespace-pre-wrap text-xs sm:text-sm text-dash-text font-sans leading-relaxed overflow-hidden">
                       {generatePreview()}
                     </pre>
-                    <p className="text-[10px] text-dash-text-muted mt-2 text-right">
+                    <p className="text-[9px] sm:text-[10px] text-dash-text-muted mt-2 text-right">
                       {new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })}
                     </p>
                   </div>

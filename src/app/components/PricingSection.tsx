@@ -209,7 +209,7 @@ export function PricingSection() {
                   </div>
 
                   {/* Duration */}
-                  <div>
+                  {/* <div>
                     <div className="flex items-center justify-between mb-4">
                       <span
                         style={{
@@ -254,7 +254,7 @@ export function PricingSection() {
                         </button>
                       ))}
                     </div>
-                  </div>
+                  </div> */}
                 </div>
               </div>
 
